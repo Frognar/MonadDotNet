@@ -2,9 +2,11 @@
 
 namespace Frognar.Monads {
   public readonly struct Maybe<T> {
-    public Maybe(T value) => Value = value;
     public T Value { get; }
     public bool HasValue => Value != null;
+    
+    public Maybe(T value) => Value = value;
+    
     public static Maybe<T> None { get; } = new Maybe<T>();
     public static Maybe<T> Of(T value) => new Maybe<T>(value);
 
