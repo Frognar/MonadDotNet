@@ -14,26 +14,11 @@ namespace Frognar.Monads {
     
     public static Result<T> Success(T value) => new Result<T>(value, null);
     public static Result<T> Failure(Exception error) => new Result<T>(default!, error);
-    public static Result<T> Of(Func<T> func) {
-      try {
-        return Success(func());
-      }
-      catch (Exception e) {
-        return Failure(e);
-      }
-    }
-
     public Monad<U> Bind<U>(Func<T, Monad<U>> func) {
-      if (IsSuccess == false) {
-        return Result<U>.Failure(Error!);
-      }
-
-      try {
-        return func(Value);
-      }
-      catch (Exception e) {
-        return Result<U>.Failure(e);
-      }
+      return IsSuccess ? func(Value) : Result<U>.Failure(Error!);
     }
+
+    public static implicit operator Result<T>(T result) => Success(result);
+    public static implicit operator Result<T>(Exception error) => Failure(error);
   }
 }
