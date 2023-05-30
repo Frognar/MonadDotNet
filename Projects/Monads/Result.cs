@@ -1,24 +1,52 @@
 ﻿using System;
+using Frognar.Monads.Enums;
 
 namespace Frognar.Monads {
-  public readonly struct Result<T> : Monad<T> {
-    public T Value { get; }
-    public Exception? Error { get; }
-    public bool IsSuccess { get; }
+  public readonly struct Result<T> {
+    readonly ResultState state;
+    readonly T value;
+    readonly Exception error;
+    
+    public bool IsSuccess => state == ResultState.Success;
+    public bool IsFailure => state == ResultState.Failure;
 
-    Result(T value, Exception? error) {
-      Value = value;
-      Error = error;
-      IsSuccess = error == null;
+    public Result(T value) {
+      state = ResultState.Success;
+      this.value = value;
+      error = null!;
+    }
+
+    public Result(Exception ex) {
+      state = ResultState.Failure;
+      error = ex;
+      value = default;
+    }
+
+    public override string ToString() {
+      return IsSuccess
+        ? value?.ToString() ?? "(null)"
+        : error?.ToString() ?? "(unknown error)";
     }
     
-    public static Result<T> Success(T value) => new Result<T>(value, null);
-    public static Result<T> Failure(Exception error) => new Result<T>(default!, error);
-    public Monad<U> Bind<U>(Func<T, Monad<U>> func) {
-      return IsSuccess ? func(Value) : Result<U>.Failure(Error!);
+    public U Match<U>(Func<T, U> success, Func<Exception, U> failure) {
+      return IsSuccess ? success(value) : failure(error);
+    }
+    
+    public void Resolve(Action<T> success, Action<Exception> failure) {
+      if (IsSuccess) {
+        success(value);
+      }
+      else {
+        failure(error);
+      }
     }
 
-    public static implicit operator Result<T>(T result) => Success(result);
-    public static implicit operator Result<T>(Exception error) => Failure(error);
+    public Result<U> Map<U>(Func<T, Result<U>> func) {
+      return IsSuccess ? func(value) : new Result<U>(error);
+    }
+
+    public static Result<T> Of(T value) => new(value);
+    public static implicit operator Result<T>(T result) => new(result);
+    public static implicit operator Result<T>(Exception error) => new(error);
   }
 }
