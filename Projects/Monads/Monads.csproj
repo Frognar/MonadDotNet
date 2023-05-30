@@ -9,6 +9,7 @@
         <Authors>Frognar</Authors>
         <PackageProjectUrl>https://github.com/Frognar/MonadDotNet</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Frognar/MonadDotNet</RepositoryUrl>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
 </Project>
