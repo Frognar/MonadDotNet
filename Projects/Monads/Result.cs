@@ -49,4 +49,8 @@ namespace Frognar.Monads {
     public static implicit operator Result<T>(T result) => new(result);
     public static implicit operator Result<T>(Exception error) => new(error);
   }
+  
+  public static class ResultExtensions {
+    public static Result<U> Map<T, U>(this T value, Func<T, Result<U>> func) => Result<T>.Of(value).Map(func);
+  }
 }
