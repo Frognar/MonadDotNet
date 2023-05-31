@@ -1,10 +1,17 @@
 ﻿namespace Frognar.Monads; 
 
 public readonly struct Try<T> {
-  public T Value => (T)(object)5;
-  public bool IsSuccess => true;
+  readonly T value;
+
+  public T Value => value;
+  public bool IsSuccess { get; }
+
+  Try(T value) {
+    this.value = value;
+    IsSuccess = true;
+  }
   
   public static Try<T> Success(T value) {
-    return new Try<T>();
+    return new Try<T>(value);
   }
 }
