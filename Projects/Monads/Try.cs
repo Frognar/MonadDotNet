@@ -29,14 +29,14 @@ public readonly struct Try<T> {
   }
 
   public Try<U> Map<U>(Func<T, U> f) {
-    return Try<U>.Success(f(value));
+    return IsSuccess ? Try<U>.Success(f(value)) : Try<U>.Failure(error);
   }
 
   public static Try<T> Success(T value) {
     return new Try<T>(value);
   }
 
-  public static Try<int> Failure(Exception error) {
-    return new Try<int>(error);
+  public static Try<T> Failure(Exception error) {
+    return new Try<T>(error);
   }
 }

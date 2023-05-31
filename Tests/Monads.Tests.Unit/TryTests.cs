@@ -16,7 +16,7 @@ public class TryTests {
   [Fact]
   public void FailureMethod_CreatesTryInFailureState_WhenCalledWithException()
   {
-    Exception exception = new Exception("Test exception");
+    Exception exception = new("Test exception");
 
     Try<int> tryResult = Try<int>.Failure(exception);
 
@@ -45,5 +45,18 @@ public class TryTests {
 
     Assert.True(mappedResult.IsSuccess);
     Assert.Equal(validValue.ToString(), mappedResult.Value);
+  }
+
+  [Fact]
+  public void MapMethod_DoesNotTransformValue_WhenTryIsFailure()
+  {
+    Exception exception = new("Test exception");
+    Try<int> tryResult = Try<int>.Failure(exception);
+
+    Try<string> mappedResult = tryResult.Map(value => value.ToString());
+
+    Assert.False(mappedResult.IsSuccess);
+    Assert.Throws<InvalidOperationException>(() => { _ = mappedResult.Value; });
+    Assert.Equal(exception, mappedResult.Error);
   }
 }
