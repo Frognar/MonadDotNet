@@ -28,6 +28,10 @@ public readonly struct Try<T> {
     IsSuccess = false;
   }
 
+  public Try<U> Map<U>(Func<T, U> f) {
+    return Try<U>.Success(f(value));
+  }
+
   public static Try<T> Success(T value) {
     return new Try<T>(value);
   }
