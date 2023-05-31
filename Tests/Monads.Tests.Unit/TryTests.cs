@@ -24,4 +24,14 @@ public class TryTests {
     Assert.Equal(exception, tryResult.Error);
     Assert.Throws<InvalidOperationException>(() => { _ = tryResult.Value; });
   }
+  
+  [Fact]
+  public void ExceptionProperty_ThrowsException_WhenTryIsSuccess()
+  {
+    const int validValue = 5;
+
+    Try<int> tryResult = Try<int>.Success(validValue);
+
+    Assert.Throws<InvalidOperationException>(() => { _ = tryResult.Error; });
+  }
 }

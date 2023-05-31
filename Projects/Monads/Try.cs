@@ -6,8 +6,14 @@ public readonly struct Try<T> {
   readonly T value;
   readonly Exception error;
 
-  public T Value => IsSuccess ? value : throw new InvalidOperationException("Cannot access the value of a failure.");
-  public Exception Error => error;
+  public T Value => IsSuccess
+    ? value
+    : throw new InvalidOperationException("Cannot access the value of a failure.");
+
+  public Exception Error => IsSuccess == false
+    ? error
+    : throw new InvalidOperationException("Cannot access the exception of a success.");
+
   public bool IsSuccess { get; }
 
   Try(T value) {
