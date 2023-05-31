@@ -59,4 +59,18 @@ public class TryTests {
     Assert.Throws<InvalidOperationException>(() => { _ = mappedResult.Value; });
     Assert.Equal(exception, mappedResult.Error);
   }
+  
+  [Fact]
+  public void MapMethod_ReturnsFailure_WhenFunctionThrowsException()
+  {
+    const int validValue = 5;
+    Exception exception = new("Test exception");
+    Try<int> tryResult = Try<int>.Success(validValue);
+
+    Try<string> mappedResult = tryResult.Map<string>(_ => throw exception);
+
+    Assert.False(mappedResult.IsSuccess);
+    Assert.Throws<InvalidOperationException>(() => { _ = mappedResult.Value; });
+    Assert.Equal(exception, mappedResult.Error);
+  }
 }

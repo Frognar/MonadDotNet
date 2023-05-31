@@ -29,7 +29,18 @@ public readonly struct Try<T> {
   }
 
   public Try<U> Map<U>(Func<T, U> f) {
-    return IsSuccess ? Try<U>.Success(f(value)) : Try<U>.Failure(error);
+    T val = value;
+    return IsSuccess ? Try<U>.From(() => f(val)) : Try<U>.Failure(error);
+  }
+
+  public static Try<T> From(Func<T> f) {
+    try {
+      T value = f();
+      return Success(value);
+    }
+    catch (Exception ex) {
+      return Failure(ex);
+    }
   }
 
   public static Try<T> Success(T value) {
