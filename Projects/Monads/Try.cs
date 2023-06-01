@@ -38,6 +38,10 @@ public readonly struct Try<T> {
     return IsSuccess ? From(f) : Try<U>.Failure(error);
   }
 
+  public Try<T> Recover(Func<Exception, T> f) {
+    return IsSuccess ? this : Success(f(error));
+  }
+
   Try<U> From<U>(Func<T, Try<U>> f) {
     try {
       return f(value);
@@ -63,9 +67,5 @@ public readonly struct Try<T> {
 
   public static Try<T> Failure(Exception error) {
     return new Try<T>(error);
-  }
-
-  public Try<T> Recover(Func<Exception, T> f) {
-    return this;
   }
 }

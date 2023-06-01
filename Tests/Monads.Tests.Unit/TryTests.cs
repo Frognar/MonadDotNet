@@ -124,4 +124,16 @@ public class TryTests {
     Assert.True(recoveredResult.IsSuccess);
     Assert.Equal(validValue, recoveredResult.Value);
   }
+
+  [Fact]
+  public void RecoverMethod_TransformsFailureIntoSuccess() {
+    Exception exception = new("Test exception");
+    Try<int> tryResult = Try<int>.Failure(exception);
+
+    const int recoverValue = 0;
+    Try<int> recoveredResult = tryResult.Recover(ex => recoverValue);
+
+    Assert.True(recoveredResult.IsSuccess);
+    Assert.Equal(recoverValue, recoveredResult.Value);
+  }
 }
