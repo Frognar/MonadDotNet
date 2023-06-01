@@ -112,4 +112,16 @@ public class TryTests {
     Assert.Throws<InvalidOperationException>(() => { _ = flatMappedResult.Value; });
     Assert.Equal("Test exception", flatMappedResult.Error.Message);
   }
+  
+  [Fact]
+  public void RecoverMethod_DoesNotChangeValue_WhenTryIsSuccess()
+  {
+    const int validValue = 5;
+    Try<int> tryResult = Try<int>.Success(validValue);
+
+    Try<int> recoveredResult = tryResult.Recover(ex => 0);
+
+    Assert.True(recoveredResult.IsSuccess);
+    Assert.Equal(validValue, recoveredResult.Value);
+  }
 }

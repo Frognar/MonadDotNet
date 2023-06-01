@@ -64,4 +64,8 @@ public readonly struct Try<T> {
   public static Try<T> Failure(Exception error) {
     return new Try<T>(error);
   }
+
+  public Try<T> Recover(Func<Exception, T> f) {
+    return this;
+  }
 }
