@@ -78,6 +78,6 @@ public readonly struct Try<T> {
   }
 
   public TResult Match<TResult>(Func<T, TResult> successFunc, Func<Exception, TResult> errorFunc) {
-    return successFunc(value);
+    return IsSuccess ? successFunc(value) : errorFunc(error);
   }
 }

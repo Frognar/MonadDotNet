@@ -200,4 +200,17 @@ public class TryTests {
 
     Assert.Equal($"Success: {validValue}", matchResult);
   }
+
+  [Fact]
+  public void Match_ReturnsCorrectValue_WhenTryIsFailure() {
+    Exception exception = new("Test exception");
+    Try<int> tryResult = Try<int>.Failure(exception);
+
+    string matchResult = tryResult.Match(
+      _ => "Success",
+      failureError => $"Failure: {failureError.Message}"
+    );
+
+    Assert.Equal($"Failure: {exception.Message}", matchResult);
+  }
 }
