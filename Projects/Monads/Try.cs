@@ -33,6 +33,10 @@ public readonly struct Try<T> {
     return IsSuccess ? Try<U>.From(() => f(val)) : Try<U>.Failure(error);
   }
 
+  public Try<U> FlatMap<U>(Func<T, Try<U>> f) {
+    return f(value);
+  }
+
   public static Try<T> From(Func<T> f) {
     try {
       T value = f();
