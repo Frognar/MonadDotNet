@@ -213,4 +213,16 @@ public class TryTests {
 
     Assert.Equal($"Failure: {exception.Message}", matchResult);
   }
+  
+  [Fact]
+  public void Or_ReturnsSameTry_WhenTryIsSuccess() {
+    const int validValue = 5;
+    Try<int> tryResult = Try<int>.Success(validValue);
+    Try<int> alternative = Try<int>.Success(validValue + 1);
+
+    Try<int> orResult = tryResult.Or(alternative);
+
+    Assert.True(orResult.IsSuccess);
+    Assert.Equal(validValue, orResult.Value);
+  }
 }

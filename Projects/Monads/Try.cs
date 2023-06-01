@@ -50,6 +50,14 @@ public readonly struct Try<T> {
     return predicate(value) ? this : Failure(new InvalidOperationException("Filter condition not met"));
   }
 
+  public Try<T> Or(Try<T> alternative) {
+    return this;
+  }
+
+  public TResult Match<TResult>(Func<T, TResult> successFunc, Func<Exception, TResult> errorFunc) {
+    return IsSuccess ? successFunc(value) : errorFunc(error);
+  }
+
   Try<U> From<U>(Func<T, Try<U>> f) {
     try {
       return f(value);
@@ -75,9 +83,5 @@ public readonly struct Try<T> {
 
   public static Try<T> Failure(Exception error) {
     return new Try<T>(error);
-  }
-
-  public TResult Match<TResult>(Func<T, TResult> successFunc, Func<Exception, TResult> errorFunc) {
-    return IsSuccess ? successFunc(value) : errorFunc(error);
   }
 }
