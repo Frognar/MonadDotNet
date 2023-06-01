@@ -34,7 +34,7 @@ public readonly struct Try<T> {
   }
 
   public Try<U> FlatMap<U>(Func<T, Try<U>> f) {
-    return f(value);
+    return IsSuccess ? f(value) : Try<U>.Failure(error);
   }
 
   public static Try<T> From(Func<T> f) {

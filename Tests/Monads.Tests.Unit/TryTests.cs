@@ -85,4 +85,17 @@ public class TryTests {
     Assert.True(flatMappedResult.IsSuccess);
     Assert.Equal(validValue.ToString(), flatMappedResult.Value);
   }
+
+  [Fact]
+  public void FlatMapMethod_DoesNotTransformValue_WhenTryIsFailure()
+  {
+    Exception exception = new("Test exception");
+    Try<int> tryResult = Try<int>.Failure(exception);
+
+    Try<string> flatMappedResult = tryResult.FlatMap(value => Try<string>.Success(value.ToString()));
+
+    Assert.False(flatMappedResult.IsSuccess);
+    Assert.Throws<InvalidOperationException>(() => { _ = flatMappedResult.Value; });
+    Assert.Equal(exception, flatMappedResult.Error);
+  }
 }
