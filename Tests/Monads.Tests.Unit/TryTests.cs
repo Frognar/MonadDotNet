@@ -250,4 +250,15 @@ public class TryTests {
     Assert.True(orResult.IsFailure);
     Assert.Equal(originalException, orResult.Error);
   }
+  
+  [Fact]
+  public void Or_ReturnsSameValue_WhenTryIsSuccess() {
+    const int validValue = 5;
+    Try<int> tryResult = Try<int>.Success(validValue);
+    const int alternativeValue = validValue + 1;
+
+    int orResult = tryResult.Or(alternativeValue);
+
+    Assert.Equal(validValue, orResult);
+  }
 }

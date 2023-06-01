@@ -54,6 +54,10 @@ public readonly struct Try<T> {
     return IsSuccess || alternative.IsFailure ? this : alternative;
   }
 
+  public T Or(T alternative) {
+    return value;
+  }
+
   public TResult Match<TResult>(Func<T, TResult> successFunc, Func<Exception, TResult> errorFunc) {
     return IsSuccess ? successFunc(value) : errorFunc(error);
   }
