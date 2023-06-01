@@ -143,11 +143,24 @@ public class TryTests {
   [Fact]
   public void Filter_PropagatesValue_WhenTryIsSuccessAndPredicateIsTrue() {
     const int validValue = 5;
+    const int smallerValidValue = validValue - 1;
     Try<int> tryResult = Try<int>.Success(validValue);
 
-    Try<int> filteredResult = tryResult.Filter(value => value > 0);
+    Try<int> filteredResult = tryResult.Filter(value => value > smallerValidValue);
 
     Assert.True(filteredResult.IsSuccess);
     Assert.Equal(validValue, filteredResult.Value);
+  }
+  
+  [Fact]
+  public void Filter_ReturnsFailure_WhenTryIsSuccessAndPredicateIsFalse() {
+    const int validValue = -5;
+    const int biggerValidValue = validValue + 1;
+    Try<int> tryResult = Try<int>.Success(validValue);
+
+    Try<int> filteredResult = tryResult.Filter(value => value > biggerValidValue);
+
+    Assert.True(filteredResult.IsFailure);
+    Assert.Throws<InvalidOperationException>(() => { _ = filteredResult.Value; });
   }
 }

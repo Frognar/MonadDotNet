@@ -1,4 +1,5 @@
 ﻿using System;
+using Frognar.Monads.Exceptions;
 
 namespace Frognar.Monads;
 
@@ -42,8 +43,8 @@ public readonly struct Try<T> {
     return IsSuccess ? this : Success(f(error));
   }
 
-  public Try<T> Filter(Func<T, bool> f) {
-    return this;
+  public Try<T> Filter(Func<T, bool> predicate) {
+    return predicate(value) ? this : Failure(new FilterConditionNotMetException("Filter condition not met"));
   }
 
   Try<U> From<U>(Func<T, Try<U>> f) {
