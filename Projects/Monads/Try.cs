@@ -15,6 +15,7 @@ public readonly struct Try<T> {
     : throw new InvalidOperationException("Cannot access the exception of a success.");
 
   public bool IsSuccess { get; }
+  public bool IsFailure => IsSuccess == false;
 
   Try(T value) {
     this.value = value;
@@ -34,7 +35,16 @@ public readonly struct Try<T> {
   }
 
   public Try<U> FlatMap<U>(Func<T, Try<U>> f) {
-    return IsSuccess ? f(value) : Try<U>.Failure(error);
+    return IsSuccess ? From(f) : Try<U>.Failure(error);
+  }
+
+  Try<U> From<U>(Func<T, Try<U>> f) {
+    try {
+      return f(value);
+    }
+    catch (Exception ex) {
+      return Try<U>.Failure(ex);
+    }
   }
 
   public static Try<T> From(Func<T> f) {

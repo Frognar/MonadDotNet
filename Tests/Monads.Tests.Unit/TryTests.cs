@@ -98,4 +98,18 @@ public class TryTests {
     Assert.Throws<InvalidOperationException>(() => { _ = flatMappedResult.Value; });
     Assert.Equal(exception, flatMappedResult.Error);
   }
+
+  [Fact]
+  public void FlatMapMethod_ReturnsFailure_WhenFunctionThrowsException()
+  {
+    const int validValue = 5;
+    Try<int> tryResult = Try<int>.Success(validValue);
+
+    Try<string> Func(int _) => throw new Exception("Test exception");
+    Try<string> flatMappedResult = tryResult.FlatMap(Func);
+
+    Assert.False(flatMappedResult.IsSuccess);
+    Assert.Throws<InvalidOperationException>(() => { _ = flatMappedResult.Value; });
+    Assert.Equal("Test exception", flatMappedResult.Error.Message);
+  }
 }
