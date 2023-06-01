@@ -187,4 +187,17 @@ public class TryTests {
     Exception ex = Assert.Throws<Exception>(Act);
     Assert.Equal(exception, ex);
   }
+  
+  [Fact]
+  public void Match_ReturnsCorrectValue_WhenTryIsSuccess() {
+    const int validValue = 5;
+    Try<int> tryResult = Try<int>.Success(validValue);
+
+    string matchResult = tryResult.Match(
+      successValue => $"Success: {successValue}",
+      _ => "Failure"
+    );
+
+    Assert.Equal($"Success: {validValue}", matchResult);
+  }
 }

@@ -76,4 +76,8 @@ public readonly struct Try<T> {
   public static Try<T> Failure(Exception error) {
     return new Try<T>(error);
   }
+
+  public TResult Match<TResult>(Func<T, TResult> successFunc, Func<Exception, TResult> errorFunc) {
+    return successFunc(value);
+  }
 }
