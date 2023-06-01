@@ -238,4 +238,16 @@ public class TryTests {
     Assert.True(orResult.IsSuccess);
     Assert.Equal(alternativeValue, orResult.Value);
   }
+
+  [Fact]
+  public void Or_ReturnsFailure_WhenBothTryAndAlternativeAreFailure() {
+    Exception originalException = new("Test exception");
+    Try<int> tryResult = Try<int>.Failure(originalException);
+    Try<int> alternative = Try<int>.Failure(new Exception("Alternative exception"));
+
+    Try<int> orResult = tryResult.Or(alternative);
+
+    Assert.True(orResult.IsFailure);
+    Assert.Equal(originalException, orResult.Error);
+  }
 }
