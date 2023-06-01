@@ -4,8 +4,7 @@ namespace Monads.Tests.Unit;
 
 public class TryTests {
   [Fact]
-  public void SuccessMethod_CreatesTryWithCorrectValue_WhenGivenValidValue()
-  {
+  public void SuccessMethod_CreatesTryWithCorrectValue_WhenGivenValidValue() {
     const int validValue = 5;
 
     Try<int> tryResult = Try<int>.Success(validValue);
@@ -13,9 +12,9 @@ public class TryTests {
     Assert.True(tryResult.IsSuccess);
     Assert.Equal(validValue, tryResult.Value);
   }
+
   [Fact]
-  public void FailureMethod_CreatesTryInFailureState_WhenCalledWithException()
-  {
+  public void FailureMethod_CreatesTryInFailureState_WhenCalledWithException() {
     Exception exception = new("Test exception");
 
     Try<int> tryResult = Try<int>.Failure(exception);
@@ -24,20 +23,18 @@ public class TryTests {
     Assert.Equal(exception, tryResult.Error);
     Assert.Throws<InvalidOperationException>(() => { _ = tryResult.Value; });
   }
-  
+
   [Fact]
-  public void ExceptionProperty_ThrowsException_WhenTryIsSuccess()
-  {
+  public void ExceptionProperty_ThrowsException_WhenTryIsSuccess() {
     const int validValue = 5;
 
     Try<int> tryResult = Try<int>.Success(validValue);
 
     Assert.Throws<InvalidOperationException>(() => { _ = tryResult.Error; });
   }
-  
+
   [Fact]
-  public void MapMethod_TransformsValue_WhenTryIsSuccess()
-  {
+  public void MapMethod_TransformsValue_WhenTryIsSuccess() {
     const int validValue = 5;
     Try<int> tryResult = Try<int>.Success(validValue);
 
@@ -48,8 +45,7 @@ public class TryTests {
   }
 
   [Fact]
-  public void MapMethod_DoesNotTransformValue_WhenTryIsFailure()
-  {
+  public void MapMethod_DoesNotTransformValue_WhenTryIsFailure() {
     Exception exception = new("Test exception");
     Try<int> tryResult = Try<int>.Failure(exception);
 
@@ -59,10 +55,9 @@ public class TryTests {
     Assert.Throws<InvalidOperationException>(() => { _ = mappedResult.Value; });
     Assert.Equal(exception, mappedResult.Error);
   }
-  
+
   [Fact]
-  public void MapMethod_ReturnsFailure_WhenFunctionThrowsException()
-  {
+  public void MapMethod_ReturnsFailure_WhenFunctionThrowsException() {
     const int validValue = 5;
     Exception exception = new("Test exception");
     Try<int> tryResult = Try<int>.Success(validValue);
@@ -73,10 +68,9 @@ public class TryTests {
     Assert.Throws<InvalidOperationException>(() => { _ = mappedResult.Value; });
     Assert.Equal(exception, mappedResult.Error);
   }
-  
+
   [Fact]
-  public void FlatMapMethod_TransformsValue_WhenTryIsSuccess()
-  {
+  public void FlatMapMethod_TransformsValue_WhenTryIsSuccess() {
     const int validValue = 5;
     Try<int> tryResult = Try<int>.Success(validValue);
 
@@ -87,8 +81,7 @@ public class TryTests {
   }
 
   [Fact]
-  public void FlatMapMethod_DoesNotTransformValue_WhenTryIsFailure()
-  {
+  public void FlatMapMethod_DoesNotTransformValue_WhenTryIsFailure() {
     Exception exception = new("Test exception");
     Try<int> tryResult = Try<int>.Failure(exception);
 
@@ -100,8 +93,7 @@ public class TryTests {
   }
 
   [Fact]
-  public void FlatMapMethod_ReturnsFailure_WhenFunctionThrowsException()
-  {
+  public void FlatMapMethod_ReturnsFailure_WhenFunctionThrowsException() {
     const int validValue = 5;
     Try<int> tryResult = Try<int>.Success(validValue);
 
@@ -112,10 +104,9 @@ public class TryTests {
     Assert.Throws<InvalidOperationException>(() => { _ = flatMappedResult.Value; });
     Assert.Equal("Test exception", flatMappedResult.Error.Message);
   }
-  
+
   [Fact]
-  public void RecoverMethod_DoesNotChangeValue_WhenTryIsSuccess()
-  {
+  public void RecoverMethod_DoesNotChangeValue_WhenTryIsSuccess() {
     const int validValue = 5;
     Try<int> tryResult = Try<int>.Success(validValue);
 
@@ -135,5 +126,28 @@ public class TryTests {
 
     Assert.True(recoveredResult.IsSuccess);
     Assert.Equal(recoverValue, recoveredResult.Value);
+  }
+
+  [Fact]
+  public void RecoverMethod_PropagatesException_WhenRecoverFunctionThrows() {
+    Exception initialException = new Exception("Initial exception");
+    Exception recoverException = new Exception("Recover exception");
+    Try<int> tryResult = Try<int>.Failure(initialException);
+
+    void Act() => tryResult.Recover(_ => throw recoverException);
+
+    Exception ex = Assert.Throws<Exception>(Act);
+    Assert.Equal(recoverException, ex);
+  }
+
+  [Fact]
+  public void Filter_PropagatesValue_WhenTryIsSuccessAndPredicateIsTrue() {
+    const int validValue = 5;
+    Try<int> tryResult = Try<int>.Success(validValue);
+
+    Try<int> filteredResult = tryResult.Filter(value => value > 0);
+
+    Assert.True(filteredResult.IsSuccess);
+    Assert.Equal(validValue, filteredResult.Value);
   }
 }

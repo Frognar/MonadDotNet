@@ -42,6 +42,10 @@ public readonly struct Try<T> {
     return IsSuccess ? this : Success(f(error));
   }
 
+  public Try<T> Filter(Func<T, bool> f) {
+    return this;
+  }
+
   Try<U> From<U>(Func<T, Try<U>> f) {
     try {
       return f(value);
