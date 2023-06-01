@@ -152,7 +152,7 @@ public class TryTests {
     Assert.True(filteredResult.IsSuccess);
     Assert.Equal(validValue, filteredResult.Value);
   }
-  
+
   [Fact]
   public void Filter_ReturnsFailure_WhenTryIsSuccessAndPredicateIsFalse() {
     const int validValue = -5;
@@ -164,10 +164,9 @@ public class TryTests {
     Assert.True(filteredResult.IsFailure);
     Assert.Throws<InvalidOperationException>(() => { _ = filteredResult.Value; });
   }
-  
+
   [Fact]
-  public void Filter_PropagatesError_WhenTryIsFailure()
-  {
+  public void Filter_PropagatesError_WhenTryIsFailure() {
     Exception initialException = new("Initial exception");
     Try<int> tryResult = Try<int>.Failure(initialException);
 
@@ -175,5 +174,17 @@ public class TryTests {
 
     Assert.True(filteredResult.IsFailure);
     Assert.Equal(initialException, filteredResult.Error);
+  }
+
+  [Fact]
+  public void Filter_PropagatesException_WhenPredicateThrowsException() {
+    const int validValue = 5;
+    Try<int> tryResult = Try<int>.Success(validValue);
+    Exception exception = new("Test exception");
+
+    void Act() => tryResult.Filter(_ => throw exception);
+    
+    Exception ex = Assert.Throws<Exception>(Act);
+    Assert.Equal(exception, ex);
   }
 }
