@@ -44,6 +44,10 @@ public readonly struct Try<T> {
   }
 
   public Try<T> Filter(Func<T, bool> predicate) {
+    if (IsFailure) {
+      return this;
+    }
+    
     return predicate(value) ? this : Failure(new FilterConditionNotMetException("Filter condition not met"));
   }
 

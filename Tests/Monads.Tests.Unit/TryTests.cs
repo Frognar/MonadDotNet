@@ -97,12 +97,13 @@ public class TryTests {
     const int validValue = 5;
     Try<int> tryResult = Try<int>.Success(validValue);
 
-    Try<string> Func(int _) => throw new Exception("Test exception");
+    Exception exception = new("Test exception");
+    Try<string> Func(int _) => throw exception;
     Try<string> flatMappedResult = tryResult.FlatMap(Func);
 
     Assert.False(flatMappedResult.IsSuccess);
     Assert.Throws<InvalidOperationException>(() => { _ = flatMappedResult.Value; });
-    Assert.Equal("Test exception", flatMappedResult.Error.Message);
+    Assert.Equal(exception, flatMappedResult.Error);
   }
 
   [Fact]
@@ -110,7 +111,7 @@ public class TryTests {
     const int validValue = 5;
     Try<int> tryResult = Try<int>.Success(validValue);
 
-    Try<int> recoveredResult = tryResult.Recover(ex => 0);
+    Try<int> recoveredResult = tryResult.Recover(_ => 0);
 
     Assert.True(recoveredResult.IsSuccess);
     Assert.Equal(validValue, recoveredResult.Value);
@@ -122,7 +123,7 @@ public class TryTests {
     Try<int> tryResult = Try<int>.Failure(exception);
 
     const int recoverValue = 0;
-    Try<int> recoveredResult = tryResult.Recover(ex => recoverValue);
+    Try<int> recoveredResult = tryResult.Recover(_ => recoverValue);
 
     Assert.True(recoveredResult.IsSuccess);
     Assert.Equal(recoverValue, recoveredResult.Value);
@@ -162,5 +163,17 @@ public class TryTests {
 
     Assert.True(filteredResult.IsFailure);
     Assert.Throws<InvalidOperationException>(() => { _ = filteredResult.Value; });
+  }
+  
+  [Fact]
+  public void Filter_PropagatesError_WhenTryIsFailure()
+  {
+    Exception initialException = new("Initial exception");
+    Try<int> tryResult = Try<int>.Failure(initialException);
+
+    Try<int> filteredResult = tryResult.Filter(value => value > 0);
+
+    Assert.True(filteredResult.IsFailure);
+    Assert.Equal(initialException, filteredResult.Error);
   }
 }
