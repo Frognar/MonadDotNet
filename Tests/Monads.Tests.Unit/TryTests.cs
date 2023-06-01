@@ -261,4 +261,15 @@ public class TryTests {
 
     Assert.Equal(validValue, orResult);
   }
+
+  [Fact]
+  public void Or_ReturnsAlternativeValue_WhenTryIsFailure() {
+    Exception exception = new("Test exception");
+    Try<int> tryResult = Try<int>.Failure(exception);
+    const int alternativeValue = 5;
+
+    int orResult = tryResult.Or(alternativeValue);
+
+    Assert.Equal(alternativeValue, orResult);
+  }
 }
