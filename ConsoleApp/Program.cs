@@ -1,15 +1,5 @@
 ﻿using Frognar.Monads;
 
-int result = 2
-  .Run(AddOne)
-  .Run(Square)
-  .Value;
-
-Console.WriteLine(result);
-
-Maybe<int> AddOne(int x) => x + 1;
-Maybe<int> Square(int x) => x * x;
-
 Logged<int> loggedResult = 2
   .RunWithLogs(AddOneWithLog)
   .RunWithLogs(SquareWithLog);
