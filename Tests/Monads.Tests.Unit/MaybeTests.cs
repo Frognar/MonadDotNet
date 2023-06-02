@@ -79,4 +79,16 @@ public class MaybeTests {
     Assert.False(filtered.HasValue);
     Assert.Throws<InvalidOperationException>(() => { _ = filtered.Value; });
   }
+
+  [Fact]
+  public void Or_WithJust_DoesNotReturnAlternative() {
+    const int originalValue = 5;
+    const int alternativeValue = 10;
+
+    Maybe<int> maybe = Maybe<int>.From(originalValue);
+    Maybe<int> result = maybe.Or(Maybe<int>.From(alternativeValue));
+
+    Assert.True(result.HasValue);
+    Assert.Equal(originalValue, result.Value);
+  }
 }

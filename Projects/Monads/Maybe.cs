@@ -19,6 +19,10 @@ public readonly struct Maybe<T> {
   public Maybe<T> Filter(Func<T, bool> predicate) {
     return HasValue && predicate(value) ? this : None;
   }
+
+  public Maybe<T> Or(Maybe<T> alternative) {
+    return this;
+  }
   
   public static Maybe<T> From(T value) {
     return new Maybe<T>(value);
