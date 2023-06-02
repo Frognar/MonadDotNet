@@ -15,6 +15,10 @@ public readonly struct Maybe<T> {
   public Maybe<U> Map<U>(Func<T, U> f) {
     return HasValue ? Maybe<U>.From(f(value)) : Maybe<U>.None;
   }
+
+  public Maybe<T> Filter(Func<T, bool> predicate) {
+    return this;
+  }
   
   public static Maybe<T> From(T value) {
     return new Maybe<T>(value);

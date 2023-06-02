@@ -48,4 +48,15 @@ public class MaybeTests {
     Assert.False(mapped.HasValue);
     Assert.Throws<InvalidOperationException>(() => { _ = mapped.Value; });
   }
+
+  [Fact]
+  public void Filter_WithMatchingValue_ReturnsJust() {
+    const int originalValue = 5;
+
+    Maybe<int> maybe = Maybe<int>.From(originalValue);
+    Maybe<int> filtered = maybe.Filter(_ => true);
+
+    Assert.True(filtered.HasValue);
+    Assert.Equal(originalValue, filtered.Value);
+  }
 }
