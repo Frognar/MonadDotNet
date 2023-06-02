@@ -25,7 +25,7 @@ public readonly struct Maybe<T> {
   }
 
   public T Or(T alternative) {
-    return value;
+    return HasValue ? value : alternative;
   }
   
   public static Maybe<T> From(T value) {
