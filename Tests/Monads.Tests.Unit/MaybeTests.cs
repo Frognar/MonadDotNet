@@ -34,9 +34,18 @@ public class MaybeTests {
     const int originalValue = 5;
 
     Maybe<int> maybe = Maybe<int>.From(originalValue);
-    Maybe<string> mapped = maybe.Map<string>(value => value.ToString());
+    Maybe<string> mapped = maybe.Map(value => value.ToString());
 
     Assert.True(mapped.HasValue);
     Assert.Equal(originalValue.ToString(), mapped.Value);
+  }
+
+  [Fact]
+  public void Map_WithNone_DoesNotTransform() {
+    Maybe<int> maybe = Maybe<int>.None;
+    Maybe<string> mapped = maybe.Map(value => value.ToString());
+
+    Assert.False(mapped.HasValue);
+    Assert.Throws<InvalidOperationException>(() => { _ = mapped.Value; });
   }
 }

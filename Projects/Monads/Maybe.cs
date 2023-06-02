@@ -13,7 +13,7 @@ public readonly struct Maybe<T> {
   }
 
   public Maybe<U> Map<U>(Func<T, U> f) {
-    return Maybe<U>.From(f(value));
+    return HasValue ? Maybe<U>.From(f(value)) : Maybe<U>.None;
   }
   
   public static Maybe<T> From(T value) {
