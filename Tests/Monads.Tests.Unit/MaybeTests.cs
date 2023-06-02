@@ -91,4 +91,15 @@ public class MaybeTests {
     Assert.True(result.HasValue);
     Assert.Equal(originalValue, result.Value);
   }
+
+  [Fact]
+  public void Or_WithNone_ReturnsAlternative() {
+    Maybe<int> maybe = Maybe<int>.None;
+    const int alternativeValue = 5;
+
+    Maybe<int> result = maybe.Or(Maybe<int>.From(alternativeValue));
+
+    Assert.True(result.HasValue);
+    Assert.Equal(alternativeValue, result.Value);
+  }
 }
