@@ -17,7 +17,7 @@ public readonly struct Maybe<T> {
   }
 
   public Maybe<T> Filter(Func<T, bool> predicate) {
-    return this;
+    return predicate(value) ? this : None;
   }
   
   public static Maybe<T> From(T value) {

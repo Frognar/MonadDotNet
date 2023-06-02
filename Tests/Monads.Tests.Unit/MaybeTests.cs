@@ -59,4 +59,15 @@ public class MaybeTests {
     Assert.True(filtered.HasValue);
     Assert.Equal(originalValue, filtered.Value);
   }
+
+  [Fact]
+  public void Filter_WithNonMatchingValue_ReturnsNone() {
+    const int originalValue = 5;
+
+    Maybe<int> maybe = Maybe<int>.From(originalValue);
+    Maybe<int> filtered = maybe.Filter(_ => false);
+
+    Assert.False(filtered.HasValue);
+    Assert.Throws<InvalidOperationException>(() => { _ = filtered.Value; });
+  }
 }
