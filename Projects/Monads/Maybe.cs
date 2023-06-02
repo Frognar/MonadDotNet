@@ -1,13 +1,15 @@
 ﻿namespace Frognar.Monads; 
 
 public readonly struct Maybe<T> {
-  public bool HasValue => true;
-  public int Value => 5;
-  
-  Maybe(int value) {
+  public bool HasValue { get; }
+  public T Value { get; }
+
+  Maybe(T value) {
+    Value = value;
+    HasValue = value is not null;
   }
 
-  public static Maybe<int> From(int value) {
-    return new Maybe<int>(value);
+  public static Maybe<T> From(T value) {
+    return new Maybe<T>(value);
   }
 }
