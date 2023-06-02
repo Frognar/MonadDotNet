@@ -23,6 +23,10 @@ public readonly struct Maybe<T> {
   public Maybe<T> Or(Maybe<T> alternative) {
     return HasValue ? this : alternative;
   }
+
+  public T Or(T alternative) {
+    return value;
+  }
   
   public static Maybe<T> From(T value) {
     return new Maybe<T>(value);
