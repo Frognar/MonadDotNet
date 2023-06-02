@@ -11,6 +11,10 @@ public readonly struct Maybe<T> {
     this.value = value;
     HasValue = value is not null;
   }
+
+  public Maybe<U> Map<U>(Func<T, U> f) {
+    return Maybe<U>.From(f(value));
+  }
   
   public static Maybe<T> From(T value) {
     return new Maybe<T>(value);

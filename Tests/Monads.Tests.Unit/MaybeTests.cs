@@ -28,4 +28,15 @@ public class MaybeTests {
     Assert.False(maybe.HasValue);
     Assert.Throws<InvalidOperationException>(() => { _ = maybe.Value; });
   }
+  
+  [Fact]
+  public void Map_WithNonNullValue_TransformsValue() {
+    const int originalValue = 5;
+
+    Maybe<int> maybe = Maybe<int>.From(originalValue);
+    Maybe<string> mapped = maybe.Map<string>(value => value.ToString());
+
+    Assert.True(mapped.HasValue);
+    Assert.Equal(originalValue.ToString(), mapped.Value);
+  }
 }
