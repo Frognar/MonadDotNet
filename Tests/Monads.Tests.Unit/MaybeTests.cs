@@ -20,4 +20,12 @@ public class MaybeTests {
     Assert.False(maybe.HasValue);
     Assert.Throws<InvalidOperationException>(() => { _ = maybe.Value; });
   }
+
+  [Fact]
+  public void FromMethod_WithNullValue_ReturnsMaybeNone() {
+    Maybe<object> maybe = Maybe<object>.From(null!);
+
+    Assert.False(maybe.HasValue);
+    Assert.Throws<InvalidOperationException>(() => { _ = maybe.Value; });
+  }
 }
