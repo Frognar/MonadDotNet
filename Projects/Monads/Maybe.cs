@@ -3,7 +3,7 @@
 namespace Frognar.Monads; 
 
 public readonly struct Maybe<T> {
-  readonly T value;
+  readonly T value = default!;
   public bool HasValue { get; }
   public T Value => HasValue ? value : throw new InvalidOperationException("Cannot access the value of a None.");
 
@@ -17,7 +17,7 @@ public readonly struct Maybe<T> {
   }
 
   public Maybe<T> Filter(Func<T, bool> predicate) {
-    return predicate(value) ? this : None;
+    return HasValue && predicate(value) ? this : None;
   }
   
   public static Maybe<T> From(T value) {

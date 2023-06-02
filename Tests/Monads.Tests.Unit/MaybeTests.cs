@@ -70,4 +70,13 @@ public class MaybeTests {
     Assert.False(filtered.HasValue);
     Assert.Throws<InvalidOperationException>(() => { _ = filtered.Value; });
   }
+
+  [Fact]
+  public void Filter_WithNone_ReturnsNone() {
+    Maybe<string> maybe = Maybe<string>.None;
+    Maybe<string> filtered = maybe.Filter(value => value.Length > 0);
+
+    Assert.False(filtered.HasValue);
+    Assert.Throws<InvalidOperationException>(() => { _ = filtered.Value; });
+  }
 }
