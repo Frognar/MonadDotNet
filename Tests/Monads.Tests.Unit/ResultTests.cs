@@ -21,4 +21,13 @@ public class ResultTests {
     result.IsSuccess.Should().BeFalse();
     result.Error.Should().Be(error);
   }
+
+  [Fact]
+  public void ThrowsExceptionWhenAccessingValueOnFailure() {
+    Exception error = new("test error");
+    Result<string> result = Result<string>.Fail(error);
+    Action act = () => _ = result.Value;
+
+    act.Should().Throw<InvalidOperationException>();
+  }
 }

@@ -3,18 +3,19 @@
 namespace Frognar.Monads; 
 
 public readonly struct Result<T> {
-  public T Value { get; }
+  readonly T value;
+  public T Value => IsSuccess ? value : throw new InvalidOperationException("Result does not contain a value.");
   public Exception Error { get; }
   public bool IsSuccess { get; }
   
   Result(T value) {
-    Value = value;
+    this.value = value;
     IsSuccess = true;
     Error = null!;
   }
   
   Result(Exception error) {
-    Value = default!;
+    value = default!;
     IsSuccess = false;
     Error = error;
   }
