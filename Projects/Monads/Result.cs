@@ -31,4 +31,8 @@ public readonly struct Result<T> {
 
   public static Result<T> Ok(T value) => new(value);
   public static Result<T> Fail(Exception error) => new(error);
+
+  public U Match<U>(Func<T, U> onSuccess, Func<Exception, U> onFailure) {
+    return IsSuccess ? onSuccess(value) : onFailure(error);
+  }
 }

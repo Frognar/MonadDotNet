@@ -112,4 +112,50 @@ public class ResultTests {
     _ = initialResult.Map(MapFunc);
     wasInvoked.Should().BeFalse();
   }
+
+  [Fact]
+  public void MatchInvokesSuccessFunctionOnSuccess() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+    bool wasSuccessInvoked = false;
+    bool wasFailureInvoked = false;
+
+    int OnSuccess(string value) {
+      wasSuccessInvoked = true;
+      return value.Length;
+    }
+
+    int OnFailure(Exception error) {
+      wasFailureInvoked = true;
+      return error.Message.Length;
+    }
+
+    int matchResult = initialResult.Match(OnSuccess, OnFailure);
+
+    wasSuccessInvoked.Should().BeTrue();
+    wasFailureInvoked.Should().BeFalse();
+    matchResult.Should().Be(initialResult.Value.Length);
+  }
+
+  [Fact]
+  public void MatchInvokesFailureFunctionOnFailure() {
+    Result<string> initialResult = Result<string>.Fail(new Exception("test error"));
+    bool wasSuccessInvoked = false;
+    bool wasFailureInvoked = false;
+
+    int OnSuccess(string value) {
+      wasSuccessInvoked = true;
+      return value.Length;
+    }
+
+    int OnFailure(Exception error) {
+      wasFailureInvoked = true;
+      return error.Message.Length;
+    }
+
+    int matchResult = initialResult.Match(OnSuccess, OnFailure);
+
+    wasSuccessInvoked.Should().BeFalse();
+    wasFailureInvoked.Should().BeTrue();
+    matchResult.Should().Be(initialResult.Error.Message.Length);
+  }
 }
