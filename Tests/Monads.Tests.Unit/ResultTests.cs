@@ -98,4 +98,18 @@ public class ResultTests {
     mappedResult.IsSuccess.Should().BeFalse();
     mappedResult.Error.Should().Be(initialResult.Error);
   }
+
+  [Fact]
+  public void MapDoesNotInvokeFunctionOnFailure() {
+    Result<string> initialResult = Result<string>.Fail(new Exception("test error"));
+    bool wasInvoked = false;
+
+    int MapFunc(string str) {
+      wasInvoked = true;
+      return 1;
+    }
+
+    _ = initialResult.Map(MapFunc);
+    wasInvoked.Should().BeFalse();
+  }
 }
