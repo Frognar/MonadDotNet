@@ -1,4 +1,5 @@
-﻿using Frognar.Monads;
+﻿using FluentAssertions;
+using Frognar.Monads;
 
 namespace Monads.Tests.Unit;
 
@@ -8,8 +9,8 @@ public class ResultTests {
     const string value = "test value";
     Result<string> result = Result<string>.Ok(value);
 
-    Assert.True(result.IsSuccess);
-    Assert.Equal(value, result.Value);
+    result.IsSuccess.Should().BeTrue();
+    result.Value.Should().Be(value);
   }
 
   [Fact]
@@ -17,7 +18,7 @@ public class ResultTests {
     Exception error = new("test error");
     Result<string> result = Result<string>.Fail(error);
 
-    Assert.False(result.IsSuccess);
-    Assert.Equal(error, result.Error);
+    result.IsSuccess.Should().BeFalse();
+    result.Error.Should().Be(error);
   }
 }
