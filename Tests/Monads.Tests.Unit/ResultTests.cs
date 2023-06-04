@@ -39,4 +39,16 @@ public class ResultTests {
 
     act.Should().Throw<InvalidOperationException>();
   }
+
+  [Fact]
+  public void ThenReturnsSuccessWhenBothResultsAreSuccessful() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+    Result<int> nextResult = Result<int>.Ok(123);
+    Result<int> TransformToInt(string _) => nextResult;
+
+    Result<int> finalResult = initialResult.Then(TransformToInt);
+
+    finalResult.IsSuccess.Should().BeTrue();
+    finalResult.Value.Should().Be(nextResult.Value);
+  }
 }

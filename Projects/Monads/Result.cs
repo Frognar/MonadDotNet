@@ -21,6 +21,10 @@ public readonly struct Result<T> {
     this.error = error;
   }
 
+  public Result<U> Then<U>(Func<T, Result<U>> f) {
+    return f(value);
+  }
+
   public static Result<T> Ok(T value) => new(value);
   public static Result<T> Fail(Exception error) => new(error);
 }
