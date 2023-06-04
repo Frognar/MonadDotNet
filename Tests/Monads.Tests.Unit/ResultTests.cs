@@ -51,4 +51,16 @@ public class ResultTests {
     finalResult.IsSuccess.Should().BeTrue();
     finalResult.Value.Should().Be(nextResult.Value);
   }
+
+  [Fact]
+  public void ThenReturnsFailureWhenInitialResultIsFailure() {
+    Result<string> initialResult = Result<string>.Fail(new Exception("initial error"));
+    Result<int> nextResult = Result<int>.Ok(123);
+    Result<int> TransformToInt(string _) => nextResult;
+
+    Result<int> finalResult = initialResult.Then((Func<string, Result<int>>)TransformToInt);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().Be(initialResult.Error);
+  }
 }

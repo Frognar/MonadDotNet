@@ -22,7 +22,7 @@ public readonly struct Result<T> {
   }
 
   public Result<U> Then<U>(Func<T, Result<U>> f) {
-    return f(value);
+    return IsSuccess ? f(value) : Result<U>.Fail(error);
   }
 
   public static Result<T> Ok(T value) => new(value);
