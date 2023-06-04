@@ -63,4 +63,28 @@ public class ResultTests {
     finalResult.IsSuccess.Should().BeFalse();
     finalResult.Error.Should().Be(initialResult.Error);
   }
+
+  [Fact]
+  public void ThenReturnsFailureWhenNextResultIsFailure() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+    Result<int> nextResult = Result<int>.Fail(new Exception("next error"));
+    Result<int> TransformToIntError(string _) => nextResult;
+
+    Result<int> finalResult = initialResult.Then(TransformToIntError);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().Be(nextResult.Error);
+  }
+
+  [Fact]
+  public void MapTransformsValueOnSuccess() {
+    Result<string> initialResult = Result<string>.Ok("one");
+    const int result = 1;
+    int MapFunc(string str) => result;
+
+    Result<int> mappedResult = initialResult.Map(MapFunc);
+
+    mappedResult.IsSuccess.Should().BeTrue();
+    mappedResult.Value.Should().Be(result);
+  }
 }
