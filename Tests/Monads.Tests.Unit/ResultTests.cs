@@ -11,4 +11,13 @@ public class ResultTests {
     Assert.True(result.IsSuccess);
     Assert.Equal(value, result.Value);
   }
+
+  [Fact]
+  public void ReturnsFailureWhenErrorIsProvided() {
+    Exception error = new("test error");
+    Result<string> result = Result<string>.Fail(error);
+
+    Assert.False(result.IsSuccess);
+    Assert.Equal(error, result.Error);
+  }
 }
