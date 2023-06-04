@@ -87,4 +87,15 @@ public class ResultTests {
     mappedResult.IsSuccess.Should().BeTrue();
     mappedResult.Value.Should().Be(result);
   }
+
+  [Fact]
+  public void MapPreservesErrorOnFailure() {
+    Result<string> initialResult = Result<string>.Fail(new Exception("test error"));
+    int MapFunc(string str) => 1;
+
+    Result<int> mappedResult = initialResult.Map(MapFunc);
+
+    mappedResult.IsSuccess.Should().BeFalse();
+    mappedResult.Error.Should().Be(initialResult.Error);
+  }
 }

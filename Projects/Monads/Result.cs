@@ -26,7 +26,7 @@ public readonly struct Result<T> {
   }
 
   public Result<U> Map<U>(Func<T, U> f) {
-    return Result<U>.Ok(f(value));
+    return IsSuccess ? Result<U>.Ok(f(value)) : Result<U>.Fail(error);
   }
 
   public static Result<T> Ok(T value) => new(value);
