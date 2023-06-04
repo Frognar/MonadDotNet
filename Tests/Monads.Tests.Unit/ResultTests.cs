@@ -30,4 +30,13 @@ public class ResultTests {
 
     act.Should().Throw<InvalidOperationException>();
   }
+
+  [Fact]
+  public void ThrowsExceptionWhenAccessingErrorOnSuccess() {
+    const string value = "test value";
+    Result<string> result = Result<string>.Ok(value);
+    Action act = () => _ = result.Error;
+
+    act.Should().Throw<InvalidOperationException>();
+  }
 }

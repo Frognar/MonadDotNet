@@ -4,20 +4,21 @@ namespace Frognar.Monads;
 
 public readonly struct Result<T> {
   readonly T value;
+  readonly Exception error;
   public T Value => IsSuccess ? value : throw new InvalidOperationException("Result does not contain a value.");
-  public Exception Error { get; }
+  public Exception Error => IsSuccess ? throw new InvalidOperationException("Result does not contain an error.") : error;
   public bool IsSuccess { get; }
   
   Result(T value) {
     this.value = value;
     IsSuccess = true;
-    Error = null!;
+    error = null!;
   }
   
   Result(Exception error) {
     value = default!;
     IsSuccess = false;
-    Error = error;
+    this.error = error;
   }
 
   public static Result<T> Ok(T value) => new(value);
