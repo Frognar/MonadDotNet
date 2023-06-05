@@ -158,4 +158,18 @@ public class ResultTests {
     wasFailureInvoked.Should().BeTrue();
     matchResult.Should().Be(initialResult.Error.Message.Length);
   }
+
+  [Fact]
+  public void OnSuccessInvokesActionOnSuccess() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+    bool wasActionInvoked = false;
+
+    void Action(string value) {
+      wasActionInvoked = true;
+    }
+
+    initialResult.OnSuccess(Action);
+
+    wasActionInvoked.Should().BeTrue();
+  }
 }

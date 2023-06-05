@@ -29,10 +29,14 @@ public readonly struct Result<T> {
     return IsSuccess ? Result<U>.Ok(f(value)) : Result<U>.Fail(error);
   }
 
-  public static Result<T> Ok(T value) => new(value);
-  public static Result<T> Fail(Exception error) => new(error);
-
   public U Match<U>(Func<T, U> onSuccess, Func<Exception, U> onFailure) {
     return IsSuccess ? onSuccess(value) : onFailure(error);
   }
+
+  public void OnSuccess(Action<T> action) {
+    action(value);
+  }
+
+  public static Result<T> Ok(T value) => new(value);
+  public static Result<T> Fail(Exception error) => new(error);
 }
