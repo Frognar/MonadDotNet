@@ -172,4 +172,18 @@ public class ResultTests {
 
     wasActionInvoked.Should().BeTrue();
   }
+
+  [Fact]
+  public void OnSuccessDoesNotInvokeActionOnFailure() {
+    Result<string> initialResult = Result<string>.Fail(new Exception("test error"));
+    bool wasActionInvoked = false;
+
+    void Action(string value) {
+      wasActionInvoked = true;
+    }
+
+    initialResult.OnSuccess(Action);
+
+    wasActionInvoked.Should().BeFalse();
+  }
 }

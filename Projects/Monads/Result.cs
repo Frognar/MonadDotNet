@@ -34,7 +34,9 @@ public readonly struct Result<T> {
   }
 
   public void OnSuccess(Action<T> action) {
-    action(value);
+    if (IsSuccess) {
+      action(value);
+    }
   }
 
   public static Result<T> Ok(T value) => new(value);
