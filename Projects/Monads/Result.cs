@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Frognar.Monads; 
 
@@ -27,6 +28,10 @@ public readonly struct Result<T> {
 
   public Result<U> Map<U>(Func<T, U> f) {
     return IsSuccess ? Result<U>.Ok(f(value)) : Result<U>.Fail(error);
+  }
+
+  public async Task<Result<U>> MapAsync<U>(Func<T, Task<U>> f) {
+    return IsSuccess ? Result<U>.Ok(await f(value)) : Result<U>.Fail(error);
   }
 
   public U Match<U>(Func<T, U> onSuccess, Func<Exception, U> onFailure) {

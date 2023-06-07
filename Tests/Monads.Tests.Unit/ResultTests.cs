@@ -186,4 +186,52 @@ public class ResultTests {
 
     wasActionInvoked.Should().BeFalse();
   }
+
+  [Fact]
+  public async Task MapAsyncTransformsValueOnSuccess() {
+    Result<string> initialResult = Result<string>.Ok("one");
+    const int expectedResult = 1;
+
+    async Task<int> AsyncMapFunc(string str) {
+      await Task.Delay(1);
+      return expectedResult;
+    }
+
+    Result<int> mappedResult = await initialResult.MapAsync(AsyncMapFunc);
+
+    mappedResult.IsSuccess.Should().BeTrue();
+    mappedResult.Value.Should().Be(expectedResult);
+  }
+
+  [Fact]
+  public async Task MapAsyncPreservesErrorOnFailure() {
+    Exception initialError = new("test error");
+    Result<string> initialResult = Result<string>.Fail(initialError);
+
+    async Task<int> AsyncMapFunc(string str) {
+      await Task.Delay(1);
+      return 1;
+    }
+
+    Result<int> mappedResult = await initialResult.MapAsync(AsyncMapFunc);
+
+    mappedResult.IsSuccess.Should().BeFalse();
+    mappedResult.Error.Should().Be(initialError);
+  }
+
+  [Fact]
+  public async Task MapAsyncDoesNotInvokeFunctionOnFailure() {
+    Result<string> initialResult = Result<string>.Fail(new Exception("test error"));
+    bool wasInvoked = false;
+
+    async Task<int> AsyncMapFunc(string str) {
+      wasInvoked = true;
+      await Task.Delay(1);
+      return 1;
+    }
+
+    _ = await initialResult.MapAsync(AsyncMapFunc);
+
+    wasInvoked.Should().BeFalse();
+  }
 }
