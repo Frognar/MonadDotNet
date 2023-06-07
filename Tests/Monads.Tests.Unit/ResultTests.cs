@@ -252,4 +252,54 @@ public class ResultTests {
     result.IsSuccess.Should().BeFalse();
     result.Error.Should().Be(error);
   }
+
+  [Fact]
+  public async Task ThenAsyncReturnsSuccessWhenBothResultsAreSuccessful() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+    Result<int> nextResult = Result<int>.Ok(123);
+
+    async Task<Result<int>> AsyncTransformToInt(string _) {
+      await Task.Delay(1);
+      return nextResult;
+    }
+
+    Result<int> finalResult = await initialResult.ThenAsync(AsyncTransformToInt);
+
+    finalResult.IsSuccess.Should().BeTrue();
+    finalResult.Value.Should().Be(nextResult.Value);
+  }
+
+  [Fact]
+  public async Task ThenAsyncReturnsFailureWhenInitialResultIsFailure() {
+    Exception initialError = new("initial error");
+    Result<string> initialResult = Result<string>.Fail(initialError);
+    Result<int> nextResult = Result<int>.Ok(123);
+
+    async Task<Result<int>> AsyncTransformToInt(string _) {
+      await Task.Delay(1);
+      return nextResult;
+    }
+
+    Result<int> finalResult = await initialResult.ThenAsync(AsyncTransformToInt);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().Be(initialError);
+  }
+
+  [Fact]
+  public async Task ThenAsyncReturnsFailureWhenNextResultIsFailure() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+    Exception nextError = new("next error");
+    Result<int> nextResult = Result<int>.Fail(nextError);
+
+    async Task<Result<int>> AsyncTransformToIntError(string _) {
+      await Task.Delay(1);
+      return nextResult;
+    }
+
+    Result<int> finalResult = await initialResult.ThenAsync(AsyncTransformToIntError);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().Be(nextError);
+  }
 }

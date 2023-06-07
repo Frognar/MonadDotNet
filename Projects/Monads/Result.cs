@@ -26,6 +26,10 @@ public readonly struct Result<T> {
     return IsSuccess ? f(value) : Result<U>.Fail(error);
   }
 
+  public async Task<Result<U>> ThenAsync<U>(Func<T, Task<Result<U>>> f) {
+    return IsSuccess ? await f(value) : Result<U>.Fail(error);
+  }
+
   public Result<U> Map<U>(Func<T, U> f) {
     return IsSuccess ? Result<U>.Ok(f(value)) : Result<U>.Fail(error);
   }
