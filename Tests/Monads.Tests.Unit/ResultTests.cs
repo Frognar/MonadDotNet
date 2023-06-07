@@ -234,4 +234,13 @@ public class ResultTests {
 
     wasInvoked.Should().BeFalse();
   }
+  
+  [Fact]
+  public void ImplicitConversionFromTToResultProducesSuccess() {
+    const string value = "test value";
+    Result<string> result = value;
+
+    result.IsSuccess.Should().BeTrue();
+    result.Value.Should().Be(value);
+  }
 }
