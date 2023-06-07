@@ -42,6 +42,10 @@ public readonly struct Result<T> {
     return IsSuccess ? onSuccess(value) : onFailure(error);
   }
 
+  public async Task<U> MatchAsync<U>(Func<T, Task<U>> onSuccess, Func<Exception, Task<U>> onFailure) {
+    return IsSuccess ? await onSuccess(value) : await onFailure(error);
+  }
+
   public void OnSuccess(Action<T> action) {
     if (IsSuccess) {
       action(value);
