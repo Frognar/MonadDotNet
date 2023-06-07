@@ -234,7 +234,7 @@ public class ResultTests {
 
     wasInvoked.Should().BeFalse();
   }
-  
+
   [Fact]
   public void ImplicitConversionFromTToResultProducesSuccess() {
     const string value = "test value";
@@ -242,5 +242,14 @@ public class ResultTests {
 
     result.IsSuccess.Should().BeTrue();
     result.Value.Should().Be(value);
+  }
+
+  [Fact]
+  public void ImplicitConversionFromExceptionToResultProducesFailure() {
+    Exception error = new("test error");
+    Result<string> result = error;
+
+    result.IsSuccess.Should().BeFalse();
+    result.Error.Should().Be(error);
   }
 }

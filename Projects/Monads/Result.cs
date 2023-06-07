@@ -48,4 +48,5 @@ public readonly struct Result<T> {
   public static Result<T> Fail(Exception error) => new(error);
   
   public static implicit operator Result<T>(T value) => Ok(value);
+  public static implicit operator Result<T>(Exception value) => Fail(value);
 }
