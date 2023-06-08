@@ -22,11 +22,11 @@ public readonly struct Result<T> {
     this.error = error;
   }
 
-  public Result<U> Then<U>(Func<T, Result<U>> f) {
+  public Result<U> FlatMap<U>(Func<T, Result<U>> f) {
     return IsSuccess ? f(value) : Result<U>.Fail(error);
   }
 
-  public async Task<Result<U>> ThenAsync<U>(Func<T, Task<Result<U>>> f) {
+  public async Task<Result<U>> FlatMapAsync<U>(Func<T, Task<Result<U>>> f) {
     return IsSuccess ? await f(value) : Result<U>.Fail(error);
   }
 

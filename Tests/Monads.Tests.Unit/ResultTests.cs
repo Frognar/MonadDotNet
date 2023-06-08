@@ -41,36 +41,36 @@ public class ResultTests {
   }
 
   [Fact]
-  public void ThenReturnsSuccessWhenBothResultsAreSuccessful() {
+  public void FlatMapReturnsSuccessWhenBothResultsAreSuccessful() {
     Result<string> initialResult = Result<string>.Ok("test value");
     Result<int> nextResult = Result<int>.Ok(123);
     Result<int> TransformToInt(string _) => nextResult;
 
-    Result<int> finalResult = initialResult.Then(TransformToInt);
+    Result<int> finalResult = initialResult.FlatMap(TransformToInt);
 
     finalResult.IsSuccess.Should().BeTrue();
     finalResult.Value.Should().Be(nextResult.Value);
   }
 
   [Fact]
-  public void ThenReturnsFailureWhenInitialResultIsFailure() {
+  public void FlatMapReturnsFailureWhenInitialResultIsFailure() {
     Result<string> initialResult = Result<string>.Fail(new Exception("initial error"));
     Result<int> nextResult = Result<int>.Ok(123);
     Result<int> TransformToInt(string _) => nextResult;
 
-    Result<int> finalResult = initialResult.Then((Func<string, Result<int>>)TransformToInt);
+    Result<int> finalResult = initialResult.FlatMap((Func<string, Result<int>>)TransformToInt);
 
     finalResult.IsSuccess.Should().BeFalse();
     finalResult.Error.Should().Be(initialResult.Error);
   }
 
   [Fact]
-  public void ThenReturnsFailureWhenNextResultIsFailure() {
+  public void FlatMapReturnsFailureWhenNextResultIsFailure() {
     Result<string> initialResult = Result<string>.Ok("test value");
     Result<int> nextResult = Result<int>.Fail(new Exception("next error"));
     Result<int> TransformToIntError(string _) => nextResult;
 
-    Result<int> finalResult = initialResult.Then(TransformToIntError);
+    Result<int> finalResult = initialResult.FlatMap(TransformToIntError);
 
     finalResult.IsSuccess.Should().BeFalse();
     finalResult.Error.Should().Be(nextResult.Error);
@@ -254,7 +254,7 @@ public class ResultTests {
   }
 
   [Fact]
-  public async Task ThenAsyncReturnsSuccessWhenBothResultsAreSuccessful() {
+  public async Task FlatMapAsyncReturnsSuccessWhenBothResultsAreSuccessful() {
     Result<string> initialResult = Result<string>.Ok("test value");
     Result<int> nextResult = Result<int>.Ok(123);
 
@@ -263,14 +263,14 @@ public class ResultTests {
       return nextResult;
     }
 
-    Result<int> finalResult = await initialResult.ThenAsync(AsyncTransformToInt);
+    Result<int> finalResult = await initialResult.FlatMapAsync(AsyncTransformToInt);
 
     finalResult.IsSuccess.Should().BeTrue();
     finalResult.Value.Should().Be(nextResult.Value);
   }
 
   [Fact]
-  public async Task ThenAsyncReturnsFailureWhenInitialResultIsFailure() {
+  public async Task FlatMapAsyncReturnsFailureWhenInitialResultIsFailure() {
     Exception initialError = new("initial error");
     Result<string> initialResult = Result<string>.Fail(initialError);
     Result<int> nextResult = Result<int>.Ok(123);
@@ -280,14 +280,14 @@ public class ResultTests {
       return nextResult;
     }
 
-    Result<int> finalResult = await initialResult.ThenAsync(AsyncTransformToInt);
+    Result<int> finalResult = await initialResult.FlatMapAsync(AsyncTransformToInt);
 
     finalResult.IsSuccess.Should().BeFalse();
     finalResult.Error.Should().Be(initialError);
   }
 
   [Fact]
-  public async Task ThenAsyncReturnsFailureWhenNextResultIsFailure() {
+  public async Task FlatMapAsyncReturnsFailureWhenNextResultIsFailure() {
     Result<string> initialResult = Result<string>.Ok("test value");
     Exception nextError = new("next error");
     Result<int> nextResult = Result<int>.Fail(nextError);
@@ -297,7 +297,7 @@ public class ResultTests {
       return nextResult;
     }
 
-    Result<int> finalResult = await initialResult.ThenAsync(AsyncTransformToIntError);
+    Result<int> finalResult = await initialResult.FlatMapAsync(AsyncTransformToIntError);
 
     finalResult.IsSuccess.Should().BeFalse();
     finalResult.Error.Should().Be(nextError);
