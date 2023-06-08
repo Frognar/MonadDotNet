@@ -38,6 +38,22 @@ public readonly struct Result<T> {
     return IsSuccess ? Result<U>.Ok(await f(value)) : Result<U>.Fail(error);
   }
 
+  public Result<T> Filter(Func<T, bool> predicate) {
+    if (IsSuccess == false) {
+      return this;
+    }
+
+    return predicate(value) ? this : Fail(new InvalidOperationException("Predicate is not satisfied."));
+  }
+
+  public async Task<Result<T>> FilterAsync(Func<T, Task<bool>> predicate) {
+    if (IsSuccess == false) {
+      return this;
+    }
+
+    return await predicate(value) ? this : Fail(new InvalidOperationException("Predicate is not satisfied."));
+  }
+
   public U Match<U>(Func<T, U> onSuccess, Func<Exception, U> onFailure) {
     return IsSuccess ? onSuccess(value) : onFailure(error);
   }

@@ -386,4 +386,50 @@ public class ResultTests {
     finalResult.IsSuccess.Should().BeFalse();
     finalResult.Error.Should().Be(initialError);
   }
+
+  [Fact]
+  public async Task FilterAsyncPreservesSuccessWhenPredicateIsTrue() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+
+    async Task<bool> PredicateAsync(string value) {
+      await Task.Delay(1);
+      return value == "test value";
+    }
+
+    Result<string> finalResult = await initialResult.FilterAsync(PredicateAsync);
+
+    finalResult.IsSuccess.Should().BeTrue();
+    finalResult.Value.Should().Be(initialResult.Value);
+  }
+
+  [Fact]
+  public async Task FilterAsyncConvertsToFailureWhenPredicateIsFalse() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+
+    async Task<bool> PredicateAsync(string value) {
+      await Task.Delay(1);
+      return value != "test value";
+    }
+
+    Result<string> finalResult = await initialResult.FilterAsync(PredicateAsync);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().BeOfType<InvalidOperationException>();
+  }
+
+  [Fact]
+  public async Task FilterAsyncPreservesFailureRegardlessOfPredicate() {
+    Exception initialError = new Exception("initial error");
+    Result<string> initialResult = Result<string>.Fail(initialError);
+
+    async Task<bool> PredicateAsync(string value) {
+      await Task.Delay(1);
+      return true;
+    }
+
+    Result<string> finalResult = await initialResult.FilterAsync(PredicateAsync);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().Be(initialError);
+  }
 }
