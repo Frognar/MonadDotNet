@@ -352,4 +352,38 @@ public class ResultTests {
     wasFailureInvoked.Should().BeTrue();
     matchResult.Should().Be(initialResult.Error.Message.Length);
   }
+
+  [Fact]
+  public void FilterPreservesSuccessWhenPredicateIsTrue() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+    bool Predicate(string value) => value == "test value";
+
+    Result<string> finalResult = initialResult.Filter(Predicate);
+
+    finalResult.IsSuccess.Should().BeTrue();
+    finalResult.Value.Should().Be(initialResult.Value);
+  }
+
+  [Fact]
+  public void FilterConvertsToFailureWhenPredicateIsFalse() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+    bool Predicate(string value) => value != "test value";
+
+    Result<string> finalResult = initialResult.Filter(Predicate);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().BeOfType<InvalidOperationException>();
+  }
+
+  [Fact]
+  public void FilterPreservesFailureRegardlessOfPredicate() {
+    Exception initialError = new("initial error");
+    Result<string> initialResult = Result<string>.Fail(initialError);
+    bool Predicate(string value) => true;
+
+    Result<string> finalResult = initialResult.Filter(Predicate);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().Be(initialError);
+  }
 }
