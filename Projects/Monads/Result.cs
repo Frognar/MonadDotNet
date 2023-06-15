@@ -30,6 +30,10 @@ public readonly struct Result {
   public async Task<Result> FlatMapAsync(Func<Task<Result>> f) {
     return IsSuccess ? await f() : Fail(error);
   }
+
+  public T Match<T>(Func<T> onSuccess, Func<Exception, T> onFailure) {
+    return IsSuccess ? onSuccess() : onFailure(error);
+  }
 }
 
 public readonly struct Result<T> {

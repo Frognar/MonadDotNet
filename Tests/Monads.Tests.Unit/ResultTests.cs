@@ -109,4 +109,50 @@ public class ResultTests {
     finalResult.IsSuccess.Should().BeFalse();
     finalResult.Error.Should().Be(nextResult.Error);
   }
+
+  [Fact]
+  public void MatchInvokesSuccessFunctionOnSuccess() {
+    Result initialResult = Result.Ok();
+    bool wasSuccessInvoked = false;
+    bool wasFailureInvoked = false;
+
+    int OnSuccess() {
+      wasSuccessInvoked = true;
+      return 1;
+    }
+
+    int OnFailure(Exception error) {
+      wasFailureInvoked = true;
+      return error.Message.Length;
+    }
+
+    int matchResult = initialResult.Match(OnSuccess, OnFailure);
+
+    wasSuccessInvoked.Should().BeTrue();
+    wasFailureInvoked.Should().BeFalse();
+    matchResult.Should().Be(1);
+  }
+
+  [Fact]
+  public void MatchInvokesFailureFunctionOnFailure() {
+    Result initialResult = Result.Fail(new Exception("test error"));
+    bool wasSuccessInvoked = false;
+    bool wasFailureInvoked = false;
+
+    int OnSuccess() {
+      wasSuccessInvoked = true;
+      return 1;
+    }
+
+    int OnFailure(Exception error) {
+      wasFailureInvoked = true;
+      return error.Message.Length;
+    }
+
+    int matchResult = initialResult.Match(OnSuccess, OnFailure);
+
+    wasSuccessInvoked.Should().BeFalse();
+    wasFailureInvoked.Should().BeTrue();
+    matchResult.Should().Be(initialResult.Error.Message.Length);
+  }
 }
