@@ -4,13 +4,23 @@ using System.Threading.Tasks;
 namespace Frognar.Monads;
 
 public readonly struct Result {
+  readonly Exception error;
   public bool IsSuccess { get; }
+  public Exception Error => error;
   
   Result(bool isSuccess) {
     IsSuccess = isSuccess;
+    error = null!;
+  }
+  
+  Result(Exception error) {
+    IsSuccess = false;
+    this.error = error;
   }
 
   public static Result Ok() => new(true);
+
+  public static Result Fail(Exception error) => new(error);
 }
 
 public readonly struct Result<T> {

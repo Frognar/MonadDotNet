@@ -10,4 +10,13 @@ public class ResultTests {
 
     result.IsSuccess.Should().BeTrue();
   }
+
+  [Fact]
+  public void ReturnsFailureWhenErrorIsProvided() {
+    Exception error = new("test error");
+    Result result = Result.Fail(error);
+
+    result.IsSuccess.Should().BeFalse();
+    result.Error.Should().Be(error);
+  }
 }
