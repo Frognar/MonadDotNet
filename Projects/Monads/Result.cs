@@ -18,10 +18,6 @@ public readonly struct Result {
     this.error = error;
   }
 
-  public static Result Ok() => new(true);
-
-  public static Result Fail(Exception error) => new(error);
-
 
   public Result FlatMap(Func<Result> f) {
     return IsSuccess ? f() : Fail(error);
@@ -34,6 +30,10 @@ public readonly struct Result {
   public T Match<T>(Func<T> onSuccess, Func<Exception, T> onFailure) {
     return IsSuccess ? onSuccess() : onFailure(error);
   }
+
+  public static Result Ok() => new(true);
+  public static Result Fail(Exception error) => new(error);
+  public static implicit operator Result(Exception value) => Fail(value);
 }
 
 public readonly struct Result<T> {

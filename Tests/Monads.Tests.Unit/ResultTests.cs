@@ -155,4 +155,13 @@ public class ResultTests {
     wasFailureInvoked.Should().BeTrue();
     matchResult.Should().Be(initialResult.Error.Message.Length);
   }
+
+  [Fact]
+  public void ImplicitConversionFromExceptionToResult() {
+    Exception ex = new("Test exception");
+    Result result = ex;
+
+    result.IsSuccess.Should().BeFalse();
+    result.Error.Should().Be(ex);
+  }
 }
