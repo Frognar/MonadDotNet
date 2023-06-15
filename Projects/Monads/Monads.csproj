@@ -5,7 +5,7 @@
         <RootNamespace>Frognar.Monads</RootNamespace>
         <TargetFrameworks>net7.0;netstandard2.1</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.0.2</Version>
+        <Version>0.0.3</Version>
         <Authors>Frognar</Authors>
         <PackageProjectUrl>https://github.com/Frognar/MonadDotNet</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Frognar/MonadDotNet</RepositoryUrl>
