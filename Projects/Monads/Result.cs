@@ -21,6 +21,11 @@ public readonly struct Result {
   public static Result Ok() => new(true);
 
   public static Result Fail(Exception error) => new(error);
+
+
+  public Result FlatMap(Func<Result> f) {
+    return IsSuccess ? f() : Fail(error);
+  }
 }
 
 public readonly struct Result<T> {

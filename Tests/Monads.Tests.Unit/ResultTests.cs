@@ -27,4 +27,39 @@ public class ResultTests {
 
     act.Should().Throw<InvalidOperationException>();
   }
+
+  [Fact]
+  public void FlatMapReturnsSuccessWhenBothResultsAreSuccessful() {
+    Result initialResult = Result.Ok();
+    Result nextResult = Result.Ok();
+    Result TransformToNextResult() => nextResult;
+
+    Result finalResult = initialResult.FlatMap(TransformToNextResult);
+
+    finalResult.IsSuccess.Should().BeTrue();
+  }
+
+  [Fact]
+  public void FlatMapReturnsFailureWhenInitialResultIsFailure() {
+    Result initialResult = Result.Fail(new Exception("initial error"));
+    Result nextResult = Result.Ok();
+    Result TransformToNextResult() => nextResult;
+
+    Result finalResult = initialResult.FlatMap(TransformToNextResult);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().Be(initialResult.Error);
+  }
+
+  [Fact]
+  public void FlatMapReturnsFailureWhenNextResultIsFailure() {
+    Result initialResult = Result.Ok();
+    Result nextResult = Result.Fail(new Exception("next error"));
+    Result TransformToNextResultError() => nextResult;
+
+    Result finalResult = initialResult.FlatMap(TransformToNextResultError);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().Be(nextResult.Error);
+  }
 }
