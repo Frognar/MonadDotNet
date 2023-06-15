@@ -6,8 +6,8 @@ namespace Frognar.Monads;
 public readonly struct Result {
   readonly Exception error;
   public bool IsSuccess { get; }
-  public Exception Error => error;
-  
+  public Exception Error => IsSuccess ? throw new InvalidOperationException("Result does not contain an error.") : error;
+
   Result(bool isSuccess) {
     IsSuccess = isSuccess;
     error = null!;

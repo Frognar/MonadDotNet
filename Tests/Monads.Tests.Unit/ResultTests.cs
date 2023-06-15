@@ -19,4 +19,12 @@ public class ResultTests {
     result.IsSuccess.Should().BeFalse();
     result.Error.Should().Be(error);
   }
+
+  [Fact]
+  public void ThrowsExceptionWhenAccessingErrorOnSuccess() {
+    Result result = Result.Ok();
+    Action act = () => _ = result.Error;
+
+    act.Should().Throw<InvalidOperationException>();
+  }
 }
