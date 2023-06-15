@@ -1,7 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Frognar.Monads; 
+namespace Frognar.Monads;
+
+public readonly struct Result {
+  public bool IsSuccess { get; }
+  
+  Result(bool isSuccess) {
+    IsSuccess = isSuccess;
+  }
+
+  public static Result Ok() => new(true);
+}
 
 public readonly struct Result<T> {
   readonly T value;
