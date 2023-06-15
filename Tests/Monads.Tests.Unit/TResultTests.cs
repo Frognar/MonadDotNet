@@ -3,7 +3,7 @@ using Frognar.Monads;
 
 namespace Monads.Tests.Unit;
 
-public class ResultTests {
+public class TResultTests {
   [Fact]
   public void ReturnsSuccessWhenValueIsProvided() {
     const string value = "test value";
