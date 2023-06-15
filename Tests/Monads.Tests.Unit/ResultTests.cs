@@ -62,4 +62,51 @@ public class ResultTests {
     finalResult.IsSuccess.Should().BeFalse();
     finalResult.Error.Should().Be(nextResult.Error);
   }
+
+  [Fact]
+  public async Task FlatMapAsyncReturnsSuccessWhenBothResultsAreSuccessful() {
+    Result initialResult = Result.Ok();
+    Result nextResult = Result.Ok();
+
+    async Task<Result> TransformToNextResult() {
+      await Task.Delay(1);
+      return nextResult;
+    }
+
+    Result finalResult = await initialResult.FlatMapAsync(TransformToNextResult);
+
+    finalResult.IsSuccess.Should().BeTrue();
+  }
+
+  [Fact]
+  public async Task FlatMapAsyncReturnsFailureWhenInitialResultIsFailure() {
+    Result initialResult = Result.Fail(new Exception("initial error"));
+    Result nextResult = Result.Ok();
+
+    async Task<Result> TransformToNextResult() {
+      await Task.Delay(1);
+      return nextResult;
+    }
+
+    Result finalResult = await initialResult.FlatMapAsync(TransformToNextResult);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().Be(initialResult.Error);
+  }
+
+  [Fact]
+  public async Task FlatMapAsyncReturnsFailureWhenNextResultIsFailure() {
+    Result initialResult = Result.Ok();
+    Result nextResult = Result.Fail(new Exception("next error"));
+
+    async Task<Result> TransformToNextResultError() {
+      await Task.Delay(1);
+      return nextResult;
+    }
+
+    Result finalResult = await initialResult.FlatMapAsync(TransformToNextResultError);
+
+    finalResult.IsSuccess.Should().BeFalse();
+    finalResult.Error.Should().Be(nextResult.Error);
+  }
 }
