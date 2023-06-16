@@ -157,6 +157,56 @@ public class ResultTests {
   }
 
   [Fact]
+  public async Task MatchAsyncInvokesSuccessFunctionOnSuccess() {
+    Result initialResult = Result.Ok();
+    bool wasSuccessInvoked = false;
+    bool wasFailureInvoked = false;
+
+    async Task<int> OnSuccess() {
+      await Task.Delay(1);
+      wasSuccessInvoked = true;
+      return 1;
+    }
+
+    async Task<int> OnFailure(Exception error) {
+      await Task.Delay(1);
+      wasFailureInvoked = true;
+      return error.Message.Length;
+    }
+
+    int matchResult = await initialResult.MatchAsync(OnSuccess, OnFailure);
+
+    wasSuccessInvoked.Should().BeTrue();
+    wasFailureInvoked.Should().BeFalse();
+    matchResult.Should().Be(1);
+  }
+
+  [Fact]
+  public async Task MatchAsyncInvokesFailureFunctionOnFailure() {
+    Result initialResult = Result.Fail(new Exception("test error"));
+    bool wasSuccessInvoked = false;
+    bool wasFailureInvoked = false;
+
+    async Task<int> OnSuccess() {
+      await Task.Delay(1);
+      wasSuccessInvoked = true;
+      return 1;
+    }
+
+    async Task<int> OnFailure(Exception error) {
+      await Task.Delay(1);
+      wasFailureInvoked = true;
+      return error.Message.Length;
+    }
+
+    int matchResult = await initialResult.MatchAsync(OnSuccess, OnFailure);
+
+    wasSuccessInvoked.Should().BeFalse();
+    wasFailureInvoked.Should().BeTrue();
+    matchResult.Should().Be(initialResult.Error.Message.Length);
+  }
+
+  [Fact]
   public void ImplicitConversionFromExceptionToResult() {
     Exception ex = new("Test exception");
     Result result = ex;

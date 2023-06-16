@@ -31,6 +31,10 @@ public readonly struct Result {
     return IsSuccess ? onSuccess() : onFailure(error);
   }
 
+  public async Task<T> MatchAsync<T>(Func<Task<T>> onSuccess, Func<Exception,Task<T>> onFailure) {
+    return IsSuccess ? await onSuccess() : await onFailure(error);
+  }
+
   public static Result Ok() => new();
   public static Result Fail(Exception error) => new(error);
   public static implicit operator Result(Exception value) => Fail(value);
