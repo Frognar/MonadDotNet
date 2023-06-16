@@ -432,4 +432,34 @@ public class TResultTests {
     finalResult.IsSuccess.Should().BeFalse();
     finalResult.Error.Should().Be(initialError);
   }
+
+  [Fact]
+  public async Task OnSuccessAsyncInvokesActionOnSuccess() {
+    Result<string> initialResult = Result<string>.Ok("test value");
+    bool wasActionInvoked = false;
+
+    async Task Action(string value) {
+      await Task.Delay(1);
+      wasActionInvoked = true;
+    }
+
+    await initialResult.OnSuccessAsync(Action);
+
+    wasActionInvoked.Should().BeTrue();
+  }
+
+  [Fact]
+  public async Task OnSuccessAsyncDoesNotInvokeActionOnFailure() {
+    Result<string> initialResult = Result<string>.Fail(new Exception("test error"));
+    bool wasActionInvoked = false;
+
+    async Task Action(string value) {
+      await Task.Delay(1);
+      wasActionInvoked = true;
+    }
+
+    await initialResult.OnSuccessAsync(Action);
+
+    wasActionInvoked.Should().BeFalse();
+  }
 }

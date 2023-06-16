@@ -101,6 +101,12 @@ public readonly struct Result<T> {
     }
   }
 
+  public async Task OnSuccessAsync(Func<T, Task> action) {
+    if (IsSuccess) {
+      await action(value);
+    }
+  }
+
   public static Result<T> Ok(T value) => new(value);
   public static Result<T> Fail(Exception error) => new(error);
   
