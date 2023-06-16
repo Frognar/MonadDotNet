@@ -8,8 +8,8 @@ public readonly struct Result {
   public bool IsSuccess { get; }
   public Exception Error => IsSuccess ? throw new InvalidOperationException("Result does not contain an error.") : error;
 
-  Result(bool isSuccess) {
-    IsSuccess = isSuccess;
+  public Result() {
+    IsSuccess = true;
     error = null!;
   }
   
@@ -31,7 +31,7 @@ public readonly struct Result {
     return IsSuccess ? onSuccess() : onFailure(error);
   }
 
-  public static Result Ok() => new(true);
+  public static Result Ok() => new();
   public static Result Fail(Exception error) => new(error);
   public static implicit operator Result(Exception value) => Fail(value);
 }
