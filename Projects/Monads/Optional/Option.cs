@@ -15,6 +15,10 @@ public struct Option<T> : IEquatable<Option<T>> where T : class {
   public Option<TResult> Map<TResult>(Func<T, TResult> map) where TResult : class {
     return value is null ? Option<TResult>.None : Option<TResult>.Some(map(value));
   }
+  
+  public Option<TResult> FlatMap<TResult>(Func<T, Option<TResult>> map) where TResult : class {
+    return value is null ? Option<TResult>.None : map(value);
+  }
 
   public bool Equals(Option<T> other) {
     return value?.Equals(other.value) ?? other.value is null;
