@@ -27,4 +27,7 @@ public struct Option<T> : IEquatable<Option<T>> where T : class {
   public override int GetHashCode() {
     return value?.GetHashCode() ?? 0;
   }
+  
+  public static bool operator ==(Option<T>? a, Option<T>? b) => a is null ? b is null : a.Equals(b);
+  public static bool operator !=(Option<T>? a, Option<T>? b) => !(a == b);
 }
