@@ -60,4 +60,7 @@ public readonly struct ValueOption<T> : IEquatable<ValueOption<T>> where T : str
     {
         return obj is ValueOption<T> other && Equals(other);
     }
+  
+    public static bool operator ==(ValueOption<T> a, ValueOption<T> b) => a.Equals(b);
+    public static bool operator !=(ValueOption<T> a, ValueOption<T> b) => !(a == b);
 }
