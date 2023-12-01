@@ -56,6 +56,6 @@ public readonly struct Option<T> : IEquatable<Option<T>> where T : class {
     return obj is Option<T> other && Equals(other);
   }
   
-  public static bool operator ==(Option<T>? a, Option<T>? b) => a is null ? b is null : a.Equals(b);
+  public static bool operator ==(Option<T>? a, Option<T>? b) => a?.Equals(b) ?? b is null;
   public static bool operator !=(Option<T>? a, Option<T>? b) => !(a == b);
 }
