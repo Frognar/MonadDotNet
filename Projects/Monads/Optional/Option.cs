@@ -16,8 +16,16 @@ public readonly struct Option<T> : IEquatable<Option<T>> where T : class {
     return value is null ? Option<TResult>.None : Option<TResult>.Some(map(value));
   }
   
+  public ValueOption<TResult> MapValue<TResult>(Func<T, TResult> map) where TResult : struct {
+    return value is null ? ValueOption<TResult>.None : ValueOption<TResult>.Some(map(value));
+  }
+  
   public Option<TResult> FlatMap<TResult>(Func<T, Option<TResult>> map) where TResult : class {
     return value is null ? Option<TResult>.None : map(value);
+  }
+  
+  public ValueOption<TResult> FlatMapValue<TResult>(Func<T, ValueOption<TResult>> map) where TResult : struct {
+    return value is null ? ValueOption<TResult>.None : map(value);
   }
   
   public T Reduce(T defaultValue) {
