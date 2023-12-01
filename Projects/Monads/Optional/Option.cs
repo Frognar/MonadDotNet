@@ -27,6 +27,14 @@ public struct Option<T> : IEquatable<Option<T>> where T : class {
   public T Reduce(Func<T> defaultValue) {
     return value ?? defaultValue();
   }
+  
+  public Option<T> Where(Func<T, bool> predicate) {
+    return value is not null && predicate(value) ? this : None;
+  }
+  
+  public Option<T> WhereNot(Func<T, bool> predicate) {
+    return value is not null && !predicate(value) ? this : None;
+  }
 
   public override int GetHashCode() {
     return value?.GetHashCode() ?? 0;
