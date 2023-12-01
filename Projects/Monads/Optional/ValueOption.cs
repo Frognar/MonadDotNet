@@ -2,7 +2,7 @@
 
 namespace Frognar.Monads.Optional;
 
-public readonly struct ValueOption<T> where T : struct
+public readonly struct ValueOption<T> : IEquatable<ValueOption<T>> where T : struct
 {
     private readonly T? value;
 
@@ -44,5 +44,20 @@ public readonly struct ValueOption<T> where T : struct
   
     public ValueOption<T> WhereNot(Func<T, bool> predicate) {
         return value.HasValue && !predicate(value.Value) ? this : None;
+    }
+
+    public override int GetHashCode()
+    {
+        return value.GetHashCode();
+    }
+
+    public bool Equals(ValueOption<T> other)
+    {
+        return Nullable.Equals(value, other.value);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is ValueOption<T> other && Equals(other);
     }
 }
