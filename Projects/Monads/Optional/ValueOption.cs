@@ -29,4 +29,12 @@ public readonly struct ValueOption<T> where T : struct
     public ValueOption<TResult> FlatMapValue<TResult>(Func<T, ValueOption<TResult>> map) where TResult : struct {
         return value.HasValue == false ? ValueOption<TResult>.None : map(value.Value);
     }
+  
+    public T Reduce(T defaultValue) {
+        return value ?? defaultValue;
+    }
+  
+    public T Reduce(Func<T> defaultValue) {
+        return value ?? defaultValue();
+    }
 }
