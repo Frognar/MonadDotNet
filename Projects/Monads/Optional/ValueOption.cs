@@ -37,4 +37,12 @@ public readonly struct ValueOption<T> where T : struct
     public T Reduce(Func<T> defaultValue) {
         return value ?? defaultValue();
     }
+  
+    public ValueOption<T> Where(Func<T, bool> predicate) {
+        return value.HasValue && predicate(value.Value) ? this : None;
+    }
+  
+    public ValueOption<T> WhereNot(Func<T, bool> predicate) {
+        return value.HasValue && !predicate(value.Value) ? this : None;
+    }
 }
