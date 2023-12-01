@@ -2,8 +2,8 @@ using System;
 
 namespace Frognar.Monads.Optional;
 
-public struct Option<T> : IEquatable<Option<T>> where T : class {
-  T? value;
+public readonly struct Option<T> : IEquatable<Option<T>> where T : class {
+  readonly T? value;
 
   Option(T? value) {
     this.value = value;
