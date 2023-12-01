@@ -19,6 +19,18 @@ public struct Option<T> : IEquatable<Option<T>> where T : class {
   public Option<TResult> FlatMap<TResult>(Func<T, Option<TResult>> map) where TResult : class {
     return value is null ? Option<TResult>.None : map(value);
   }
+  
+  public T Reduce(T defaultValue) {
+    return value ?? defaultValue;
+  }
+  
+  public T Reduce(Func<T> defaultValue) {
+    return value ?? defaultValue();
+  }
+
+  public override int GetHashCode() {
+    return value?.GetHashCode() ?? 0;
+  }
 
   public bool Equals(Option<T> other) {
     return value?.Equals(other.value) ?? other.value is null;
@@ -26,10 +38,6 @@ public struct Option<T> : IEquatable<Option<T>> where T : class {
 
   public override bool Equals(object? obj) {
     return obj is Option<T> other && Equals(other);
-  }
-
-  public override int GetHashCode() {
-    return value?.GetHashCode() ?? 0;
   }
   
   public static bool operator ==(Option<T>? a, Option<T>? b) => a is null ? b is null : a.Equals(b);
