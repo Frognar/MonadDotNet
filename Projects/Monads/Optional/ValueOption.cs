@@ -15,7 +15,7 @@ public readonly struct ValueOption<T> : IEquatable<ValueOption<T>> where T : str
     public static ValueOption<T> None => new(null);
   
     public Option<TResult> Map<TResult>(Func<T, TResult> map) where TResult : class {
-        return value.HasValue == false ? Option<TResult>.None : Option<TResult>.Some(map(value.Value));
+        return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.Some(map(value.Value));
     }
   
     public ValueOption<TResult> MapValue<TResult>(Func<T, TResult> map) where TResult : struct {
@@ -23,7 +23,7 @@ public readonly struct ValueOption<T> : IEquatable<ValueOption<T>> where T : str
     }
   
     public Option<TResult> FlatMap<TResult>(Func<T, Option<TResult>> map) where TResult : class {
-        return value.HasValue == false ? Option<TResult>.None : map(value.Value);
+        return value.HasValue == false ? Option<TResult>.None() : map(value.Value);
     }
   
     public ValueOption<TResult> FlatMapValue<TResult>(Func<T, ValueOption<TResult>> map) where TResult : struct {
