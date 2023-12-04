@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Frognar.Monads.Results;
 
@@ -35,5 +36,13 @@ public readonly struct Result<T> where T : class {
   
   public static Result<T> Fail(List<Error> errors) {
     return new Result<T>(errors);
+  }
+  
+  public Result<TResult> Map<TResult>(Func<T, TResult> map) where TResult : class {
+    return isError ? Result<TResult>.Fail(errors!) : Result<TResult>.Ok(map(value!));
+  }
+  
+  public Result<TResult> FlatMap<TResult>(Func<T, Result<TResult>> map) where TResult : class {
+    return isError ? Result<TResult>.Fail(errors!) : map(value!);
   }
 }
