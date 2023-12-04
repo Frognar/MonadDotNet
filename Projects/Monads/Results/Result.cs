@@ -41,4 +41,8 @@ public readonly struct Result<T> where T : class {
   public Result<TResult> Map<TResult>(Func<T, TResult> map) where TResult : class {
     return isError ? Result<TResult>.Fail(errors!) : Result<TResult>.Ok(map(value!));
   }
+  
+  public Result<TResult> FlatMap<TResult>(Func<T, Result<TResult>> map) where TResult : class {
+    return isError ? Result<TResult>.Fail(errors!) : map(value!);
+  }
 }
