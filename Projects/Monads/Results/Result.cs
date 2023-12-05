@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Frognar.Monads.Results;
 
-public readonly struct Result<T> where T : class {
+public readonly struct Result<T> {
   readonly T? value;
   readonly List<Error>? errors;
   readonly bool isError;
@@ -38,11 +38,23 @@ public readonly struct Result<T> where T : class {
     return new Result<T>(errors);
   }
   
-  public Result<TResult> Map<TResult>(Func<T, TResult> map) where TResult : class {
+  public Result<TResult> Map<TResult>(Func<T, TResult> map) {
     return isError ? Result<TResult>.Fail(errors!) : Result<TResult>.Ok(map(value!));
   }
   
-  public Result<TResult> FlatMap<TResult>(Func<T, Result<TResult>> map) where TResult : class {
+  public Result<TResult> FlatMap<TResult>(Func<T, Result<TResult>> map) {
     return isError ? Result<TResult>.Fail(errors!) : map(value!);
+  }
+  
+  public void Switch(Action<T> onSuccess, Action<List<Error>> onFailure) {
+    if (isError) {
+      onFailure(errors!);
+    } else {
+      onSuccess(value!);
+    }
+  }
+  
+  public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<List<Error>, TResult> onFailure) {
+    return isError ? onFailure(errors!) : onSuccess(value!);
   }
 }
