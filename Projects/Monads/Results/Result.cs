@@ -53,4 +53,8 @@ public readonly struct Result<T> where T : class {
       onSuccess(value!);
     }
   }
+  
+  public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<List<Error>, TResult> onFailure) {
+    return isError ? onFailure(errors!) : onSuccess(value!);
+  }
 }
