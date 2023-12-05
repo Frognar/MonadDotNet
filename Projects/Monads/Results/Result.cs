@@ -45,4 +45,12 @@ public readonly struct Result<T> where T : class {
   public Result<TResult> FlatMap<TResult>(Func<T, Result<TResult>> map) where TResult : class {
     return isError ? Result<TResult>.Fail(errors!) : map(value!);
   }
+  
+  public void Switch(Action<T> onSuccess, Action<List<Error>> onFailure) {
+    if (isError) {
+      onFailure(errors!);
+    } else {
+      onSuccess(value!);
+    }
+  }
 }
