@@ -51,6 +51,11 @@ public readonly struct Result<T> {
     return isError ? Result<TResult>.Fail(errors!) : map(value!);
   }
   
+  public async Task<Result<TResult>> FlatMapAsync<TResult>(Func<T, Task<Result<TResult>>> map)
+  {
+    return isError ? Result<TResult>.Fail(errors!) : await map(value!).ConfigureAwait(false);
+  }
+  
   public void Switch(Action<T> onSuccess, Action<List<Error>> onFailure) {
     if (isError) {
       onFailure(errors!);
