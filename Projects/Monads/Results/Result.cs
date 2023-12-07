@@ -63,7 +63,15 @@ public readonly struct Result<T> {
       onSuccess(value!);
     }
   }
-  
+
+  public async Task SwitchAsync(Func<T, Task> onSuccess, Func<List<Error>, Task> onFailure) {
+    if (isError) {
+      await onFailure(errors!);
+    } else {
+      await onSuccess(value!);
+    }
+  }
+
   public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<List<Error>, TResult> onFailure) {
     return isError ? onFailure(errors!) : onSuccess(value!);
   }
