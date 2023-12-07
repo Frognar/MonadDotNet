@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Frognar.Monads.Results;
 
@@ -41,9 +42,18 @@ public readonly struct Result<T> {
   public Result<TResult> Map<TResult>(Func<T, TResult> map) {
     return isError ? Result<TResult>.Fail(errors!) : Result<TResult>.Ok(map(value!));
   }
+
+  public async Task<Result<TResult>> MapAsync<TResult>(Func<T, Task<TResult>> map) {
+      return isError ? Result<TResult>.Fail(errors!) : Result<TResult>.Ok(await map(value!).ConfigureAwait(false));
+  }
   
   public Result<TResult> FlatMap<TResult>(Func<T, Result<TResult>> map) {
     return isError ? Result<TResult>.Fail(errors!) : map(value!);
+  }
+  
+  public async Task<Result<TResult>> FlatMapAsync<TResult>(Func<T, Task<Result<TResult>>> map)
+  {
+    return isError ? Result<TResult>.Fail(errors!) : await map(value!).ConfigureAwait(false);
   }
   
   public void Switch(Action<T> onSuccess, Action<List<Error>> onFailure) {
