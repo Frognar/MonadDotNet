@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Frognar.Monads.Optional;
 
@@ -14,6 +15,10 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
 
   public IOption<TResult> Map<TResult>(Func<T, TResult> map) where TResult : class {
     return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.Some(map(value.Value));
+  }
+  
+  public async Task<IOption<TResult>> MapAsync<TResult>(Func<T, Task<TResult>> map) where TResult : class {
+    return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.Some(await map(value.Value).ConfigureAwait(false));
   }
 
   public IOption<TResult> MapValue<TResult>(Func<T, TResult> map) where TResult : struct {
