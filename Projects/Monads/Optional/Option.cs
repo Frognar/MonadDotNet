@@ -29,6 +29,10 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
   public IOption<TResult> MapValue<TResult>(Func<T, TResult> map) where TResult : struct {
     return value is null ? ValueOption<TResult>.None() : ValueOption<TResult>.Some(map(value));
   }
+  
+  public async Task<IOption<TResult>> MapValueAsync<TResult>(Func<T, Task<TResult>> map) where TResult : struct {
+    return value is null ? ValueOption<TResult>.None() : ValueOption<TResult>.Some(await map(value).ConfigureAwait(false));
+  }
 
   public IOption<TResult> FlatMap<TResult>(Func<T, IOption<TResult>> map) where TResult : class {
     return value is null ? Option<TResult>.None() : map(value);
