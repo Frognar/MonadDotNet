@@ -9,6 +9,7 @@ public interface IOption<T> {
   IOption<TResult> MapValue<TResult>(Func<T, TResult> map) where TResult : struct;
   Task<IOption<TResult>> MapValueAsync<TResult>(Func<T, Task<TResult>> map) where TResult : struct;
   IOption<TResult> FlatMap<TResult>(Func<T, IOption<TResult>> map) where TResult : class;
+  Task<IOption<TResult>> FlatMapAsync<TResult>(Func<T, Task<IOption<TResult>>> map) where TResult : class;
   IOption<TResult> FlatMapValue<TResult>(Func<T, IOption<TResult>> map) where TResult : struct;
   T Reduce(T defaultValue);
   T Reduce(Func<T> defaultValue);
