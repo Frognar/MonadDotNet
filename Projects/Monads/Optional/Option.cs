@@ -46,6 +46,10 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     return value is null ? ValueOption<TResult>.None() : map(value);
   }
 
+  public async Task<IOption<TResult>> FlatMapValueAsync<TResult>(Func<T, Task<IOption<TResult>>> map) where TResult : struct {
+    return value is null ? ValueOption<TResult>.None() : await map(value).ConfigureAwait(false);
+  }
+
   public T Reduce(T defaultValue) {
     return value ?? defaultValue;
   }
