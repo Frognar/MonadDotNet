@@ -14,6 +14,7 @@ public interface IOption<T> {
   Task<IOption<TResult>> FlatMapValueAsync<TResult>(Func<T, Task<IOption<TResult>>> map) where TResult : struct;
   T Reduce(T defaultValue);
   T Reduce(Func<T> defaultValue);
+  Task<T> ReduceAsync(Func<Task<T>> defaultValue);
   IOption<T> Where(Func<T, bool> predicate);
   IOption<T> WhereNot(Func<T, bool> predicate);
 }
