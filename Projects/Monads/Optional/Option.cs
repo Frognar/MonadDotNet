@@ -58,6 +58,10 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     return value ?? defaultValue();
   }
 
+  public async Task<T> ReduceAsync(Func<Task<T>> defaultValue) {
+    return value ?? await defaultValue();
+  }
+
   public IOption<T> Where(Func<T, bool> predicate) {
     return value is not null && predicate(value) ? this : None();
   }
