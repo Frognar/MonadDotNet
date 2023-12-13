@@ -66,6 +66,10 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     return value is not null && predicate(value) ? this : None();
   }
 
+  public async Task<IOption<T>> WhereAsync(Func<T, Task<bool>> predicate) {
+    return value is not null && await predicate(value) ? this : None();
+  }
+
   public IOption<T> WhereNot(Func<T, bool> predicate) {
     return value is not null && !predicate(value) ? this : None();
   }
