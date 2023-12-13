@@ -61,6 +61,10 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
     return value.HasValue && predicate(value.Value) ? this : None();
   }
 
+  public async Task<IOption<T>> WhereAsync(Func<T, Task<bool>> predicate) {
+    return value.HasValue && await predicate(value.Value) ? this : None();
+  }
+
   public IOption<T> WhereNot(Func<T, bool> predicate) {
     return value.HasValue && !predicate(value.Value) ? this : None();
   }
