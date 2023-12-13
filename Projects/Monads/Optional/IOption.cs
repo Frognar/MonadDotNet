@@ -16,5 +16,6 @@ public interface IOption<T> {
   T Reduce(Func<T> defaultValue);
   Task<T> ReduceAsync(Func<Task<T>> defaultValue);
   IOption<T> Where(Func<T, bool> predicate);
+  Task<IOption<T>> WhereAsync(Func<T, Task<bool>> predicate);
   IOption<T> WhereNot(Func<T, bool> predicate);
 }
