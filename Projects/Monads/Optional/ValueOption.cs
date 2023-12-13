@@ -49,6 +49,10 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
     return value ?? defaultValue;
   }
 
+  public async Task<T> ReduceAsync(Func<Task<T>> defaultValue) {
+    return value ?? await defaultValue();
+  }
+
   public T Reduce(Func<T> defaultValue) {
     return value ?? defaultValue();
   }
