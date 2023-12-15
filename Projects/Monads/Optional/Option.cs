@@ -71,7 +71,11 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
   }
 
   public IOption<T> WhereNot(Func<T, bool> predicate) {
-    return value is not null && !predicate(value) ? this : None();
+    return value is not null && predicate(value) == false ? this : None();
+  }
+
+  public async Task<IOption<T>> WhereNotAsync(Func<T, Task<bool>> predicate) {
+    return value is not null && await predicate(value) == false ? this : None();
   }
 
   public override int GetHashCode() {
