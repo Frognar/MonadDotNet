@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Frognar.Monads.Results;
 
@@ -13,5 +14,9 @@ public static class ResultExtensions {
 
   public static Result<T> ToResult<T>(this Error error) {
     return Result<T>.Fail(error);
+  }
+
+  public static Result<T> ToResult<T>(this Exception exception) {
+    return Result<T>.Fail(Error.Failure("Failure", exception.Message));
   }
 }
