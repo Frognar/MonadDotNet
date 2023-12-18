@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Immutable;
 
 namespace Frognar.Monads.Writers;
 
 public readonly struct Writer<T, TLog> {
   public T Value { get; }
-  public IEnumerable<TLog> Logs { get; }
+  public ImmutableList<TLog> Logs { get; }
 
-  public Writer(T value, IEnumerable<TLog> logs) {
+  public Writer(T value, ImmutableList<TLog> logs) {
     Value = value;
     Logs = logs;
   }
