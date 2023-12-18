@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 
 namespace Frognar.Monads.Writers;
 
@@ -14,4 +15,9 @@ public readonly struct Writer<T, TLog> {
   public static Writer<T, TLog> Wrap(T value, ImmutableList<TLog> logs) => new(value, logs);
   public static Writer<T, TLog> Wrap(T value, TLog log) => new(value, ImmutableList.Create(log));
   public static Writer<T, TLog> Wrap(T value) => new(value, ImmutableList<TLog>.Empty);
+  
+  public Writer<TResult, TLog> FlatMap<TResult>(Func<T, Writer<TResult, TLog>> map) {
+    Writer<TResult, TLog> result = map(Value);
+    return new Writer<TResult, TLog>(result.Value, Logs.AddRange(result.Logs));
+  }
 }
