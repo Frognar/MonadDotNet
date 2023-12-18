@@ -10,4 +10,8 @@ public readonly struct Writer<T, TLog> {
     Value = value;
     Logs = logs;
   }
+  
+  public static Writer<T, TLog> Wrap(T value, ImmutableList<TLog> logs) => new(value, logs);
+  public static Writer<T, TLog> Wrap(T value, TLog log) => new(value, ImmutableList.Create(log));
+  public static Writer<T, TLog> Wrap(T value) => new(value, ImmutableList<TLog>.Empty);
 }
