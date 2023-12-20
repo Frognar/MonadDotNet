@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Threading.Tasks;
 
 namespace Frognar.Monads.Writers;
 
@@ -18,6 +19,10 @@ public readonly struct Writer<T, TLog> {
   
   public Writer<TResult, TLog> Map<TResult>(Func<T, TResult> map) {
     return new Writer<TResult, TLog>(map(Value), Logs);
+  }
+  
+  public async Task<Writer<TResult, TLog>> MapAsync<TResult>(Func<T, Task<TResult>> map) {
+    return new Writer<TResult, TLog>(await map(Value), Logs);
   }
   
   public Writer<TResult, TLog> FlatMap<TResult>(Func<T, Writer<TResult, TLog>> map) {
