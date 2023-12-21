@@ -38,4 +38,10 @@ public readonly struct Writer<T, TLog> {
   public void ForEachLog(Action<TLog> action) {
     Logs.ForEach(action);
   }
+  
+  public async Task ForEachLogAsync(Func<TLog, Task> action) {
+    foreach (TLog log in Logs) {
+      await action(log);
+    }
+  }
 }
