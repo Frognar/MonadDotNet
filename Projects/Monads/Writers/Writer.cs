@@ -34,4 +34,8 @@ public readonly struct Writer<T, TLog> {
     Writer<TResult, TLog> result = await map(Value);
     return new Writer<TResult, TLog>(result.Value, Logs.AddRange(result.Logs));
   }
+  
+  public void ForEachLog(Action<TLog> action) {
+    Logs.ForEach(action);
+  }
 }
