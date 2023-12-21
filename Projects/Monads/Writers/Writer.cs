@@ -29,4 +29,9 @@ public readonly struct Writer<T, TLog> {
     Writer<TResult, TLog> result = map(Value);
     return new Writer<TResult, TLog>(result.Value, Logs.AddRange(result.Logs));
   }
+  
+  public async Task<Writer<TResult, TLog>> FlatMapAsync<TResult>(Func<T, Task<Writer<TResult, TLog>>> map) {
+    Writer<TResult, TLog> result = await map(Value);
+    return new Writer<TResult, TLog>(result.Value, Logs.AddRange(result.Logs));
+  }
 }
