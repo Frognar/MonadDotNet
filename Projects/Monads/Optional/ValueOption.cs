@@ -79,6 +79,12 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
     }
   }
 
+  public async Task OnValueAsync(Func<T, Task> action) {
+    if (value.HasValue) {
+      await action(value.Value);
+    }
+  }
+
   public override int GetHashCode() {
     return value.GetHashCode();
   }
