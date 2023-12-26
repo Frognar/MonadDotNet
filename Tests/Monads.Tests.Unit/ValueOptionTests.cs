@@ -1,4 +1,5 @@
-﻿using Frognar.Monads.Optional;
+﻿using FluentAssertions;
+using Frognar.Monads.Optional;
 
 namespace Monads.Tests.Unit;
 
@@ -111,5 +112,59 @@ public class ValueOptionTests {
     IOption<int> valueOption2 = ValueOption<int>.None();
 
     Assert.True(valueOption1.Equals(valueOption2));
+  }
+
+  [Fact]
+  public void OnValue_WithValue_CallsAction() {
+    bool wasCalled = false;
+    void Action(int _) => wasCalled = true;
+    IOption<int> option = ValueOption<int>.Some(1);
+
+    option.OnValue(Action);
+
+    wasCalled.Should().BeTrue();
+  }
+
+  [Fact]
+  public void OnValue_WithNull_DoesNotCallAction() {
+    bool wasCalled = false;
+    IOption<int> option = ValueOption<int>.None();
+
+    option.OnValue(Action);
+
+    wasCalled.Should().BeFalse();
+    void Action(int _) => wasCalled = true;
+  }
+
+  [Fact]
+  public async Task OnValueAsync_WithValue_CallsAction() {
+    bool wasCalled = false;
+
+    Task Action(int _) {
+      wasCalled = true;
+      return Task.CompletedTask;
+    }
+
+    IOption<int> option = ValueOption<int>.Some(1);
+
+    await option.OnValueAsync(Action);
+
+    wasCalled.Should().BeTrue();
+  }
+
+  [Fact]
+  public async Task OnValueAsync_WithNull_DoesNotCallAction() {
+    bool wasCalled = false;
+
+    Task Action(int _) {
+      wasCalled = true;
+      return Task.CompletedTask;
+    }
+
+    IOption<int> option = ValueOption<int>.None();
+
+    await option.OnValueAsync(Action);
+
+    wasCalled.Should().BeFalse();
   }
 }
