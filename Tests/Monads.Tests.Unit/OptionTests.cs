@@ -9,14 +9,14 @@ public class OptionTests {
   public void Some_ReturnsOptionWithGivenValue() {
     IOption<string> option = Option<string>.Some("test");
 
-    Assert.Equal("test", option.Reduce("default"));
+    option.Reduce("default").Should().Be("test");
   }
 
   [Fact]
   public void None_ReturnsOptionWithDefaultValue() {
     IOption<string> option = Option<string>.None();
 
-    Assert.Equal("default", option.Reduce("default"));
+    option.Reduce("default").Should().Be("default");
   }
 
   [Fact]
@@ -25,7 +25,7 @@ public class OptionTests {
 
     IOption<string> mappedOption = option.Map(s => s.ToUpper());
 
-    Assert.Equal("TEST", mappedOption.Reduce(""));
+    mappedOption.Reduce("").Should().Be("TEST");
   }
 
   [Fact]
@@ -34,7 +34,7 @@ public class OptionTests {
 
     IOption<int> mappedOption = option.MapValue(s => s.Length);
 
-    Assert.Equal(4, mappedOption.Reduce(0));
+    mappedOption.Reduce(0).Should().Be(4);
   }
 
   [Fact]
@@ -52,7 +52,7 @@ public class OptionTests {
 
     IOption<int> flatMappedOption = option.FlatMapValue(s => ValueOption<int>.Some(s.Length));
 
-    Assert.Equal(4, flatMappedOption.Reduce(0));
+    flatMappedOption.Reduce(0).Should().Be(4);
   }
 
   [Fact]
@@ -61,7 +61,7 @@ public class OptionTests {
 
     IOption<string> filteredOption = option.Where(s => s.StartsWith("t"));
 
-    Assert.Equal("test", filteredOption.Reduce("default"));
+    filteredOption.Reduce("default").Should().Be("test");
   }
 
   [Fact]
@@ -70,7 +70,7 @@ public class OptionTests {
 
     IOption<string> filteredOption = option.Where(s => s.StartsWith("a"));
 
-    Assert.Equal("default", filteredOption.Reduce("default"));
+    filteredOption.Reduce("default").Should().Be("default");
   }
 
   [Fact]
@@ -79,7 +79,7 @@ public class OptionTests {
 
     IOption<string> filteredOption = option.WhereNot(s => s.StartsWith("a"));
 
-    Assert.Equal("test", filteredOption.Reduce("default"));
+    filteredOption.Reduce("default").Should().Be("test");
   }
 
   [Fact]
@@ -88,7 +88,7 @@ public class OptionTests {
 
     IOption<string> filteredOption = option.WhereNot(s => s.StartsWith("t"));
 
-    Assert.Equal("default", filteredOption.Reduce("default"));
+    filteredOption.Reduce("default").Should().Be("default");
   }
 
   [Fact]
@@ -96,7 +96,7 @@ public class OptionTests {
     IOption<string> option1 = Option<string>.Some("test");
     IOption<string> option2 = Option<string>.Some("test");
 
-    Assert.True(option1.Equals(option2));
+    option1.Should().Be(option2);
   }
 
   [Fact]
@@ -104,7 +104,7 @@ public class OptionTests {
     IOption<string> option1 = Option<string>.Some("test");
     IOption<string> option2 = Option<string>.Some("other");
 
-    Assert.False(option1.Equals(option2));
+    option1.Should().NotBe(option2);
   }
 
   [Fact]
@@ -112,7 +112,7 @@ public class OptionTests {
     IOption<string> option1 = Option<string>.None();
     IOption<string> option2 = Option<string>.None();
 
-    Assert.True(option1.Equals(option2));
+    option1.Should().Be(option2);
   }
 
   [Fact]
