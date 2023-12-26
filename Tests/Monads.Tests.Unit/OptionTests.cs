@@ -2,129 +2,115 @@
 
 namespace Monads.Tests.Unit;
 
-public class OptionTests
-{
-    
-    [Fact]
-    public void Some_ReturnsOptionWithGivenValue()
-    {
-        var option = Option<string>.Some("test");
+public class OptionTests {
 
-        Assert.Equal("test", option.Reduce("default"));
-    }
+  [Fact]
+  public void Some_ReturnsOptionWithGivenValue() {
+    IOption<string> option = Option<string>.Some("test");
 
-    [Fact]
-    public void None_ReturnsOptionWithDefaultValue()
-    {
-        var option = Option<string>.None();
+    Assert.Equal("test", option.Reduce("default"));
+  }
 
-        Assert.Equal("default", option.Reduce("default"));
-    }
+  [Fact]
+  public void None_ReturnsOptionWithDefaultValue() {
+    IOption<string> option = Option<string>.None();
 
-    [Fact]
-    public void Map_TransformsValueInsideOption()
-    {
-        var option = Option<string>.Some("test");
+    Assert.Equal("default", option.Reduce("default"));
+  }
 
-        var mappedOption = option.Map(s => s.ToUpper());
+  [Fact]
+  public void Map_TransformsValueInsideOption() {
+    IOption<string> option = Option<string>.Some("test");
 
-        Assert.Equal("TEST", mappedOption.Reduce(""));
-    }
+    IOption<string> mappedOption = option.Map(s => s.ToUpper());
 
-    [Fact]
-    public void MapValue_TransformsValueInsideOption()
-    {
-        var option = Option<string>.Some("test");
+    Assert.Equal("TEST", mappedOption.Reduce(""));
+  }
 
-        var mappedOption = option.MapValue(s => s.Length);
+  [Fact]
+  public void MapValue_TransformsValueInsideOption() {
+    IOption<string> option = Option<string>.Some("test");
 
-        Assert.Equal(4, mappedOption.Reduce(0));
-    }
+    IOption<int> mappedOption = option.MapValue(s => s.Length);
 
-    [Fact]
-    public void FlatMap_TransformsValueInsideOptionToAnotherOption()
-    {
-        var option = Option<string>.Some("test");
+    Assert.Equal(4, mappedOption.Reduce(0));
+  }
 
-        var flatMappedOption = option.FlatMap(s => Option<string>.Some(s.ToUpper()));
+  [Fact]
+  public void FlatMap_TransformsValueInsideOptionToAnotherOption() {
+    IOption<string> option = Option<string>.Some("test");
 
-        Assert.Equal("TEST", flatMappedOption.Reduce(""));
-    }
+    IOption<string> flatMappedOption = option.FlatMap(s => Option<string>.Some(s.ToUpper()));
 
-    [Fact]
-    public void FlatMapValue_TransformsValueInsideOptionToAnotherValueOption()
-    {
-        var option = Option<string>.Some("test");
+    Assert.Equal("TEST", flatMappedOption.Reduce(""));
+  }
 
-        var flatMappedOption = option.FlatMapValue(s => ValueOption<int>.Some(s.Length));
+  [Fact]
+  public void FlatMapValue_TransformsValueInsideOptionToAnotherValueOption() {
+    IOption<string> option = Option<string>.Some("test");
 
-        Assert.Equal(4, flatMappedOption.Reduce(0));
-    }
+    IOption<int> flatMappedOption = option.FlatMapValue(s => ValueOption<int>.Some(s.Length));
 
-    [Fact]
-    public void Where_ReturnsOptionWithGivenValueWhenPredicateIsTrue()
-    {
-        var option = Option<string>.Some("test");
+    Assert.Equal(4, flatMappedOption.Reduce(0));
+  }
 
-        var filteredOption = option.Where(s => s.StartsWith("t"));
+  [Fact]
+  public void Where_ReturnsOptionWithGivenValueWhenPredicateIsTrue() {
+    IOption<string> option = Option<string>.Some("test");
 
-        Assert.Equal("test", filteredOption.Reduce("default"));
-    }
+    IOption<string> filteredOption = option.Where(s => s.StartsWith("t"));
 
-    [Fact]
-    public void Where_ReturnsNoneWhenPredicateIsFalse()
-    {
-        var option = Option<string>.Some("test");
+    Assert.Equal("test", filteredOption.Reduce("default"));
+  }
 
-        var filteredOption = option.Where(s => s.StartsWith("a"));
+  [Fact]
+  public void Where_ReturnsNoneWhenPredicateIsFalse() {
+    IOption<string> option = Option<string>.Some("test");
 
-        Assert.Equal("default", filteredOption.Reduce("default"));
-    }
+    IOption<string> filteredOption = option.Where(s => s.StartsWith("a"));
 
-    [Fact]
-    public void WhereNot_ReturnsOptionWithGivenValueWhenPredicateIsFalse()
-    {
-        var option = Option<string>.Some("test");
+    Assert.Equal("default", filteredOption.Reduce("default"));
+  }
 
-        var filteredOption = option.WhereNot(s => s.StartsWith("a"));
+  [Fact]
+  public void WhereNot_ReturnsOptionWithGivenValueWhenPredicateIsFalse() {
+    IOption<string> option = Option<string>.Some("test");
 
-        Assert.Equal("test", filteredOption.Reduce("default"));
-    }
+    IOption<string> filteredOption = option.WhereNot(s => s.StartsWith("a"));
 
-    [Fact]
-    public void WhereNot_ReturnsNoneWhenPredicateIsTrue()
-    {
-        var option = Option<string>.Some("test");
+    Assert.Equal("test", filteredOption.Reduce("default"));
+  }
 
-        var filteredOption = option.WhereNot(s => s.StartsWith("t"));
+  [Fact]
+  public void WhereNot_ReturnsNoneWhenPredicateIsTrue() {
+    IOption<string> option = Option<string>.Some("test");
 
-        Assert.Equal("default", filteredOption.Reduce("default"));
-    }
+    IOption<string> filteredOption = option.WhereNot(s => s.StartsWith("t"));
 
-    [Fact]
-    public void Equals_ReturnsTrueWhenBothOptionsHaveSameValue()
-    {
-        var option1 = Option<string>.Some("test");
-        var option2 = Option<string>.Some("test");
+    Assert.Equal("default", filteredOption.Reduce("default"));
+  }
 
-        Assert.True(option1.Equals(option2));
-    }
+  [Fact]
+  public void Equals_ReturnsTrueWhenBothOptionsHaveSameValue() {
+    IOption<string> option1 = Option<string>.Some("test");
+    IOption<string> option2 = Option<string>.Some("test");
 
-    [Fact]
-    public void Equals_ReturnsFalseWhenOptionsHaveDifferentValues()
-    {
-        var option1 = Option<string>.Some("test");
-        var option2 = Option<string>.Some("other");
+    Assert.True(option1.Equals(option2));
+  }
 
-        Assert.False(option1.Equals(option2));
-    }
+  [Fact]
+  public void Equals_ReturnsFalseWhenOptionsHaveDifferentValues() {
+    IOption<string> option1 = Option<string>.Some("test");
+    IOption<string> option2 = Option<string>.Some("other");
 
-    [Fact]
-    public void Equals_ReturnsTrueWhenBothOptionsAreNone()
-    {
-        var option1 = Option<string>.None();
-        var option2 = Option<string>.None();
+    Assert.False(option1.Equals(option2));
+  }
 
-        Assert.True(option1.Equals(option2));
-    }
+  [Fact]
+  public void Equals_ReturnsTrueWhenBothOptionsAreNone() {
+    IOption<string> option1 = Option<string>.None();
+    IOption<string> option2 = Option<string>.None();
+
+    Assert.True(option1.Equals(option2));
+  }
 }
