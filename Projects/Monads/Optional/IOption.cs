@@ -19,4 +19,6 @@ public interface IOption<T> {
   Task<IOption<T>> WhereAsync(Func<T, Task<bool>> predicate);
   IOption<T> WhereNot(Func<T, bool> predicate);
   Task<IOption<T>> WhereNotAsync(Func<T, Task<bool>> predicate);
+  void OnValue(Action<T> action);
+  Task OnValueAsync(Func<T, Task> action);
 }

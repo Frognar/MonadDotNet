@@ -1,129 +1,170 @@
-﻿using Frognar.Monads.Optional;
+﻿using FluentAssertions;
+using Frognar.Monads.Optional;
 
 namespace Monads.Tests.Unit;
 
-public class ValueOptionTests
-{
-    [Fact]
-    public void Some_ReturnsValueOptionWithGivenValue()
-    {
-        var valueOption = ValueOption<int>.Some(5);
+public class ValueOptionTests {
+  [Fact]
+  public void Some_ReturnsValueOptionWithGivenValue() {
+    IOption<int> valueOption = ValueOption<int>.Some(5);
 
-        Assert.Equal(5, valueOption.Reduce(0));
+    valueOption.Reduce(0).Should().Be(5);
+  }
+
+  [Fact]
+  public void None_ReturnsValueOptionWithDefaultValue() {
+    IOption<int> valueOption = ValueOption<int>.None();
+
+    valueOption.Reduce(0).Should().Be(0);
+  }
+
+  [Fact]
+  public void Map_TransformsValueInsideValueOption() {
+    IOption<int> valueOption = ValueOption<int>.Some(5);
+
+    IOption<string> mappedValueOption = valueOption.Map(i => i.ToString());
+
+    mappedValueOption.Reduce("0").Should().Be("5");
+  }
+
+  [Fact]
+  public void MapValue_TransformsValueInsideValueOption() {
+    IOption<int> valueOption = ValueOption<int>.Some(5);
+
+    IOption<int> mappedValueOption = valueOption.MapValue(i => i * 2);
+
+    mappedValueOption.Reduce(0).Should().Be(10);
+  }
+
+  [Fact]
+  public void FlatMap_TransformsValueInsideValueOptionToAnotherOption() {
+    IOption<int> valueOption = ValueOption<int>.Some(5);
+
+    IOption<string> flatMappedValueOption = valueOption.FlatMap(i => Option<string>.Some(i.ToString()));
+
+    flatMappedValueOption.Reduce("").Should().Be("5");
+  }
+
+  [Fact]
+  public void FlatMapValue_TransformsValueInsideValueOptionToAnotherValueOption() {
+    IOption<int> valueOption = ValueOption<int>.Some(5);
+
+    IOption<int> flatMappedValueOption = valueOption.FlatMapValue(i => ValueOption<int>.Some(i * 2));
+
+    flatMappedValueOption.Reduce(0).Should().Be(10);
+  }
+
+  [Fact]
+  public void Where_ReturnsValueOptionWithGivenValueWhenPredicateIsTrue() {
+    IOption<int> valueOption = ValueOption<int>.Some(5);
+
+    IOption<int> filteredValueOption = valueOption.Where(i => i > 0);
+
+    filteredValueOption.Reduce(0).Should().Be(5);
+  }
+
+  [Fact]
+  public void Where_ReturnsNoneWhenPredicateIsFalse() {
+    IOption<int> valueOption = ValueOption<int>.Some(5);
+
+    IOption<int> filteredValueOption = valueOption.Where(i => i < 0);
+
+    filteredValueOption.Reduce(0).Should().Be(0);
+  }
+
+  [Fact]
+  public void WhereNot_ReturnsValueOptionWithGivenValueWhenPredicateIsFalse() {
+    IOption<int> valueOption = ValueOption<int>.Some(5);
+
+    IOption<int> filteredValueOption = valueOption.WhereNot(i => i < 0);
+
+    filteredValueOption.Reduce(0).Should().Be(5);
+  }
+
+  [Fact]
+  public void WhereNot_ReturnsNoneWhenPredicateIsTrue() {
+    IOption<int> valueOption = ValueOption<int>.Some(5);
+
+    IOption<int> filteredValueOption = valueOption.WhereNot(i => i > 0);
+
+    filteredValueOption.Reduce(0).Should().Be(0);
+  }
+
+  [Fact]
+  public void Equals_ReturnsTrueWhenBothValueOptionsHaveSameValue() {
+    IOption<int> valueOption1 = ValueOption<int>.Some(5);
+    IOption<int> valueOption2 = ValueOption<int>.Some(5);
+
+    valueOption1.Should().Be(valueOption2);
+  }
+
+  [Fact]
+  public void Equals_ReturnsFalseWhenValueOptionsHaveDifferentValues() {
+    IOption<int> valueOption1 = ValueOption<int>.Some(5);
+    IOption<int> valueOption2 = ValueOption<int>.Some(10);
+
+    valueOption1.Should().NotBe(valueOption2);
+  }
+
+  [Fact]
+  public void Equals_ReturnsTrueWhenBothValueOptionsAreNone() {
+    IOption<int> valueOption1 = ValueOption<int>.None();
+    IOption<int> valueOption2 = ValueOption<int>.None();
+
+    valueOption1.Should().Be(valueOption2);
+  }
+
+  [Fact]
+  public void OnValue_WithValue_CallsAction() {
+    bool wasCalled = false;
+    void Action(int _) => wasCalled = true;
+    IOption<int> option = ValueOption<int>.Some(1);
+
+    option.OnValue(Action);
+
+    wasCalled.Should().BeTrue();
+  }
+
+  [Fact]
+  public void OnValue_WithNull_DoesNotCallAction() {
+    bool wasCalled = false;
+    IOption<int> option = ValueOption<int>.None();
+
+    option.OnValue(Action);
+
+    wasCalled.Should().BeFalse();
+    void Action(int _) => wasCalled = true;
+  }
+
+  [Fact]
+  public async Task OnValueAsync_WithValue_CallsAction() {
+    bool wasCalled = false;
+
+    Task Action(int _) {
+      wasCalled = true;
+      return Task.CompletedTask;
     }
 
-    [Fact]
-    public void None_ReturnsValueOptionWithDefaultValue()
-    {
-        var valueOption = ValueOption<int>.None();
+    IOption<int> option = ValueOption<int>.Some(1);
 
-        Assert.Equal(0, valueOption.Reduce(0));
+    await option.OnValueAsync(Action);
+
+    wasCalled.Should().BeTrue();
+  }
+
+  [Fact]
+  public async Task OnValueAsync_WithNull_DoesNotCallAction() {
+    bool wasCalled = false;
+
+    Task Action(int _) {
+      wasCalled = true;
+      return Task.CompletedTask;
     }
 
-    [Fact]
-    public void Map_TransformsValueInsideValueOption()
-    {
-        var valueOption = ValueOption<int>.Some(5);
+    IOption<int> option = ValueOption<int>.None();
 
-        var mappedValueOption = valueOption.Map(i => i.ToString());
+    await option.OnValueAsync(Action);
 
-        Assert.Equal("5", mappedValueOption.Reduce("0"));
-    }
-
-    [Fact]
-    public void MapValue_TransformsValueInsideValueOption()
-    {
-        var valueOption = ValueOption<int>.Some(5);
-
-        var mappedValueOption = valueOption.MapValue(i => i * 2);
-
-        Assert.Equal(10, mappedValueOption.Reduce(0));
-    }
-
-    [Fact]
-    public void FlatMap_TransformsValueInsideValueOptionToAnotherOption()
-    {
-        var valueOption = ValueOption<int>.Some(5);
-
-        var flatMappedValueOption = valueOption.FlatMap(i => Option<string>.Some(i.ToString()));
-
-        Assert.Equal("5", flatMappedValueOption.Reduce(""));
-    }
-
-    [Fact]
-    public void FlatMapValue_TransformsValueInsideValueOptionToAnotherValueOption()
-    {
-        var valueOption = ValueOption<int>.Some(5);
-
-        var flatMappedValueOption = valueOption.FlatMapValue(i => ValueOption<int>.Some(i * 2));
-
-        Assert.Equal(10, flatMappedValueOption.Reduce(0));
-    }
-
-    [Fact]
-    public void Where_ReturnsValueOptionWithGivenValueWhenPredicateIsTrue()
-    {
-        var valueOption = ValueOption<int>.Some(5);
-
-        var filteredValueOption = valueOption.Where(i => i > 0);
-
-        Assert.Equal(5, filteredValueOption.Reduce(0));
-    }
-
-    [Fact]
-    public void Where_ReturnsNoneWhenPredicateIsFalse()
-    {
-        var valueOption = ValueOption<int>.Some(5);
-
-        var filteredValueOption = valueOption.Where(i => i < 0);
-
-        Assert.Equal(0, filteredValueOption.Reduce(0));
-    }
-
-    [Fact]
-    public void WhereNot_ReturnsValueOptionWithGivenValueWhenPredicateIsFalse()
-    {
-        var valueOption = ValueOption<int>.Some(5);
-
-        var filteredValueOption = valueOption.WhereNot(i => i < 0);
-
-        Assert.Equal(5, filteredValueOption.Reduce(0));
-    }
-
-    [Fact]
-    public void WhereNot_ReturnsNoneWhenPredicateIsTrue()
-    {
-        var valueOption = ValueOption<int>.Some(5);
-
-        var filteredValueOption = valueOption.WhereNot(i => i > 0);
-
-        Assert.Equal(0, filteredValueOption.Reduce(0));
-    }
-
-    [Fact]
-    public void Equals_ReturnsTrueWhenBothValueOptionsHaveSameValue()
-    {
-        var valueOption1 = ValueOption<int>.Some(5);
-        var valueOption2 = ValueOption<int>.Some(5);
-
-        Assert.True(valueOption1.Equals(valueOption2));
-    }
-
-    [Fact]
-    public void Equals_ReturnsFalseWhenValueOptionsHaveDifferentValues()
-    {
-        var valueOption1 = ValueOption<int>.Some(5);
-        var valueOption2 = ValueOption<int>.Some(10);
-
-        Assert.False(valueOption1.Equals(valueOption2));
-    }
-
-    [Fact]
-    public void Equals_ReturnsTrueWhenBothValueOptionsAreNone()
-    {
-        var valueOption1 = ValueOption<int>.None();
-        var valueOption2 = ValueOption<int>.None();
-
-        Assert.True(valueOption1.Equals(valueOption2));
-    }
+    wasCalled.Should().BeFalse();
+  }
 }
