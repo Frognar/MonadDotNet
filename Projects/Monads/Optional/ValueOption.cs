@@ -85,6 +85,15 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
     }
   }
 
+  public void Switch(Action<T> onValue, Action onNone) {
+    if (value.HasValue) {
+      onValue(value.Value);
+    }
+    else {
+      onNone();
+    }
+  }
+
   public override int GetHashCode() {
     return value.GetHashCode();
   }
