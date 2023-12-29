@@ -22,4 +22,5 @@ public interface IOption<T> {
   void OnValue(Action<T> action);
   Task OnValueAsync(Func<T, Task> action);
   void Switch(Action<T> onValue, Action onNone);
+  Task SwitchAsync(Func<T, Task> onValue, Func<Task> onNone);
 }
