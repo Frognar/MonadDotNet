@@ -90,6 +90,15 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     }
   }
 
+  public void Switch(Action<T> onValue, Action onNone) {
+    if (value is not null) {
+      onValue(value);
+    }
+    else {
+      onNone();
+    }
+  }
+
   public override int GetHashCode() {
     return value?.GetHashCode() ?? 0;
   }
