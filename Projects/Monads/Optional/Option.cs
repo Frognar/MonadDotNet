@@ -99,6 +99,15 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     }
   }
 
+  public async Task SwitchAsync(Func<T, Task> onValue, Func<Task> onNone) {
+    if (value is not null) {
+      await onValue(value);
+    }
+    else {
+      await onNone();
+    }
+  }
+
   public override int GetHashCode() {
     return value?.GetHashCode() ?? 0;
   }
