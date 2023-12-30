@@ -54,6 +54,10 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     return value ?? defaultValue();
   }
 
+  public T OrElseThrow(Func<Exception> exception) {
+    return value ?? throw exception();
+  }
+
   public async Task<T> OrElseGetAsync(Func<Task<T>> defaultValue) {
     return value ?? await defaultValue();
   }
