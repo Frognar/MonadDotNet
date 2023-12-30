@@ -15,19 +15,19 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
   public static IOption<T> None() => new ValueOption<T>(null);
 
   public IOption<TResult> Map<TResult>(Func<T, TResult> map) where TResult : class {
-    return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.Some(map(value.Value));
+    return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.SomeNullable(map(value.Value));
   }
   
   public async Task<IOption<TResult>> MapAsync<TResult>(Func<T, Task<TResult>> map) where TResult : class {
-    return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.Some(await map(value.Value).ConfigureAwait(false));
+    return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.SomeNullable(await map(value.Value).ConfigureAwait(false));
   }
 
   public IOption<TResult> MapValue<TResult>(Func<T, TResult> map) where TResult : struct {
-    return value.HasValue == false ? ValueOption<TResult>.None() : ValueOption<TResult>.Some(map(value.Value));
+    return value.HasValue == false ? ValueOption<TResult>.None() : ValueOption<TResult>.SomeNullable(map(value.Value));
   }
   
   public async Task<IOption<TResult>> MapValueAsync<TResult>(Func<T, Task<TResult>> map) where TResult : struct {
-    return value.HasValue == false ? ValueOption<TResult>.None() : ValueOption<TResult>.Some(await map(value.Value).ConfigureAwait(false));
+    return value.HasValue == false ? ValueOption<TResult>.None() : ValueOption<TResult>.SomeNullable(await map(value.Value).ConfigureAwait(false));
   }
 
   public IOption<TResult> FlatMap<TResult>(Func<T, IOption<TResult>> map) where TResult : class {
