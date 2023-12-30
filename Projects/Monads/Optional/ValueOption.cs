@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Frognar.Monads.Optional;
 
-public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> where T : struct {
+public readonly record struct ValueOption<T> : IOption<T> where T : struct {
   readonly T? value;
 
   ValueOption(T? value) {
@@ -111,19 +111,4 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
       await onNone();
     }
   }
-
-  public override int GetHashCode() {
-    return value.GetHashCode();
-  }
-
-  public bool Equals(ValueOption<T> other) {
-    return Nullable.Equals(value, other.value);
-  }
-
-  public override bool Equals(object? obj) {
-    return obj is ValueOption<T> other && Equals(other);
-  }
-
-  public static bool operator ==(ValueOption<T> a, ValueOption<T> b) => a.Equals(b);
-  public static bool operator !=(ValueOption<T> a, ValueOption<T> b) => !(a == b);
 }
