@@ -11,22 +11,23 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
   }
 
   public static IOption<T> Some(T obj) => new ValueOption<T>(obj);
+  public static IOption<T> SomeNullable(T? obj) => new ValueOption<T>(obj);
   public static IOption<T> None() => new ValueOption<T>(null);
 
   public IOption<TResult> Map<TResult>(Func<T, TResult> map) where TResult : class {
-    return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.Some(map(value.Value));
+    return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.SomeNullable(map(value.Value));
   }
   
   public async Task<IOption<TResult>> MapAsync<TResult>(Func<T, Task<TResult>> map) where TResult : class {
-    return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.Some(await map(value.Value).ConfigureAwait(false));
+    return value.HasValue == false ? Option<TResult>.None() : Option<TResult>.SomeNullable(await map(value.Value).ConfigureAwait(false));
   }
 
   public IOption<TResult> MapValue<TResult>(Func<T, TResult> map) where TResult : struct {
-    return value.HasValue == false ? ValueOption<TResult>.None() : ValueOption<TResult>.Some(map(value.Value));
+    return value.HasValue == false ? ValueOption<TResult>.None() : ValueOption<TResult>.SomeNullable(map(value.Value));
   }
   
   public async Task<IOption<TResult>> MapValueAsync<TResult>(Func<T, Task<TResult>> map) where TResult : struct {
-    return value.HasValue == false ? ValueOption<TResult>.None() : ValueOption<TResult>.Some(await map(value.Value).ConfigureAwait(false));
+    return value.HasValue == false ? ValueOption<TResult>.None() : ValueOption<TResult>.SomeNullable(await map(value.Value).ConfigureAwait(false));
   }
 
   public IOption<TResult> FlatMap<TResult>(Func<T, IOption<TResult>> map) where TResult : class {
@@ -45,15 +46,19 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
     return value.HasValue == false ? ValueOption<TResult>.None() : await map(value.Value).ConfigureAwait(false);
   }
 
-  public T Reduce(T defaultValue) {
+  public T OrElse(T defaultValue) {
     return value ?? defaultValue;
   }
 
-  public async Task<T> ReduceAsync(Func<Task<T>> defaultValue) {
+  public T OrElseThrow(Func<Exception> exception) {
+    return value ?? throw exception();
+  }
+
+  public async Task<T> OrElseGetAsync(Func<Task<T>> defaultValue) {
     return value ?? await defaultValue();
   }
 
-  public T Reduce(Func<T> defaultValue) {
+  public T OrElseGet(Func<T> defaultValue) {
     return value ?? defaultValue();
   }
 
@@ -73,16 +78,20 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
     return value.HasValue && await predicate(value.Value) == false ? this : None();
   }
 
-  public void OnValue(Action<T> action) {
+  public void IfPresent(Action<T> action) {
     if (value.HasValue) {
       action(value.Value);
     }
   }
 
-  public async Task OnValueAsync(Func<T, Task> action) {
+  public async Task IfPresentAsync(Func<T, Task> action) {
     if (value.HasValue) {
       await action(value.Value);
     }
+  }
+
+  public bool IsPresent() {
+    return value.HasValue;
   }
 
   public void Switch(Action<T> onValue, Action onNone) {

@@ -9,14 +9,14 @@ public class OptionTests {
   public void Some_ReturnsOptionWithGivenValue() {
     IOption<string> option = Option<string>.Some("test");
 
-    option.Reduce("default").Should().Be("test");
+    option.OrElse("default").Should().Be("test");
   }
 
   [Fact]
   public void None_ReturnsOptionWithDefaultValue() {
     IOption<string> option = Option<string>.None();
 
-    option.Reduce("default").Should().Be("default");
+    option.OrElse("default").Should().Be("default");
   }
 
   [Fact]
@@ -25,7 +25,7 @@ public class OptionTests {
 
     IOption<string> mappedOption = option.Map(s => s.ToUpper());
 
-    mappedOption.Reduce("").Should().Be("TEST");
+    mappedOption.OrElse("").Should().Be("TEST");
   }
 
   [Fact]
@@ -34,7 +34,7 @@ public class OptionTests {
 
     IOption<int> mappedOption = option.MapValue(s => s.Length);
 
-    mappedOption.Reduce(0).Should().Be(4);
+    mappedOption.OrElse(0).Should().Be(4);
   }
 
   [Fact]
@@ -43,7 +43,7 @@ public class OptionTests {
 
     IOption<string> flatMappedOption = option.FlatMap(s => Option<string>.Some(s.ToUpper()));
 
-    Assert.Equal("TEST", flatMappedOption.Reduce(""));
+    Assert.Equal("TEST", flatMappedOption.OrElse(""));
   }
 
   [Fact]
@@ -52,7 +52,7 @@ public class OptionTests {
 
     IOption<int> flatMappedOption = option.FlatMapValue(s => ValueOption<int>.Some(s.Length));
 
-    flatMappedOption.Reduce(0).Should().Be(4);
+    flatMappedOption.OrElse(0).Should().Be(4);
   }
 
   [Fact]
@@ -61,7 +61,7 @@ public class OptionTests {
 
     IOption<string> filteredOption = option.Where(s => s.StartsWith("t"));
 
-    filteredOption.Reduce("default").Should().Be("test");
+    filteredOption.OrElse("default").Should().Be("test");
   }
 
   [Fact]
@@ -70,7 +70,7 @@ public class OptionTests {
 
     IOption<string> filteredOption = option.Where(s => s.StartsWith("a"));
 
-    filteredOption.Reduce("default").Should().Be("default");
+    filteredOption.OrElse("default").Should().Be("default");
   }
 
   [Fact]
@@ -79,7 +79,7 @@ public class OptionTests {
 
     IOption<string> filteredOption = option.WhereNot(s => s.StartsWith("a"));
 
-    filteredOption.Reduce("default").Should().Be("test");
+    filteredOption.OrElse("default").Should().Be("test");
   }
 
   [Fact]
@@ -88,7 +88,7 @@ public class OptionTests {
 
     IOption<string> filteredOption = option.WhereNot(s => s.StartsWith("t"));
 
-    filteredOption.Reduce("default").Should().Be("default");
+    filteredOption.OrElse("default").Should().Be("default");
   }
 
   [Fact]
@@ -121,7 +121,7 @@ public class OptionTests {
     void Action(string _) => wasCalled = true;
     IOption<string> option = Option<string>.Some("test");
 
-    option.OnValue(Action);
+    option.IfPresent(Action);
 
     wasCalled.Should().BeTrue();
   }
@@ -131,7 +131,7 @@ public class OptionTests {
     bool wasCalled = false;
     IOption<string> option = Option<string>.None();
 
-    option.OnValue(Action);
+    option.IfPresent(Action);
 
     wasCalled.Should().BeFalse();
     void Action(string _) => wasCalled = true;
@@ -148,7 +148,7 @@ public class OptionTests {
 
     IOption<string> option = Option<string>.Some("test");
 
-    await option.OnValueAsync(Action);
+    await option.IfPresentAsync(Action);
 
     wasCalled.Should().BeTrue();
   }
@@ -164,7 +164,7 @@ public class OptionTests {
 
     IOption<string> option = Option<string>.None();
 
-    await option.OnValueAsync(Action);
+    await option.IfPresentAsync(Action);
 
     wasCalled.Should().BeFalse();
   }
