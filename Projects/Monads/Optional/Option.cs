@@ -86,6 +86,10 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     }
   }
 
+  public bool IsPresent() {
+    return value is not null;
+  }
+
   public void Switch(Action<T> onValue, Action onNone) {
     if (value is not null) {
       onValue(value);
