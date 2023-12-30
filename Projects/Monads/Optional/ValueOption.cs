@@ -11,6 +11,7 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
   }
 
   public static IOption<T> Some(T obj) => new ValueOption<T>(obj);
+  public static IOption<T> SomeNullable(T? obj) => new ValueOption<T>(obj);
   public static IOption<T> None() => new ValueOption<T>(null);
 
   public IOption<TResult> Map<TResult>(Func<T, TResult> map) where TResult : class {
