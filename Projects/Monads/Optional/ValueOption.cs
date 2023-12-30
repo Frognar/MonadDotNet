@@ -19,17 +19,17 @@ public readonly record struct ValueOption<T> : IOption<T> where T : struct {
     if (value.HasValue == false) {
       return Option<TResult>.None();
     }
-    
+
     TResult result = map(value.Value);
     return Option<TResult>.SomeNullable(result);
   }
-  
+
   public async Task<IOption<TResult>> MapAsync<TResult>(Func<T, Task<TResult>> map)
     where TResult : class {
     if (value.HasValue == false) {
       return Option<TResult>.None();
     }
-  
+
     TResult result = await map(value.Value).ConfigureAwait(false);
     return Option<TResult>.SomeNullable(result);
   }
@@ -39,17 +39,17 @@ public readonly record struct ValueOption<T> : IOption<T> where T : struct {
     if (value.HasValue == false) {
       return ValueOption<TResult>.None();
     }
-    
+
     TResult result = map(value.Value);
     return ValueOption<TResult>.SomeNullable(result);
   }
-  
+
   public async Task<IOption<TResult>> MapValueAsync<TResult>(Func<T, Task<TResult>> map)
     where TResult : struct {
     if (value.HasValue == false) {
       return ValueOption<TResult>.None();
     }
-    
+
     TResult result = await map(value.Value).ConfigureAwait(false);
     return ValueOption<TResult>.SomeNullable(result);
   }
@@ -60,7 +60,7 @@ public readonly record struct ValueOption<T> : IOption<T> where T : struct {
       ? Option<TResult>.None()
       : map(value.Value);
   }
-  
+
   public async Task<IOption<TResult>> FlatMapAsync<TResult>(Func<T, Task<IOption<TResult>>> map)
     where TResult : class {
     return value.HasValue == false
@@ -146,7 +146,7 @@ public readonly record struct ValueOption<T> : IOption<T> where T : struct {
       onNone();
     }
   }
-  
+
   public async Task SwitchAsync(Func<T, Task> onValue, Func<Task> onNone) {
     if (value.HasValue) {
       await onValue(value.Value);
