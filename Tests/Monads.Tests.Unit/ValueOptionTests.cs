@@ -120,7 +120,7 @@ public class ValueOptionTests {
     void Action(int _) => wasCalled = true;
     IOption<int> option = ValueOption<int>.Some(1);
 
-    option.OnValue(Action);
+    option.IfPresent(Action);
 
     wasCalled.Should().BeTrue();
   }
@@ -130,7 +130,7 @@ public class ValueOptionTests {
     bool wasCalled = false;
     IOption<int> option = ValueOption<int>.None();
 
-    option.OnValue(Action);
+    option.IfPresent(Action);
 
     wasCalled.Should().BeFalse();
     void Action(int _) => wasCalled = true;
@@ -147,7 +147,7 @@ public class ValueOptionTests {
 
     IOption<int> option = ValueOption<int>.Some(1);
 
-    await option.OnValueAsync(Action);
+    await option.IfPresentAsync(Action);
 
     wasCalled.Should().BeTrue();
   }
@@ -163,7 +163,7 @@ public class ValueOptionTests {
 
     IOption<int> option = ValueOption<int>.None();
 
-    await option.OnValueAsync(Action);
+    await option.IfPresentAsync(Action);
 
     wasCalled.Should().BeFalse();
   }

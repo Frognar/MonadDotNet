@@ -121,7 +121,7 @@ public class OptionTests {
     void Action(string _) => wasCalled = true;
     IOption<string> option = Option<string>.Some("test");
 
-    option.OnValue(Action);
+    option.IfPresent(Action);
 
     wasCalled.Should().BeTrue();
   }
@@ -131,7 +131,7 @@ public class OptionTests {
     bool wasCalled = false;
     IOption<string> option = Option<string>.None();
 
-    option.OnValue(Action);
+    option.IfPresent(Action);
 
     wasCalled.Should().BeFalse();
     void Action(string _) => wasCalled = true;
@@ -148,7 +148,7 @@ public class OptionTests {
 
     IOption<string> option = Option<string>.Some("test");
 
-    await option.OnValueAsync(Action);
+    await option.IfPresentAsync(Action);
 
     wasCalled.Should().BeTrue();
   }
@@ -164,7 +164,7 @@ public class OptionTests {
 
     IOption<string> option = Option<string>.None();
 
-    await option.OnValueAsync(Action);
+    await option.IfPresentAsync(Action);
 
     wasCalled.Should().BeFalse();
   }

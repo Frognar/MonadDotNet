@@ -74,13 +74,13 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     return value is not null && await predicate(value) == false ? this : None();
   }
 
-  public void OnValue(Action<T> action) {
+  public void IfPresent(Action<T> action) {
     if (value is not null) {
       action(value);
     }
   }
 
-  public async Task OnValueAsync(Func<T, Task> action) {
+  public async Task IfPresentAsync(Func<T, Task> action) {
     if (value is not null) {
       await action(value);
     }

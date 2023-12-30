@@ -73,13 +73,13 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
     return value.HasValue && await predicate(value.Value) == false ? this : None();
   }
 
-  public void OnValue(Action<T> action) {
+  public void IfPresent(Action<T> action) {
     if (value.HasValue) {
       action(value.Value);
     }
   }
 
-  public async Task OnValueAsync(Func<T, Task> action) {
+  public async Task IfPresentAsync(Func<T, Task> action) {
     if (value.HasValue) {
       await action(value.Value);
     }
