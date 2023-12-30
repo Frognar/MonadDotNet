@@ -14,6 +14,10 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     return new Option<T>(obj);
   }
 
+  public static IOption<T> SomeNullable(T? obj) {
+    return new Option<T>(obj);
+  }
+
   public static IOption<T> None() {
     return new Option<T>(null);
   }
