@@ -85,6 +85,10 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
     }
   }
 
+  public bool IsPresent() {
+    return value.HasValue;
+  }
+
   public void Switch(Action<T> onValue, Action onNone) {
     if (value.HasValue) {
       onValue(value.Value);
