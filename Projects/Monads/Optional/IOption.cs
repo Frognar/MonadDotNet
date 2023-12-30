@@ -14,6 +14,7 @@ public interface IOption<T> {
   Task<IOption<TResult>> FlatMapValueAsync<TResult>(Func<T, Task<IOption<TResult>>> map) where TResult : struct;
   T OrElse(T defaultValue);
   T OrElseGet(Func<T> defaultValue);
+  T OrElseThrow(Func<Exception> exception);
   Task<T> OrElseGetAsync(Func<Task<T>> defaultValue);
   IOption<T> Where(Func<T, bool> predicate);
   Task<IOption<T>> WhereAsync(Func<T, Task<bool>> predicate);
