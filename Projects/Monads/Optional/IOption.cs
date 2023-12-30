@@ -21,5 +21,6 @@ public interface IOption<T> {
   Task<IOption<T>> WhereNotAsync(Func<T, Task<bool>> predicate);
   void IfPresent(Action<T> action);
   Task IfPresentAsync(Func<T, Task> action);
+  bool IsPresent();
   void Switch(Action<T> onValue, Action onNone);
 }
