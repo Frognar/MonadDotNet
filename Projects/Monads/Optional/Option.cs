@@ -46,15 +46,15 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     return value is null ? ValueOption<TResult>.None() : await map(value).ConfigureAwait(false);
   }
 
-  public T Reduce(T defaultValue) {
+  public T OrElse(T defaultValue) {
     return value ?? defaultValue;
   }
 
-  public T Reduce(Func<T> defaultValue) {
+  public T OrElseGet(Func<T> defaultValue) {
     return value ?? defaultValue();
   }
 
-  public async Task<T> ReduceAsync(Func<Task<T>> defaultValue) {
+  public async Task<T> OrElseGetAsync(Func<Task<T>> defaultValue) {
     return value ?? await defaultValue();
   }
 

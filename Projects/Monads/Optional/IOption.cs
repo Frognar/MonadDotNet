@@ -12,9 +12,9 @@ public interface IOption<T> {
   Task<IOption<TResult>> FlatMapAsync<TResult>(Func<T, Task<IOption<TResult>>> map) where TResult : class;
   IOption<TResult> FlatMapValue<TResult>(Func<T, IOption<TResult>> map) where TResult : struct;
   Task<IOption<TResult>> FlatMapValueAsync<TResult>(Func<T, Task<IOption<TResult>>> map) where TResult : struct;
-  T Reduce(T defaultValue);
-  T Reduce(Func<T> defaultValue);
-  Task<T> ReduceAsync(Func<Task<T>> defaultValue);
+  T OrElse(T defaultValue);
+  T OrElseGet(Func<T> defaultValue);
+  Task<T> OrElseGetAsync(Func<Task<T>> defaultValue);
   IOption<T> Where(Func<T, bool> predicate);
   Task<IOption<T>> WhereAsync(Func<T, Task<bool>> predicate);
   IOption<T> WhereNot(Func<T, bool> predicate);
