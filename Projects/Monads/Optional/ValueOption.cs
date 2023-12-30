@@ -102,6 +102,15 @@ public readonly struct ValueOption<T> : IOption<T>, IEquatable<ValueOption<T>> w
       onNone();
     }
   }
+  
+  public async Task SwitchAsync(Func<T, Task> onValue, Func<Task> onNone) {
+    if (value.HasValue) {
+      await onValue(value.Value);
+    }
+    else {
+      await onNone();
+    }
+  }
 
   public override int GetHashCode() {
     return value.GetHashCode();

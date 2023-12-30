@@ -24,4 +24,5 @@ public interface IOption<T> {
   Task IfPresentAsync(Func<T, Task> action);
   bool IsPresent();
   void Switch(Action<T> onValue, Action onNone);
+  Task SwitchAsync(Func<T, Task> onValue, Func<Task> onNone);
 }
