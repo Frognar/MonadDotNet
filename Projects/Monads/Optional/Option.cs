@@ -10,17 +10,9 @@ public readonly struct Option<T> : IOption<T>, IEquatable<Option<T>> where T : c
     this.value = value;
   }
 
-  public static IOption<T> Some(T obj) {
-    return new Option<T>(obj);
-  }
-
-  public static IOption<T> SomeNullable(T? obj) {
-    return new Option<T>(obj);
-  }
-
-  public static IOption<T> None() {
-    return new Option<T>(null);
-  }
+  public static IOption<T> Some(T obj) => new Option<T>(obj);
+  public static IOption<T> SomeNullable(T? obj) => new Option<T>(obj);
+  public static IOption<T> None() => new Option<T>(null);
 
   public IOption<TResult> Map<TResult>(Func<T, TResult> map) where TResult : class {
     return value is null ? Option<TResult>.None() : Option<TResult>.Some(map(value));
