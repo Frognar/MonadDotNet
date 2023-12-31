@@ -8,7 +8,7 @@ public static class ResultExtensions {
     return Result<T>.Ok(value);
   }
 
-  public static Result<T> ToResult<T>(this List<Error> errors) {
+  public static Result<T> ToResult<T>(this IEnumerable<Error> errors) {
     return Result<T>.Fail(errors);
   }
 
