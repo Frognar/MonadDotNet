@@ -24,6 +24,7 @@ public readonly struct Result<T> {
   public static Result<T> Ok(T obj) => new(obj);
   public static Result<T> Fail(Error error) => new([error]);
   public static Result<T> Fail(List<Error> errors) => new(errors);
+
   public static Result<T> Try(Func<T> func) {
     try {
       return Ok(func());
@@ -32,7 +33,7 @@ public readonly struct Result<T> {
       return Fail(Error.Failure(description: exception.Message));
     }
   }
-  
+
   public async static Task<Result<T>> TryAsync(Func<Task<T>> func) {
     try {
       T result = await func().ConfigureAwait(false);
@@ -44,11 +45,21 @@ public readonly struct Result<T> {
   }
 
   public Result<TResult> Map<TResult>(Func<T, TResult> map) {
-    return isError ? Result<TResult>.Fail(errors!) : Result<TResult>.Ok(map(value!));
+    if (isError) {
+      return Result<TResult>.Fail(errors!);
+    }
+
+    T localValue = value!;
+    return Result<TResult>.Try(() => map(localValue));
   }
 
   public async Task<Result<TResult>> MapAsync<TResult>(Func<T, Task<TResult>> map) {
-    return isError ? Result<TResult>.Fail(errors!) : Result<TResult>.Ok(await map(value!).ConfigureAwait(false));
+    if (isError) {
+      return Result<TResult>.Fail(errors!);
+    }
+
+    T localValue = value!;
+    return await Result<TResult>.TryAsync(() => map(localValue)).ConfigureAwait(false);
   }
 
   public Result<TResult> FlatMap<TResult>(Func<T, Result<TResult>> map) {
