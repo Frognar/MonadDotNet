@@ -24,6 +24,24 @@ public readonly struct Result<T> {
   public static Result<T> Ok(T obj) => new(obj);
   public static Result<T> Fail(Error error) => new([error]);
   public static Result<T> Fail(List<Error> errors) => new(errors);
+  public static Result<T> Try(Func<T> func) {
+    try {
+      return Ok(func());
+    }
+    catch (Exception exception) {
+      return Fail(Error.Failure(description: exception.Message));
+    }
+  }
+  
+  public async static Task<Result<T>> TryAsync(Func<Task<T>> func) {
+    try {
+      T result = await func().ConfigureAwait(false);
+      return Ok(result);
+    }
+    catch (Exception exception) {
+      return Fail(Error.Failure(description: exception.Message));
+    }
+  }
 
   public Result<TResult> Map<TResult>(Func<T, TResult> map) {
     return isError ? Result<TResult>.Fail(errors!) : Result<TResult>.Ok(map(value!));
