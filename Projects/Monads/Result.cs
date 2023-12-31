@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace Frognar.Monads;
 
+[Obsolete]
 public readonly struct Result {
   readonly Exception error;
   public bool IsSuccess { get; }
@@ -40,6 +41,7 @@ public readonly struct Result {
   public static implicit operator Result(Exception value) => Fail(value);
 }
 
+[Obsolete]
 public readonly struct Result<T> {
   readonly T value;
   readonly Exception error;
