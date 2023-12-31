@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Frognar.Monads.Results;
 
-public readonly struct Result<T> {
+public readonly record struct Result<T> {
   readonly T? value;
   readonly ImmutableList<Error> errors;
   bool HasErrors => errors.IsEmpty == false;
