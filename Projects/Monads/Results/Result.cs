@@ -21,14 +21,8 @@ public readonly struct Result<T> {
     isError = true;
   }
 
-  Result(Error error) {
-    value = default;
-    errors = [error];
-    isError = true;
-  }
-
   public static Result<T> Ok(T obj) => new(obj);
-  public static Result<T> Fail(Error error) => new(error);
+  public static Result<T> Fail(Error error) => new([error]);
   public static Result<T> Fail(List<Error> errors) => new(errors);
 
   public Result<TResult> Map<TResult>(Func<T, TResult> map) {
