@@ -63,11 +63,15 @@ public readonly struct Result<T> {
   }
 
   public Result<TResult> FlatMap<TResult>(Func<T, Result<TResult>> map) {
-    return isError ? Result<TResult>.Fail(errors!) : map(value!);
+    return isError
+      ? Result<TResult>.Fail(errors!)
+      : map(value!);
   }
 
   public async Task<Result<TResult>> FlatMapAsync<TResult>(Func<T, Task<Result<TResult>>> map) {
-    return isError ? Result<TResult>.Fail(errors!) : await map(value!).ConfigureAwait(false);
+    return isError
+      ? Result<TResult>.Fail(errors!)
+      : await map(value!).ConfigureAwait(false);
   }
 
   public void Switch(Action<T> onSuccess, Action<List<Error>> onFailure) {
@@ -89,11 +93,16 @@ public readonly struct Result<T> {
   }
 
   public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<List<Error>, TResult> onFailure) {
-    return isError ? onFailure(errors!) : onSuccess(value!);
+    return isError
+      ? onFailure(errors!)
+      : onSuccess(value!);
   }
 
-  public async Task<TResult> MatchAsync<TResult>(Func<T, Task<TResult>> onSuccess,
+  public async Task<TResult> MatchAsync<TResult>(
+    Func<T, Task<TResult>> onSuccess,
     Func<List<Error>, Task<TResult>> onFailure) {
-    return isError ? await onFailure(errors!) : await onSuccess(value!);
+    return isError
+      ? await onFailure(errors!)
+      : await onSuccess(value!);
   }
 }
