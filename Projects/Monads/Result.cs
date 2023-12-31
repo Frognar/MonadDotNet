@@ -12,7 +12,7 @@ public readonly struct Result {
     IsSuccess = true;
     error = null!;
   }
-  
+
   Result(Exception error) {
     IsSuccess = false;
     this.error = error;
@@ -31,7 +31,7 @@ public readonly struct Result {
     return IsSuccess ? onSuccess() : onFailure(error);
   }
 
-  public async Task<T> MatchAsync<T>(Func<Task<T>> onSuccess, Func<Exception,Task<T>> onFailure) {
+  public async Task<T> MatchAsync<T>(Func<Task<T>> onSuccess, Func<Exception, Task<T>> onFailure) {
     return IsSuccess ? await onSuccess() : await onFailure(error);
   }
 
@@ -46,13 +46,13 @@ public readonly struct Result<T> {
   public T Value => IsSuccess ? value : throw new InvalidOperationException("Result does not contain a value.");
   public Exception Error => IsSuccess ? throw new InvalidOperationException("Result does not contain an error.") : error;
   public bool IsSuccess { get; }
-  
+
   Result(T value) {
     this.value = value;
     IsSuccess = true;
     error = null!;
   }
-  
+
   Result(Exception error) {
     value = default!;
     IsSuccess = false;
@@ -113,7 +113,7 @@ public readonly struct Result<T> {
 
   public static Result<T> Ok(T value) => new(value);
   public static Result<T> Fail(Exception error) => new(error);
-  
+
   public static implicit operator Result<T>(T value) => Ok(value);
   public static implicit operator Result<T>(Exception value) => Fail(value);
 }
