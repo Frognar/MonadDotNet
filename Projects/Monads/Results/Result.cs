@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 
 namespace Frognar.Monads.Results;
 
 public readonly struct Result<T> {
   readonly T? value;
-  readonly List<Error>? errors;
+  readonly ImmutableList<Error>? errors;
   readonly bool isError;
 
   Result(T value) {
@@ -15,15 +16,15 @@ public readonly struct Result<T> {
     isError = false;
   }
 
-  Result(List<Error> errors) {
+  Result(IEnumerable<Error> errors) {
     value = default;
-    this.errors = errors;
+    this.errors = errors.ToImmutableList();
     isError = true;
   }
 
   public static Result<T> Ok(T obj) => new(obj);
   public static Result<T> Fail(Error error) => new([error]);
-  public static Result<T> Fail(List<Error> errors) => new(errors);
+  public static Result<T> Fail(IEnumerable<Error> errors) => new(errors);
 
   public static Result<T> Try(Func<T> func) {
     try {
@@ -74,7 +75,9 @@ public readonly struct Result<T> {
       : await map(value!).ConfigureAwait(false);
   }
 
-  public void Switch(Action<T> onSuccess, Action<List<Error>> onFailure) {
+  public void Switch(
+    Action<T> onSuccess,
+    Action<IEnumerable<Error>> onFailure) {
     if (isError) {
       onFailure(errors!);
     }
@@ -83,7 +86,9 @@ public readonly struct Result<T> {
     }
   }
 
-  public async Task SwitchAsync(Func<T, Task> onSuccess, Func<List<Error>, Task> onFailure) {
+  public async Task SwitchAsync(
+    Func<T, Task> onSuccess,
+    Func<IEnumerable<Error>, Task> onFailure) {
     if (isError) {
       await onFailure(errors!);
     }
@@ -92,7 +97,9 @@ public readonly struct Result<T> {
     }
   }
 
-  public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<List<Error>, TResult> onFailure) {
+  public TResult Match<TResult>(
+    Func<T, TResult> onSuccess,
+    Func<IEnumerable<Error>, TResult> onFailure) {
     return isError
       ? onFailure(errors!)
       : onSuccess(value!);
@@ -100,7 +107,7 @@ public readonly struct Result<T> {
 
   public async Task<TResult> MatchAsync<TResult>(
     Func<T, Task<TResult>> onSuccess,
-    Func<List<Error>, Task<TResult>> onFailure) {
+    Func<IEnumerable<Error>, Task<TResult>> onFailure) {
     return isError
       ? await onFailure(errors!)
       : await onSuccess(value!);
