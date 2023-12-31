@@ -27,17 +27,9 @@ public readonly struct Result<T> {
     isError = true;
   }
 
-  public static Result<T> Ok(T obj) {
-    return new Result<T>(obj);
-  }
-
-  public static Result<T> Fail(Error error) {
-    return new Result<T>(error);
-  }
-
-  public static Result<T> Fail(List<Error> errors) {
-    return new Result<T>(errors);
-  }
+  public static Result<T> Ok(T obj) => new(obj);
+  public static Result<T> Fail(Error error) => new(error);
+  public static Result<T> Fail(List<Error> errors) => new(errors);
 
   public Result<TResult> Map<TResult>(Func<T, TResult> map) {
     return isError ? Result<TResult>.Fail(errors!) : Result<TResult>.Ok(map(value!));
