@@ -110,4 +110,7 @@ public readonly record struct Result<T> {
       ? await onFailure(errors)
       : await onSuccess(value!);
   }
+  
+  public static implicit operator Result<T>(T value) => Ok(value);
+  public static implicit operator Result<T>(Error error) => Fail(error);
 }
