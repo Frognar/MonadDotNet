@@ -14,4 +14,8 @@ public readonly struct Error {
   public static Error Failure(string code = "Failure", string description = "A failure has occurred.") {
     return new Error(code, description, ErrorType.Failure);
   }
+
+  public static Error Validation(string code = "Validation", string description = "A validation error has occurred.") {
+    return new Error(code, description, ErrorType.Validation);
+  }
 }
