@@ -3,19 +3,18 @@ using System.Threading.Tasks;
 
 namespace Frognar.Monads.Optional;
 
-public readonly record struct Option<T> : IOption<T> where T : class {
-  readonly T? value;
+public readonly record struct Option<T> {
+  readonly T value;
 
-  Option(T? value) {
+  Option(T value) {
     this.value = value;
   }
 
-  public static IOption<T> Some(T obj) => new Option<T>(obj);
-  public static IOption<T> SomeNullable(T? obj) => new Option<T>(obj);
-  public static IOption<T> None() => new Option<T>(null);
+  public static Option<T> Some(T obj) => new(obj);
+  public static Option<T> SomeNullable(T? obj) => obj is null ? None() : Some(obj);
+  public static Option<T> None() => new();
 
-  public IOption<TResult> Map<TResult>(Func<T, TResult> map)
-    where TResult : class {
+  public Option<TResult> Map<TResult>(Func<T, TResult> map) {
     if (value is null) {
       return Option<TResult>.None();
     }
@@ -24,8 +23,7 @@ public readonly record struct Option<T> : IOption<T> where T : class {
     return Option<TResult>.SomeNullable(result);
   }
 
-  public async Task<IOption<TResult>> MapAsync<TResult>(Func<T, Task<TResult>> map)
-    where TResult : class {
+  public async Task<Option<TResult>> MapAsync<TResult>(Func<T, Task<TResult>> map) {
     if (value is null) {
       return Option<TResult>.None();
     }
@@ -34,51 +32,15 @@ public readonly record struct Option<T> : IOption<T> where T : class {
     return Option<TResult>.SomeNullable(result);
   }
 
-  public IOption<TResult> MapValue<TResult>(Func<T, TResult> map)
-    where TResult : struct {
-    if (value is null) {
-      return ValueOption<TResult>.None();
-    }
-
-    TResult result = map(value);
-    return ValueOption<TResult>.SomeNullable(result);
-  }
-
-  public async Task<IOption<TResult>> MapValueAsync<TResult>(Func<T, Task<TResult>> map)
-    where TResult : struct {
-    if (value is null) {
-      return ValueOption<TResult>.None();
-    }
-
-    TResult result = await map(value).ConfigureAwait(false);
-    return ValueOption<TResult>.SomeNullable(result);
-  }
-
-  public IOption<TResult> FlatMap<TResult>(Func<T, IOption<TResult>> map)
-    where TResult : class {
+  public Option<TResult> FlatMap<TResult>(Func<T, Option<TResult>> map) {
     return value is null
       ? Option<TResult>.None()
       : map(value);
   }
 
-  public async Task<IOption<TResult>> FlatMapAsync<TResult>(Func<T, Task<IOption<TResult>>> map)
-    where TResult : class {
+  public async Task<Option<TResult>> FlatMapAsync<TResult>(Func<T, Task<Option<TResult>>> map) {
     return value is null
       ? Option<TResult>.None()
-      : await map(value).ConfigureAwait(false);
-  }
-
-  public IOption<TResult> FlatMapValue<TResult>(Func<T, IOption<TResult>> map)
-    where TResult : struct {
-    return value is null
-      ? ValueOption<TResult>.None()
-      : map(value);
-  }
-
-  public async Task<IOption<TResult>> FlatMapValueAsync<TResult>(Func<T, Task<IOption<TResult>>> map)
-    where TResult : struct {
-    return value is null
-      ? ValueOption<TResult>.None()
       : await map(value).ConfigureAwait(false);
   }
 
@@ -98,25 +60,25 @@ public readonly record struct Option<T> : IOption<T> where T : class {
     return value ?? await defaultValue();
   }
 
-  public IOption<T> Where(Func<T, bool> predicate) {
+  public Option<T> Where(Func<T, bool> predicate) {
     return value is not null && predicate(value)
       ? this
       : None();
   }
 
-  public async Task<IOption<T>> WhereAsync(Func<T, Task<bool>> predicate) {
+  public async Task<Option<T>> WhereAsync(Func<T, Task<bool>> predicate) {
     return value is not null && await predicate(value)
       ? this
       : None();
   }
 
-  public IOption<T> WhereNot(Func<T, bool> predicate) {
+  public Option<T> WhereNot(Func<T, bool> predicate) {
     return value is not null && predicate(value) == false
       ? this
       : None();
   }
 
-  public async Task<IOption<T>> WhereNotAsync(Func<T, Task<bool>> predicate) {
+  public async Task<Option<T>> WhereNotAsync(Func<T, Task<bool>> predicate) {
     return value is not null && await predicate(value) == false
       ? this
       : None();
