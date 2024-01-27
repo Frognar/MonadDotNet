@@ -19,6 +19,8 @@ public readonly record struct Maybe<T> {
     return hasValue ? value : defaultValue;
   }
 
+  public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> map) => map(value);
+
   public static Maybe<T> None() => new();
   public static Maybe<T> Some(T value) => new(value);
 }

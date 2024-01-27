@@ -32,4 +32,12 @@ public class MaybeTests {
     Func<string> act = () => Some("str").OrElse(null!);
     act.Should().Throw<ArgumentNullException>();
   }
+
+  [Fact]
+  public void MapsValueWhenSome() {
+    Some(10)
+      .SelectMany(value => Some(value.ToString()))
+      .OrElse("")
+      .Should().Be("10");
+  }
 }
