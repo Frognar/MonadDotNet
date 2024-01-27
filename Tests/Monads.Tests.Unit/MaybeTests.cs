@@ -56,4 +56,12 @@ public class MaybeTests {
       .OrElse("")
       .Should().Be("10");
   }
+
+  [Fact]
+  public void PropagetesNoneWhenNone() {
+    None<int>()
+      .Select(value => value.ToString())
+      .OrElse("none")
+      .Should().Be("none");
+  }
 }
