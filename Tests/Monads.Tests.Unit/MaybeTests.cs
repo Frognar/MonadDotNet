@@ -84,4 +84,12 @@ public class MaybeTests {
     Action act = () => Some(10).SelectMany<int>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
+
+  [Fact]
+  public void FlattensNestedMaybe() {
+    Some(Some(10))
+      .Flatten()
+      .OrElse(-1)
+      .Should().Be(10);
+  }
 }
