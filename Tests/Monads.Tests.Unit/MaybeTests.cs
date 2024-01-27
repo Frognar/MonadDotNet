@@ -92,4 +92,26 @@ public class MaybeTests {
       .OrElse(-1)
       .Should().Be(10);
   }
+
+  [Fact]
+  public void MapsValuesWithQuerySyntax() {
+    Maybe<int> result = from a in Some(1)
+      from b in Some(2)
+      from c in Some(3)
+      select a + b + c;
+
+    result.OrElse(-1)
+      .Should().Be(6);
+  }
+
+  [Fact]
+  public void PropagateNoneWithQuerySyntax() {
+    Maybe<int> result = from a in Some(1)
+      from b in Some(2)
+      from c in None<int>()
+      select a + b + c;
+
+    result.OrElse(-1)
+      .Should().Be(-1);
+  }
 }
