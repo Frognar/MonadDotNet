@@ -12,4 +12,7 @@ public readonly record struct Maybe<T> {
   public T OrElse(T defaultValue) {
     return hasValue ? value : defaultValue;
   }
+
+  public static Maybe<T> None() => new();
+  public static Maybe<T> Some(T value) => new(value);
 }
