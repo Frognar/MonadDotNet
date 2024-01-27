@@ -64,4 +64,12 @@ public class MaybeTests {
       .OrElse("none")
       .Should().Be("none");
   }
+
+  [Fact]
+  public void ReturnsNoneWhenSelectorReturnsNull() {
+    Some(10)
+      .Select(_ => (string?)null)
+      .OrElse("none")
+      .Should().Be("none");
+  }
 }
