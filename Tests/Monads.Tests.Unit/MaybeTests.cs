@@ -34,7 +34,7 @@ public class MaybeTests {
   }
 
   [Fact]
-  public void MapsValueWhenSome() {
+  public void FlatMapsValueWhenSome() {
     Some(10)
       .SelectMany(value => Some(value.ToString()))
       .OrElse("")
@@ -42,7 +42,7 @@ public class MaybeTests {
   }
 
   [Fact]
-  public void PropagetesNoneWhenNone() {
+  public void PropagetesFlattenedNoneWhenNone() {
     None<int>()
       .SelectMany(value => Some(value.ToString()))
       .OrElse("none")
