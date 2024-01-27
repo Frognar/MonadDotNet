@@ -4,21 +4,26 @@ using Frognar.Monads;
 namespace Monads.Tests.Unit;
 
 public class MaybeTests {
+  static Maybe<T> Some<T>(T value) => Maybe<T>.Some(value);
+  static Maybe<T> None<T>() => Maybe<T>.None();
+  
   [Fact]
   public void ReturnsInternalValueIfCreatedWithValue() {
-    Maybe<int> maybe = Maybe<int>.Some(10);
-    maybe.OrElse(-1).Should().Be(10);
+    Some(10)
+      .OrElse(-1)
+      .Should().Be(10);
   }
   
   [Fact]
   public void ReturnsFallbackValueIfCreatedWithoutValue() {
-    Maybe<int> maybe = Maybe<int>.None();
-    maybe.OrElse(-1).Should().Be(-1);
+    None<int>()
+      .OrElse(-1)
+      .Should().Be(-1);
   }
 
   [Fact]
   public void ThrowsExceptionWhenSomeIsCalledWithNull() {
-    Action act = () => Maybe<string>.Some(null!);
+    Action act = () => Some<string>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 }
