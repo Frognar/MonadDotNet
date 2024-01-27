@@ -72,4 +72,10 @@ public class MaybeTests {
       .OrElse("none")
       .Should().Be("none");
   }
+
+  [Fact]
+  public void ThrowsExceptionWhenSelectorIsNull() {
+    Action act = () => Some(10).Select<int>(null!);
+    act.Should().Throw<ArgumentNullException>();
+  }
 }

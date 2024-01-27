@@ -20,6 +20,10 @@ public readonly record struct Maybe<T> {
   }
 
   public Maybe<TResult> Select<TResult>(Func<T, TResult> selector) {
+    if (selector is null) {
+      throw new ArgumentNullException(nameof(selector));
+    }
+
     return SelectMany(x =>
     {
       TResult result = selector(x);
