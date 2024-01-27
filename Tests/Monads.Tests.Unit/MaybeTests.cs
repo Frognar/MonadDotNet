@@ -15,4 +15,10 @@ public class MaybeTests {
     Maybe<int> maybe = Maybe<int>.None();
     maybe.OrElse(-1).Should().Be(-1);
   }
+
+  [Fact]
+  public void ThrowsExceptionWhenSomeIsCalledWithNull() {
+    Action act = () => Maybe<string>.Some(null!);
+    act.Should().Throw<ArgumentNullException>();
+  }
 }

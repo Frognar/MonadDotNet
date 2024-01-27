@@ -1,11 +1,13 @@
-﻿namespace Frognar.Monads;
+﻿using System;
+
+namespace Frognar.Monads;
 
 public readonly record struct Maybe<T> {
   readonly T value;
   readonly bool hasValue;
 
-  public Maybe(T value) {
-    this.value = value;
+  Maybe(T value) {
+    this.value = value ?? throw new ArgumentNullException(nameof(value));
     hasValue = true;
   }
 
