@@ -31,8 +31,13 @@ public readonly record struct Maybe<T> {
     });
   }
 
-  public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector)
-    => hasValue ? selector(value) : Maybe<TResult>.None();
+  public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector) {
+    if (selector is null) {
+      throw new ArgumentNullException(nameof(selector));
+    }
+
+    return hasValue ? selector(value) : Maybe<TResult>.None();
+  }
 
   public static Maybe<T> None() => new();
   public static Maybe<T> Some(T value) => new(value);

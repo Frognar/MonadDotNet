@@ -78,4 +78,10 @@ public class MaybeTests {
     Action act = () => Some(10).Select<int>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
+
+  [Fact]
+  public void ThrowsExceptionWhenFlatSelectorIsNull() {
+    Action act = () => Some(10).SelectMany<int>(null!);
+    act.Should().Throw<ArgumentNullException>();
+  }
 }
