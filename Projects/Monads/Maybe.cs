@@ -12,6 +12,10 @@ public readonly record struct Maybe<T> {
   }
 
   public T OrElse(T defaultValue) {
+    if (defaultValue is null) {
+      throw new ArgumentNullException(nameof(defaultValue));
+    }
+    
     return hasValue ? value : defaultValue;
   }
 

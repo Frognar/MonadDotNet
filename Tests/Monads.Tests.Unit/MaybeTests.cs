@@ -26,4 +26,10 @@ public class MaybeTests {
     Action act = () => Some<string>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
+  
+  [Fact]
+  public void ThrowsExceptionWhenOrElseIsCalledWithNull() {
+    Func<string> act = () => Some("str").OrElse(null!);
+    act.Should().Throw<ArgumentNullException>();
+  }
 }
