@@ -24,4 +24,6 @@ public readonly record struct Maybe<T> {
 
   public static Maybe<T> None() => new();
   public static Maybe<T> Some(T value) => new(value);
+
+  public Maybe<TResult> Select<TResult>(Func<T, TResult> selector) => Maybe<TResult>.Some(selector(value));
 }

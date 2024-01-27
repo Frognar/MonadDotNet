@@ -48,4 +48,12 @@ public class MaybeTests {
       .OrElse("none")
       .Should().Be("none");
   }
+
+  [Fact]
+  public void MapsValueWhenSome() {
+    Some(10)
+      .Select(value => value.ToString())
+      .OrElse("")
+      .Should().Be("10");
+  }
 }
