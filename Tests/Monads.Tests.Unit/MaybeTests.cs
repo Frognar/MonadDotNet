@@ -9,4 +9,10 @@ public class MaybeTests {
     Maybe<int> maybe = new(10);
     maybe.OrElse(-1).Should().Be(10);
   }
+  
+  [Fact]
+  public void ReturnsFallbackValueIfCreatedWithoutValue() {
+    Maybe<int> maybe = new();
+    maybe.OrElse(-1).Should().Be(-1);
+  }
 }
