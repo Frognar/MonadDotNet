@@ -3,8 +3,8 @@
 namespace Frognar.Monads;
 
 public readonly record struct Maybe<T> {
-  readonly T value;
   readonly bool hasValue;
+  readonly T value;
 
   Maybe(T value) {
     this.value = value ?? throw new ArgumentNullException(nameof(value));
@@ -15,7 +15,7 @@ public readonly record struct Maybe<T> {
     if (defaultValue is null) {
       throw new ArgumentNullException(nameof(defaultValue));
     }
-    
+
     return hasValue ? value : defaultValue;
   }
 

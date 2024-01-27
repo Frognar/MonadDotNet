@@ -6,14 +6,14 @@ namespace Monads.Tests.Unit;
 public class MaybeTests {
   static Maybe<T> Some<T>(T value) => Maybe<T>.Some(value);
   static Maybe<T> None<T>() => Maybe<T>.None();
-  
+
   [Fact]
   public void ReturnsInternalValueIfCreatedWithValue() {
     Some(10)
       .OrElse(-1)
       .Should().Be(10);
   }
-  
+
   [Fact]
   public void ReturnsFallbackValueIfCreatedWithoutValue() {
     None<int>()
@@ -26,7 +26,7 @@ public class MaybeTests {
     Action act = () => Some<string>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
-  
+
   [Fact]
   public void ThrowsExceptionWhenOrElseIsCalledWithNull() {
     Func<string> act = () => Some("str").OrElse(null!);
