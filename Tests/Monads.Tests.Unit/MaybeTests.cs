@@ -114,4 +114,13 @@ public class MaybeTests {
     result.OrElse(-1)
       .Should().Be(-1);
   }
+
+  [Fact]
+  public void MatchValueIfExists() {
+    Some(10)
+      .Match(
+        some: value => value * 2,
+        none: () => -1)
+      .Should().Be(20);
+  }
 }

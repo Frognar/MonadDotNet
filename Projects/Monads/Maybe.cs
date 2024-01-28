@@ -33,4 +33,8 @@ public readonly record struct Maybe<T> {
 
   public static Maybe<T> None() => new();
   public static Maybe<T> Some(T value) => new(value);
+
+  public TResult Match<TResult>(Func<T, TResult> some, Func<TResult> none) {
+    return some(value);
+  }
 }
