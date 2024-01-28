@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Diagnostics;
+using FluentAssertions;
 using Frognar.Monads;
 
 namespace Monads.Tests.Unit;
@@ -131,5 +132,27 @@ public class MaybeTests {
         some: value => value,
         none: () => -1)
       .Should().Be(-1);
+  }
+
+  [Fact]
+  public void NoneMatchIsNotCalledWhenSome() {
+    Func<int> act =
+      () => Some(10)
+        .Match(
+          some: value => value * 2,
+          none: () => throw new UnreachableException());
+    
+    act.Should().NotThrow();
+  }
+
+  [Fact]
+  public void SomeMatchIsNotCalledWhenNone() {
+    Func<int> act =
+      () => None<int>()
+        .Match(
+          some: _ => throw new UnreachableException(),
+          none: () => -1);
+    
+    act.Should().NotThrow();
   }
 }
