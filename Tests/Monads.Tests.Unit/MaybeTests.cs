@@ -155,4 +155,26 @@ public class MaybeTests {
     
     act.Should().NotThrow();
   }
+
+  [Fact]
+  public void ThrowsExceptionWhenSomeMatchIsNull() {
+    Func<int> act =
+      () => None<int>()
+        .Match(
+          some: null!,
+          none: () => -1);
+    
+    act.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
+  public void ThrowsExceptionWhenNoneMatchIsNull() {
+    Func<int> act =
+      () => Some(10)
+        .Match(
+          some: value => value,
+          none: null!);
+    
+    act.Should().Throw<ArgumentNullException>();
+  }
 }
