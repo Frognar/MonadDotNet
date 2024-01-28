@@ -42,7 +42,7 @@ public class MaybeTests {
   }
 
   [Fact]
-  public void PropagetesFlattenedNoneWhenNone() {
+  public void PropagatesFlattenedNoneWhenNone() {
     None<int>()
       .SelectMany(value => Some(value.ToString()))
       .OrElse("none")
@@ -58,7 +58,7 @@ public class MaybeTests {
   }
 
   [Fact]
-  public void PropagetesNoneWhenNone() {
+  public void PropagatesNoneWhenNone() {
     None<int>()
       .Select(value => value.ToString())
       .OrElse("none")
@@ -105,7 +105,7 @@ public class MaybeTests {
   }
 
   [Fact]
-  public void PropagateNoneWithQuerySyntax() {
+  public void PropagatesNoneWithQuerySyntax() {
     Maybe<int> result = from a in Some(1)
       from b in Some(2)
       from c in None<int>()
