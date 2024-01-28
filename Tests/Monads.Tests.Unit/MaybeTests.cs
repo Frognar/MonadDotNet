@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Diagnostics;
+using FluentAssertions;
 using Frognar.Monads;
 
 namespace Monads.Tests.Unit;
@@ -42,7 +43,7 @@ public class MaybeTests {
   }
 
   [Fact]
-  public void PropagetesFlattenedNoneWhenNone() {
+  public void PropagatesFlattenedNoneWhenNone() {
     None<int>()
       .SelectMany(value => Some(value.ToString()))
       .OrElse("none")
@@ -58,7 +59,7 @@ public class MaybeTests {
   }
 
   [Fact]
-  public void PropagetesNoneWhenNone() {
+  public void PropagatesNoneWhenNone() {
     None<int>()
       .Select(value => value.ToString())
       .OrElse("none")
@@ -105,7 +106,7 @@ public class MaybeTests {
   }
 
   [Fact]
-  public void PropagateNoneWithQuerySyntax() {
+  public void PropagatesNoneWithQuerySyntax() {
     Maybe<int> result = from a in Some(1)
       from b in Some(2)
       from c in None<int>()
@@ -113,5 +114,67 @@ public class MaybeTests {
 
     result.OrElse(-1)
       .Should().Be(-1);
+  }
+
+  [Fact]
+  public void MatchSomeWhenSome() {
+    Some(10)
+      .Match(
+        some: value => value * 2,
+        none: () => -1)
+      .Should().Be(20);
+  }
+
+  [Fact]
+  public void MatchNoneWhenNone() {
+    None<int>()
+      .Match(
+        some: value => value,
+        none: () => -1)
+      .Should().Be(-1);
+  }
+
+  [Fact]
+  public void NoneMatchIsNotCalledWhenSome() {
+    Func<int> act =
+      () => Some(10)
+        .Match(
+          some: value => value * 2,
+          none: () => throw new UnreachableException());
+    
+    act.Should().NotThrow();
+  }
+
+  [Fact]
+  public void SomeMatchIsNotCalledWhenNone() {
+    Func<int> act =
+      () => None<int>()
+        .Match(
+          some: _ => throw new UnreachableException(),
+          none: () => -1);
+    
+    act.Should().NotThrow();
+  }
+
+  [Fact]
+  public void ThrowsExceptionWhenSomeMatchIsNull() {
+    Func<int> act =
+      () => None<int>()
+        .Match(
+          some: null!,
+          none: () => -1);
+    
+    act.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
+  public void ThrowsExceptionWhenNoneMatchIsNull() {
+    Func<int> act =
+      () => Some(10)
+        .Match(
+          some: value => value,
+          none: null!);
+    
+    act.Should().Throw<ArgumentNullException>();
   }
 }
