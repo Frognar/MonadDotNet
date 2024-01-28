@@ -117,7 +117,7 @@ public class MaybeTests {
   }
 
   [Fact]
-  public void MatchValueIfExists() {
+  public void MatchSomeWhenSome() {
     Some(10)
       .Match(
         some: value => value * 2,
@@ -126,7 +126,7 @@ public class MaybeTests {
   }
 
   [Fact]
-  public void MatchNoneIfNoValue() {
+  public void MatchNoneWhenNone() {
     None<int>()
       .Match(
         some: value => value,
