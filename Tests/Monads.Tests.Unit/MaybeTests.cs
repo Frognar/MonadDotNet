@@ -123,4 +123,13 @@ public class MaybeTests {
         none: () => -1)
       .Should().Be(20);
   }
+
+  [Fact]
+  public void MatchNoneIfNoValue() {
+    None<int>()
+      .Match(
+        some: value => value,
+        none: () => -1)
+      .Should().Be(-1);
+  }
 }
