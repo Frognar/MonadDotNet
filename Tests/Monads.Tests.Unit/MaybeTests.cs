@@ -157,6 +157,26 @@ public class MaybeTests {
   }
 
   [Fact]
+  public void MapsValuesWithSelectQuerySyntaxWhenSome() {
+    Maybe<int> result =
+      from a in Some(1)
+      select a + 1;
+
+    result.OrElse(-1)
+      .Should().Be(2);
+  }
+
+  [Fact]
+  public void PropagatesNoneWithSelectQuerySyntaxWhenNone() {
+    Maybe<int> result =
+      from a in None<int>()
+      select a + 1;
+
+    result.OrElse(-1)
+      .Should().Be(-1);
+  }
+
+  [Fact]
   public void MapsValuesWithSelectManyQuerySyntaxWhenSome() {
     Maybe<int> result =
       from a in Some(1)
