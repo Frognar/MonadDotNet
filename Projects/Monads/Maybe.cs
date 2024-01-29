@@ -34,7 +34,10 @@ public readonly record struct Maybe<T> {
     return hasValue ? value : defaultValue;
   }
 
-  public T OrElse(Func<T> defaultFactory) => hasValue ? value : defaultFactory();
+  public T OrElse(Func<T> defaultValueFactory) {
+    ArgumentNullException.ThrowIfNull(defaultValueFactory);
+    return hasValue ? value : defaultValueFactory();
+  }
 
   public static Maybe<T> None() => new();
   public static Maybe<T> Some(T value) => new(value);

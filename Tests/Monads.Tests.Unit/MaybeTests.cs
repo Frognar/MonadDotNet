@@ -46,6 +46,12 @@ public class MaybeTests {
   }
 
   [Fact]
+  public void ThrowsExceptionWhenDefaultFactoryIsNull() {
+    Func<string> act = () => Some("str").OrElse((Func<string>)null!);
+    act.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
   public void MapsValueWhenSome() {
     Some(10)
       .Select(ToString)
