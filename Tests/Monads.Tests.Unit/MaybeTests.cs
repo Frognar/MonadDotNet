@@ -9,45 +9,29 @@ public class MaybeTests {
   static Maybe<T> None<T>() => Maybe<T>.None();
 
   [Fact]
-  public void ReturnsInternalValueIfCreatedWithValue() {
+  public void ThrowsExceptionWhenSomeNull() {
+    Action act = () => Some<string>(null!);
+    act.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
+  public void ReturnsInternalValueWhenSome() {
     Some(10)
       .OrElse(-1)
       .Should().Be(10);
   }
 
   [Fact]
-  public void ReturnsFallbackValueIfCreatedWithoutValue() {
+  public void ReturnsFallbackValueWhenNone() {
     None<int>()
       .OrElse(-1)
       .Should().Be(-1);
   }
 
   [Fact]
-  public void ThrowsExceptionWhenSomeIsCalledWithNull() {
-    Action act = () => Some<string>(null!);
-    act.Should().Throw<ArgumentNullException>();
-  }
-
-  [Fact]
   public void ThrowsExceptionWhenOrElseIsCalledWithNull() {
     Func<string> act = () => Some("str").OrElse(null!);
     act.Should().Throw<ArgumentNullException>();
-  }
-
-  [Fact]
-  public void FlatMapsValueWhenSome() {
-    Some(10)
-      .SelectMany(value => Some(value.ToString()))
-      .OrElse("")
-      .Should().Be("10");
-  }
-
-  [Fact]
-  public void PropagatesFlattenedNoneWhenNone() {
-    None<int>()
-      .SelectMany(value => Some(value.ToString()))
-      .OrElse("none")
-      .Should().Be("none");
   }
 
   [Fact]
@@ -81,6 +65,22 @@ public class MaybeTests {
   }
 
   [Fact]
+  public void FlatMapsValueWhenSome() {
+    Some(10)
+      .SelectMany(value => Some(value.ToString()))
+      .OrElse("")
+      .Should().Be("10");
+  }
+
+  [Fact]
+  public void PropagatesFlattenedNoneWhenNone() {
+    None<int>()
+      .SelectMany(value => Some(value.ToString()))
+      .OrElse("none")
+      .Should().Be("none");
+  }
+
+  [Fact]
   public void ThrowsExceptionWhenFlatSelectorIsNull() {
     Action act = () => Some(10).SelectMany<int>(null!);
     act.Should().Throw<ArgumentNullException>();
@@ -92,28 +92,6 @@ public class MaybeTests {
       .Flatten()
       .OrElse(-1)
       .Should().Be(10);
-  }
-
-  [Fact]
-  public void MapsValuesWithQuerySyntax() {
-    Maybe<int> result = from a in Some(1)
-      from b in Some(2)
-      from c in Some(3)
-      select a + b + c;
-
-    result.OrElse(-1)
-      .Should().Be(6);
-  }
-
-  [Fact]
-  public void PropagatesNoneWithQuerySyntax() {
-    Maybe<int> result = from a in Some(1)
-      from b in Some(2)
-      from c in None<int>()
-      select a + b + c;
-
-    result.OrElse(-1)
-      .Should().Be(-1);
   }
 
   [Fact]
@@ -141,7 +119,7 @@ public class MaybeTests {
         .Match(
           some: value => value * 2,
           none: () => throw new UnreachableException());
-    
+
     act.Should().NotThrow();
   }
 
@@ -152,7 +130,7 @@ public class MaybeTests {
         .Match(
           some: _ => throw new UnreachableException(),
           none: () => -1);
-    
+
     act.Should().NotThrow();
   }
 
@@ -163,7 +141,7 @@ public class MaybeTests {
         .Match(
           some: null!,
           none: () => -1);
-    
+
     act.Should().Throw<ArgumentNullException>();
   }
 
@@ -174,7 +152,31 @@ public class MaybeTests {
         .Match(
           some: value => value,
           none: null!);
-    
+
     act.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
+  public void MapsValuesWithSelectManyQuerySyntaxWhenSome() {
+    Maybe<int> result =
+      from a in Some(1)
+      from b in Some(2)
+      from c in Some(3)
+      select a + b + c;
+
+    result.OrElse(-1)
+      .Should().Be(6);
+  }
+
+  [Fact]
+  public void PropagatesNoneWithSelectManyQuerySyntaxWhenNone() {
+    Maybe<int> result =
+      from a in Some(1)
+      from b in Some(2)
+      from c in None<int>()
+      select a + b + c;
+
+    result.OrElse(-1)
+      .Should().Be(-1);
   }
 }
