@@ -27,8 +27,15 @@ public class MaybeTests {
 
   [Fact]
   public void ThrowsExceptionWhenOrElseIsCalledWithNull() {
-    Func<string> act = () => Some("str").OrElse(null!);
+    Func<string> act = () => Some("str").OrElse((string)null!);
     act.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
+  public void ReturnsFactoredFallbackValueWhenNone() {
+    None<int>()
+      .OrElse(() => -1)
+      .Should().Be(-1);
   }
 
   [Fact]
