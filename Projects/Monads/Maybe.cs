@@ -14,11 +14,8 @@ public readonly record struct Maybe<T> {
 
   public Maybe<TResult> Select<TResult>(Func<T, TResult> selector) {
     ArgumentNullException.ThrowIfNull(selector);
-    return SelectMany(x =>
-    {
-      TResult result = selector(x);
-      return result is null ? Maybe<TResult>.None() : Maybe<TResult>.Some(result);
-    });
+    return SelectMany(x => SomeNullable(selector(x)));
+    Maybe<TResult> SomeNullable(TResult x) => x is null ? Maybe<TResult>.None() : Maybe<TResult>.Some(x);
   }
 
   public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector) {
