@@ -32,6 +32,13 @@ public class MaybeTests {
   }
 
   [Fact]
+  public void DefaultFactoryIsNotCalledWhenSome() {
+    Some(10)
+      .OrElse(() => throw new UnreachableException())
+      .Should().Be(10);
+  }
+
+  [Fact]
   public void ReturnsFactoredFallbackValueWhenNone() {
     None<int>()
       .OrElse(() => -1)
