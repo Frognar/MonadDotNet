@@ -6,7 +6,7 @@ public readonly record struct Maybe<T> {
   readonly bool hasValue;
   readonly T value;
 
-  Maybe(T value) {
+  public Maybe(T value) {
     ArgumentNullException.ThrowIfNull(value);
     this.value = value;
     hasValue = true;
@@ -14,11 +14,8 @@ public readonly record struct Maybe<T> {
 
   public Maybe<TResult> Select<TResult>(Func<T, TResult> selector) {
     ArgumentNullException.ThrowIfNull(selector);
-    return SelectMany(x =>
-    {
-      TResult result = selector(x);
-      return result is null ? Maybe<TResult>.None() : Maybe<TResult>.Some(result);
-    });
+    return SelectMany(x => SomeNullable(selector(x)));
+    Maybe<TResult> SomeNullable(TResult x) => x is null ? Maybe<TResult>.None() : Maybe<TResult>.Some(x);
   }
 
   public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector) {
@@ -35,6 +32,11 @@ public readonly record struct Maybe<T> {
   public T OrElse(T defaultValue) {
     ArgumentNullException.ThrowIfNull(defaultValue);
     return hasValue ? value : defaultValue;
+  }
+
+  public T OrElse(Func<T> defaultValueFactory) {
+    ArgumentNullException.ThrowIfNull(defaultValueFactory);
+    return hasValue ? value : defaultValueFactory();
   }
 
   public static Maybe<T> None() => new();
