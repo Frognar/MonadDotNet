@@ -6,7 +6,7 @@ public readonly record struct Maybe<T> {
   readonly bool hasValue;
   readonly T value;
 
-  Maybe(T value) {
+  public Maybe(T value) {
     ArgumentNullException.ThrowIfNull(value);
     this.value = value;
     hasValue = true;
