@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Projects\Monads\Monads.csproj" />
+      <ProjectReference Include="..\..\src\Monads\Monads.csproj" />
     </ItemGroup>
 
 </Project>
