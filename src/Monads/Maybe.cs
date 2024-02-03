@@ -22,7 +22,7 @@ public readonly record struct Maybe<T> {
   }
 
   public Maybe<T> Where(Func<T, bool> predicate) {
-    return predicate(value) ? this : None();
+    return hasValue && predicate(value) ? this : None();
   }
 
   public TResult Match<TResult>(Func<T, TResult> some, Func<TResult> none) {
