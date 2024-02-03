@@ -21,6 +21,10 @@ public readonly record struct Maybe<T> {
     return hasValue ? selector(value) : Maybe<TResult>.None();
   }
 
+  public Maybe<T> Where(Func<T, bool> predicate) {
+    return this;
+  }
+
   public TResult Match<TResult>(Func<T, TResult> some, Func<TResult> none) {
     ArgumentNullException.ThrowIfNull(some);
     ArgumentNullException.ThrowIfNull(none);
