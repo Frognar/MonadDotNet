@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-
 namespace Frognar.Monads.Optional;
 
 public readonly record struct Option<T> {

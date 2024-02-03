@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Frognar.Monads.Results;
+﻿namespace Frognar.Monads.Results;
 
 public static class ResultExtensions {
   public static Result<T> ToResult<T>(this T value) {

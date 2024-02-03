@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Frognar.Monads;
+﻿namespace Frognar.Monads;
 
 public readonly record struct Maybe<T> {
   readonly bool hasValue;

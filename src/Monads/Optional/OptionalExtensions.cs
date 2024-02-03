@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Frognar.Monads.Optional;
+﻿namespace Frognar.Monads.Optional;
 
 public static class OptionalExtensions {
   public static Option<T> ToOption<T>(this T? obj) {
