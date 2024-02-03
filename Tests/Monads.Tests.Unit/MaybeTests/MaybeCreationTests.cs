@@ -2,11 +2,7 @@
 
 public class MaybeCreationTests {
   [Theory]
-  [InlineData(0)]
-  [InlineData(10)]
-  [InlineData(-15)]
-  [InlineData(int.MaxValue)]
-  [InlineData(int.MinValue)]
+  [ClassData(typeof(Helpers.TestDataGenerators.IntTestData))]
   public void ReturnsMaybeWithSome(int value) {
     Some(value)
       .Should().Be(new Maybe<int>(value));

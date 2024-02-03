@@ -1,19 +1,14 @@
-﻿using System.Diagnostics;
-
-namespace Monads.Tests.Unit.MaybeTests;
+﻿namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeMatchTests {
-  static int MultiplyBy2(int x) => x * 2;
-  static int Minus1() => -1;
-  static int ThrowUnreachable() => throw new UnreachableException();
-
-  [Fact]
-  public void MatchSomeWhenSome() {
-    Some(10)
+  [Theory]
+  [ClassData(typeof(Helpers.TestDataGenerators.IntTimes2TestData))]
+  public void MatchSomeWhenSome(int value, int expected) {
+    Some(value)
       .Match(
         some: MultiplyBy2,
         none: Minus1)
-      .Should().Be(20);
+      .Should().Be(expected);
   }
 
   [Fact]

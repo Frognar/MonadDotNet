@@ -1,17 +1,12 @@
 namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeSelectTests {
-  static string ToString(int x) => x.ToString();
 
   [Theory]
-  [InlineData(-15, "-15")]
-  [InlineData(0, "0")]
-  [InlineData(10, "10")]
-  [InlineData(int.MaxValue, "2147483647")]
-  [InlineData(int.MinValue, "-2147483648")]
+  [ClassData(typeof(Helpers.TestDataGenerators.IntToStringTestData))]
   public void MapsValueWhenSome(int value, string expected) {
     Some(value)
-      .Select(ToString)
+      .Select(IntToString)
       .OrElse("")
       .Should().Be(expected);
   }
@@ -19,7 +14,7 @@ public class MaybeSelectTests {
   [Fact]
   public void PropagatesNoneWhenNone() {
     None<int>()
-      .Select(ToString)
+      .Select(IntToString)
       .OrElse("none")
       .Should().Be("none");
   }
@@ -39,11 +34,7 @@ public class MaybeSelectTests {
   }
 
   [Theory]
-  [InlineData(-15, -14)]
-  [InlineData(0, 1)]
-  [InlineData(10, 11)]
-  [InlineData(int.MaxValue, -2147483648)] // overflow
-  [InlineData(int.MinValue, -2147483647)]
+  [ClassData(typeof(Helpers.TestDataGenerators.IntPlusOneTestData))]
   public void MapsValuesWithQuerySyntaxWhenSome(int value, int expected) {
     Maybe<int> result =
       from a in Some(value)

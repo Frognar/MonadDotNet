@@ -1,33 +1,23 @@
-﻿using System.Diagnostics;
-
-namespace Monads.Tests.Unit.MaybeTests;
+﻿namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeOrElseFactoryTests {
   [Theory]
-  [InlineData(0)]
-  [InlineData(10)]
-  [InlineData(-15)]
-  [InlineData(int.MaxValue)]
-  [InlineData(int.MinValue)]
+  [ClassData(typeof(Helpers.TestDataGenerators.IntTestData))]
   public void ReturnsInternalValueWhenSome(int value) {
     Some(value)
-      .OrElse(() => -1)
+      .OrElse(Minus1)
       .Should().Be(value);
   }
 
   [Fact]
   public void DefaultFactoryIsNotCalledWhenSome() {
     Some(10)
-      .OrElse(() => throw new UnreachableException())
+      .OrElse(ThrowUnreachable)
       .Should().Be(10);
   }
 
   [Theory]
-  [InlineData(0)]
-  [InlineData(10)]
-  [InlineData(-15)]
-  [InlineData(int.MaxValue)]
-  [InlineData(int.MinValue)]
+  [ClassData(typeof(Helpers.TestDataGenerators.IntTestData))]
   public void ReturnsFallbackValueWhenNone(int fallback) {
     None<int>()
       .OrElse(() => fallback)
