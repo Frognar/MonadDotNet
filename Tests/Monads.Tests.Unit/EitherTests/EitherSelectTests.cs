@@ -13,7 +13,7 @@ public class EitherSelectTests {
   public void MapLeftWhenLeftCreated() {
     Either<int, string>.Left(42)
       .SelectLeft(x => x.ToString())
-      .Match(left => left, _ => "")
+      .Match(left: left => left, right: _ => "")
       .Should().Be("42");
   }
 
@@ -21,7 +21,7 @@ public class EitherSelectTests {
   public void PropagateRightWhenRightCreated() {
     Either<int, bool>.Right(true)
       .SelectLeft(x => x.ToString())
-      .Match(left => left, right => right ? "true" : "false")
+      .Match(left: left => left, right: right => right ? "true" : "false")
       .Should().Be("true");
   }
 
@@ -37,7 +37,7 @@ public class EitherSelectTests {
   public void MapRightWhenRightCreated() {
     Either<int, string>.Right("42")
       .SelectRight(x => string.IsNullOrEmpty(x) == false)
-      .Match(_ => false, right => right)
+      .Match(left: _ => false, right: right => right)
       .Should().Be(true);
   }
 
@@ -45,23 +45,31 @@ public class EitherSelectTests {
   public void PropagateLeftWhenLeftCreated() {
     Either<int, bool>.Left(42)
       .SelectRight(x => x ? 1 : 0)
-      .Match(_ => -1, right => right)
+      .Match(left: _ => -1, right: right => right)
       .Should().Be(-1);
   }
 
   [Fact]
   public void BothIdentityLaw() {
     Either<int, string> left = Either<int, string>.Left(42);
-    left.SelectBoth(l => l, r => r).Should().Be(left);
+    left.SelectBoth(leftSelector: l => l, rightSelector: r => r).Should().Be(left);
     Either<int, string> right = Either<int, string>.Right("42");
-    right.SelectBoth(l => l, r => r).Should().Be(right);
+    right.SelectBoth(leftSelector: l => l, rightSelector: r => r).Should().Be(right);
   }
 
   [Fact]
   public void MapLeftInSelectBothWhenLeftCreated() {
     Either<int, string>.Left(42)
-      .SelectBoth(l => l > 0, _ => "right")
-      .Match(left => left, _ => false)
+      .SelectBoth(leftSelector: l => l > 0, rightSelector: _ => "right")
+      .Match(left: left => left, right: _ => false)
+      .Should().BeTrue();
+  }
+
+  [Fact]
+  public void MapRightInSelectBothWhenRightCreated() {
+    Either<int, string>.Right("42")
+      .SelectBoth(leftSelector: l => l > 0, rightSelector: r => r.Length)
+      .Match(left: _ => false, right: right => right > 0)
       .Should().BeTrue();
   }
 }
