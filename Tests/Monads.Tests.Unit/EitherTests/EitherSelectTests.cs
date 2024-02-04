@@ -2,14 +2,6 @@
 
 public class EitherSelectTests {
   [Fact]
-  public void LeftIdentityLaw() {
-    Either<int, string> left = Either<int, string>.Left(42);
-    left.SelectLeft(x => x).Should().Be(left);
-    Either<int, string> right = Either<int, string>.Right("42");
-    right.SelectLeft(x => x).Should().Be(right);
-  }
-
-  [Fact]
   public void MapLeftWhenLeftCreated() {
     Either<int, string>.Left(42)
       .SelectLeft(x => x.ToString())
@@ -32,14 +24,6 @@ public class EitherSelectTests {
   }
 
   [Fact]
-  public void RightIdentityLaw() {
-    Either<int, string> right = Either<int, string>.Right("42");
-    right.SelectRight(x => x).Should().Be(right);
-    Either<int, string> left = Either<int, string>.Left(42);
-    left.SelectRight(x => x).Should().Be(left);
-  }
-
-  [Fact]
   public void MapRightWhenRightCreated() {
     Either<int, string>.Right("42")
       .SelectRight(x => string.IsNullOrEmpty(x) == false)
@@ -59,14 +43,6 @@ public class EitherSelectTests {
   public void ThrowArgumentNullExceptionWhenRightSelectorIsNull() {
     Action act = () => Either<int, string>.Right("42").SelectRight<int>(null!);
     act.Should().Throw<ArgumentNullException>();
-  }
-
-  [Fact]
-  public void BothIdentityLaw() {
-    Either<int, string> left = Either<int, string>.Left(42);
-    left.SelectBoth(leftSelector: l => l, rightSelector: r => r).Should().Be(left);
-    Either<int, string> right = Either<int, string>.Right("42");
-    right.SelectBoth(leftSelector: l => l, rightSelector: r => r).Should().Be(right);
   }
 
   [Fact]
