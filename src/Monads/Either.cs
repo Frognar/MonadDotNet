@@ -5,6 +5,10 @@ public readonly record struct Either<L, R> {
   readonly L leftValue;
   readonly R rightValue;
 
+  public Either() {
+    throw new InvalidOperationException("Default constructor is not allowed for Either<L, R>.");
+  }
+
   Either(L left) {
     ArgumentNullException.ThrowIfNull(left);
     leftValue = left;

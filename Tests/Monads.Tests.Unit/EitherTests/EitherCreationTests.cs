@@ -2,6 +2,12 @@
 
 public class EitherCreationTests {
   [Fact]
+  public void DefaultConstructionIsNotAllowedForEither() {
+    Func<Either<int, int>> act = () => new Either<int, int>();
+    act.Should().Throw<InvalidOperationException>();
+  }
+
+  [Fact]
   public void IsNotNullWhenLeft() {
     Either<int, string>.Left(42).Should().NotBeNull();
     Either<bool, int>.Left(true).Should().NotBeNull();
