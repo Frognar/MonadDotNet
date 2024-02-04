@@ -3,8 +3,10 @@
 public class EitherSelectTests {
   [Fact]
   public void LeftIdentityLaw() {
-    Either<int, string> either = Either<int, string>.Left(42);
-    either.SelectLeft(x => x).Should().Be(either);
+    Either<int, string> left = Either<int, string>.Left(42);
+    left.SelectLeft(x => x).Should().Be(left);
+    Either<int, string> right = Either<int, string>.Right("42");
+    right.SelectLeft(x => x).Should().Be(right);
   }
 
   [Fact]
