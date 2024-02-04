@@ -56,4 +56,12 @@ public class EitherSelectTests {
     Either<int, string> right = Either<int, string>.Right("42");
     right.SelectBoth(l => l, r => r).Should().Be(right);
   }
+
+  [Fact]
+  public void MapLeftInSelectBothWhenLeftCreated() {
+    Either<int, string>.Left(42)
+      .SelectBoth(l => l > 0, _ => "right")
+      .Match(left => left, _ => false)
+      .Should().BeTrue();
+  }
 }
