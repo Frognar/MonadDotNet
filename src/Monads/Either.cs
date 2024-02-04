@@ -15,7 +15,7 @@ public readonly record struct Either<L, R> {
     return new Either<L, R>();
   }
 
-  public int Match(Func<L, int> left, Func<R, int> right) {
+  public TResult Match<TResult>(Func<L, TResult> left, Func<R, TResult> right) {
     return left(leftValue);
   }
 }

@@ -11,4 +11,13 @@ public class EitherMatchTests {
         _ => -1
       ).Should().Be(valueOnSuccess);
   }
+
+  [Fact]
+  public void MatchStringOnLeftWhenLeftCreated() {
+    Either<bool, int>.Left(false)
+      .Match(
+        left => left ? "success" : "other kind of success",
+        _ => "Nothing"
+      ).Should().Be("other kind of success");
+  }
 }
