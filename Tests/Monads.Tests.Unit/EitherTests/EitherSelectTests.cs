@@ -48,4 +48,12 @@ public class EitherSelectTests {
       .Match(_ => -1, right => right)
       .Should().Be(-1);
   }
+
+  [Fact]
+  public void BothIdentityLaw() {
+    Either<int, string> left = Either<int, string>.Left(42);
+    left.SelectBoth(l => l, r => r).Should().Be(left);
+    Either<int, string> right = Either<int, string>.Right("42");
+    right.SelectBoth(l => l, r => r).Should().Be(right);
+  }
 }
