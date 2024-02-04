@@ -24,4 +24,28 @@ public class EitherSelectTests {
       .Match(left => left, right => right ? "true" : "false")
       .Should().Be("true");
   }
+
+  [Fact]
+  public void RightIdentityLaw() {
+    Either<int, string> right = Either<int, string>.Right("42");
+    right.SelectRight(x => x).Should().Be(right);
+    Either<int, string> left = Either<int, string>.Left(42);
+    left.SelectRight(x => x).Should().Be(left);
+  }
+
+  [Fact]
+  public void MapRightWhenRightCreated() {
+    Either<int, string>.Right("42")
+      .SelectRight(x => string.IsNullOrEmpty(x) == false)
+      .Match(_ => false, right => right)
+      .Should().Be(true);
+  }
+
+  [Fact]
+  public void PropagateLeftWhenLeftCreated() {
+    Either<int, bool>.Left(42)
+      .SelectRight(x => x ? 1 : 0)
+      .Match(_ => -1, right => right)
+      .Should().Be(-1);
+  }
 }
