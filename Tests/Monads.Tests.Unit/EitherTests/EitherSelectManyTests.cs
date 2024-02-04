@@ -38,4 +38,26 @@ public class EitherSelectManyTests {
     Either<int, string> left = Either<int, string>.Left(42);
     left.SelectMany(Either<int, string>.Right).Should().Be(left);
   }
+
+  [Fact]
+  public void MapRightWhenRightCreated() {
+    Either<int, string>.Right("42")
+      .SelectMany(x => Either<int, bool>.Right(string.IsNullOrEmpty(x) == false))
+      .Match(left: _ => false, right: right => right)
+      .Should().Be(true);
+  }
+
+  [Fact]
+  public void PropagateLeftWhenLeftCreated() {
+    Either<int, bool>.Left(42)
+      .SelectMany(x => Either<int, int>.Right(x ? 1 : 0))
+      .Match(left: _ => -1, right: right => right)
+      .Should().Be(-1);
+  }
+
+  [Fact]
+  public void ThrowArgumentNullExceptionWhenRightSelectorIsNull() {
+    Action act = () => Either<int, string>.Right("42").SelectMany((Func<string, Either<int, string>>)null!);
+    act.Should().Throw<ArgumentNullException>();
+  }
 }
