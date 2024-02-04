@@ -35,4 +35,10 @@ public class EitherMatchTests {
     Func<int> act = () => Either<bool, int>.Left(true).Match(null!, _ => 1);
     act.Should().Throw<ArgumentNullException>();
   }
+
+  [Fact]
+  public void ThrowsNullArgumentExceptionWhenRightMethodIsNull() {
+    Func<int> act = () => Either<bool, int>.Left(true).Match(_ => 1, null!);
+    act.Should().Throw<ArgumentNullException>();
+  }
 }
