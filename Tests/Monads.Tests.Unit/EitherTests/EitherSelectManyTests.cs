@@ -60,4 +60,13 @@ public class EitherSelectManyTests {
     Action act = () => Either<int, string>.Right("42").SelectMany((Func<string, Either<int, string>>)null!);
     act.Should().Throw<ArgumentNullException>();
   }
+
+  [Fact]
+  public void BothIdentityLaw() {
+    Either<int, string> left = Either<int, string>.Left(42);
+    left.SelectMany(leftSelector: Either<int, string>.Left, rightSelector: Either<int, string>.Right).Should().Be(left);
+    Either<int, string> right = Either<int, string>.Right("42");
+    right.SelectMany(leftSelector: Either<int, string>.Left, rightSelector: Either<int, string>.Right).Should()
+      .Be(right);
+  }
 }

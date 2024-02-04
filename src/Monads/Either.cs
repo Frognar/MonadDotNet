@@ -50,6 +50,10 @@ public readonly record struct Either<L, R> {
   public Either<L, R1> SelectMany<R1>(Func<R, Either<L, R1>> rightSelector)
     => Match(left: Either<L, R1>.Left, right: rightSelector);
 
+  public Either<L, R> SelectMany(Func<L, Either<L, R>> leftSelector, Func<R, Either<L, R>> rightSelector) {
+    return this;
+  }
+
   public TResult Match<TResult>(Func<L, TResult> left, Func<R, TResult> right) {
     ArgumentNullException.ThrowIfNull(left);
     ArgumentNullException.ThrowIfNull(right);
