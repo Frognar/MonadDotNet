@@ -1,10 +1,20 @@
 ﻿namespace Frognar.Monads;
 
 public readonly record struct Either<L, R> {
+  readonly bool isRight;
   readonly L leftValue;
+  readonly R rightValue;
 
   Either(L left) {
     leftValue = left;
+    rightValue = default!;
+    isRight = false;
+  }
+
+  Either(R right) {
+    leftValue = default!;
+    rightValue = right;
+    isRight = true;
   }
 
   public static Either<L, R> Left(L value) {
@@ -12,10 +22,10 @@ public readonly record struct Either<L, R> {
   }
 
   public static Either<L, R> Right(R value) {
-    return new Either<L, R>();
+    return new Either<L, R>(value);
   }
 
   public TResult Match<TResult>(Func<L, TResult> left, Func<R, TResult> right) {
-    return left(leftValue);
+    return isRight ? right(rightValue) : left(leftValue);
   }
 }

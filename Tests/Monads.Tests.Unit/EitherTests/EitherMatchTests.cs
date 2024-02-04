@@ -20,4 +20,13 @@ public class EitherMatchTests {
         _ => "Nothing"
       ).Should().Be("other kind of success");
   }
+
+  [Fact]
+  public void MatchIntOnRightWhenRightCreated() {
+    Either<bool, int>.Right(1)
+      .Match(
+        _ => -1,
+        right => right + 10_000
+      ).Should().Be(10_001);
+  }
 }
