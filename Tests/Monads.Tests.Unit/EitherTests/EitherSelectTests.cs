@@ -18,6 +18,12 @@ public class EitherSelectTests {
   }
 
   [Fact]
+  public void ThrowArgumentNullExceptionWhenLeftSelectorIsNull() {
+    Action action = () => Either<int, string>.Left(42).SelectLeft<int>(null!);
+    action.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
   public void PropagateRightWhenRightCreated() {
     Either<int, bool>.Right(true)
       .SelectLeft(x => x.ToString())
