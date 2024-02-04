@@ -48,6 +48,12 @@ public class EitherSelectTests {
   }
 
   [Fact]
+  public void ThrowArgumentNullExceptionWhenRightSelectorIsNull() {
+    Action action = () => Either<int, string>.Right("42").SelectRight<int>(null!);
+    action.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
   public void PropagateLeftWhenLeftCreated() {
     Either<int, bool>.Left(42)
       .SelectRight(x => x ? 1 : 0)
