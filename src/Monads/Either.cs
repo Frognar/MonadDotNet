@@ -23,13 +23,8 @@ public readonly record struct Either<L, R> {
     isRight = true;
   }
 
-  public static Either<L, R> Left(L value) {
-    return new Either<L, R>(value);
-  }
-
-  public static Either<L, R> Right(R value) {
-    return new Either<L, R>(value);
-  }
+  public static Either<L, R> Left(L value) => new(value);
+  public static Either<L, R> Right(R value) => new(value);
 
   public Either<L1, R> SelectLeft<L1>(Func<L, L1> leftSelector) {
     ArgumentNullException.ThrowIfNull(leftSelector);
