@@ -13,6 +13,7 @@ public readonly record struct Either<L, R> {
   }
 
   Either(R right) {
+    ArgumentNullException.ThrowIfNull(right);
     leftValue = default!;
     rightValue = right;
     isRight = true;

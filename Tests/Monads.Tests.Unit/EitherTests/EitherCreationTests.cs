@@ -17,7 +17,13 @@ public class EitherCreationTests {
 
   [Fact]
   public void ThrowsArgumentNullExceptionWhenLeftCreatedWithNull() {
-    var act = () => Either<string, int>.Left(null!);
+    Func<Either<string, int>> act = () => Either<string, int>.Left(null!);
+    act.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
+  public void ThrowsArgumentNullExceptionWhenRightCreatedWithNull() {
+    Func<Either<int, string>> act = () => Either<int, string>.Right(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 }
