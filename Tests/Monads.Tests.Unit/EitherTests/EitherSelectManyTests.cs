@@ -119,4 +119,14 @@ public class EitherSelectManyTests {
 
     act.Should().Throw<ArgumentNullException>();
   }
+
+  [Fact]
+  public void MapRightUsingQuerySyntax() {
+    Either<int, int> result =
+      from r1 in Either<int, string>.Right("42")
+      from r2 in Either<int, bool>.Right(true)
+      select int.Parse(r1) + (r2 ? 100 : 0);
+
+    result.Match(left: _ => -1, right: right => right).Should().Be(142);
+  }
 }
