@@ -28,18 +28,18 @@ public readonly record struct Either<L, R> {
 
   public Either<L1, R> SelectLeft<L1>(Func<L, L1> leftSelector) {
     ArgumentNullException.ThrowIfNull(leftSelector);
-    return isRight ? Either<L1, R>.Right(rightValue) : Either<L1, R>.Left(leftSelector(leftValue));
+    return Match(left: l => Either<L1, R>.Left(leftSelector(l)), right: Either<L1, R>.Right);
   }
 
   public Either<L, R1> SelectRight<R1>(Func<R, R1> rightSelector) {
     ArgumentNullException.ThrowIfNull(rightSelector);
-    return isRight ? Either<L, R1>.Right(rightSelector(rightValue)) : Either<L, R1>.Left(leftValue);
+    return Match(left: Either<L, R1>.Left, right: r => Either<L, R1>.Right(rightSelector(r)));
   }
 
   public Either<L1, R1> SelectBoth<L1, R1>(Func<L, L1> leftSelector, Func<R, R1> rightSelector) {
     ArgumentNullException.ThrowIfNull(leftSelector);
     ArgumentNullException.ThrowIfNull(rightSelector);
-    return isRight ? Either<L1, R1>.Right(rightSelector(rightValue)) : Either<L1, R1>.Left(leftSelector(leftValue));
+    return Match(left: l => Either<L1, R1>.Left(leftSelector(l)), right: r => Either<L1, R1>.Right(rightSelector(r)));
   }
 
   public Either<L, R1> Select<R1>(Func<R, R1> rightSelector) => SelectRight(rightSelector);
