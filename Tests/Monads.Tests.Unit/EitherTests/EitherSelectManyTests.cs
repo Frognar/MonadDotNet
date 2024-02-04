@@ -64,9 +64,59 @@ public class EitherSelectManyTests {
   [Fact]
   public void BothIdentityLaw() {
     Either<int, string> left = Either<int, string>.Left(42);
-    left.SelectMany(leftSelector: Either<int, string>.Left, rightSelector: Either<int, string>.Right).Should().Be(left);
+    left.SelectMany(
+      leftSelector: Either<int, string>.Left,
+      rightSelector: Either<int, string>.Right
+    ).Should().Be(left);
+
     Either<int, string> right = Either<int, string>.Right("42");
-    right.SelectMany(leftSelector: Either<int, string>.Left, rightSelector: Either<int, string>.Right).Should()
-      .Be(right);
+    right.SelectMany(
+      leftSelector: Either<int, string>.Left,
+      rightSelector: Either<int, string>.Right
+    ).Should().Be(right);
+  }
+
+  [Fact]
+  public void MapLeftInSelectBothWhenLeftCreated() {
+    Either<int, string>.Left(42)
+      .SelectMany(
+        leftSelector: l => Either<bool, int>.Left(l > 0),
+        r => Either<bool, int>.Right(r.Length)
+      )
+      .Match(left: left => left, right: _ => false)
+      .Should().BeTrue();
+  }
+
+  [Fact]
+  public void MapRightInSelectBothWhenRightCreated() {
+    Either<int, string>.Right("42")
+      .SelectMany(
+        leftSelector: l => Either<bool, int>.Left(l > 0),
+        rightSelector: r => Either<bool, int>.Right(r.Length)
+      )
+      .Match(left: _ => false, right: right => right > 0)
+      .Should().BeTrue();
+  }
+
+  [Fact]
+  public void ThrowArgumentNullExceptionWhenLeftSelectorIsNullInSelectBoth() {
+    Action act = () => Either<int, string>.Left(42)
+      .SelectMany(
+        leftSelector: null!,
+        rightSelector: Either<int, string>.Right
+      );
+
+    act.Should().Throw<ArgumentNullException>();
+  }
+
+  [Fact]
+  public void ThrowArgumentNullExceptionWhenRightSelectorIsNullInSelectBoth() {
+    Action act = () => Either<int, string>.Right("42")
+      .SelectMany(
+        leftSelector: Either<int, string>.Left,
+        rightSelector: null!
+      );
+
+    act.Should().Throw<ArgumentNullException>();
   }
 }
