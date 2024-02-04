@@ -8,4 +8,20 @@ public class EitherSelectManyTests {
     Either<int, string> right = Either<int, string>.Right("42");
     right.SelectMany(Either<int, string>.Left).Should().Be(right);
   }
+
+  [Fact]
+  public void MapLeftWhenLeftCreated() {
+    Either<int, string>.Left(42)
+      .SelectMany(x => Either<string, string>.Left(x.ToString()))
+      .Match(left: left => left, right: _ => "")
+      .Should().Be("42");
+  }
+
+  [Fact]
+  public void PropagateRightWhenRightCreated() {
+    Either<int, bool>.Right(true)
+      .SelectMany(x => Either<string, bool>.Left(x.ToString()))
+      .Match(left: left => left, right: right => right ? "true" : "false")
+      .Should().Be("true");
+  }
 }
