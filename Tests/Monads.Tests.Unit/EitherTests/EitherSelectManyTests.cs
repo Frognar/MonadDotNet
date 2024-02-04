@@ -24,4 +24,10 @@ public class EitherSelectManyTests {
       .Match(left: left => left, right: right => right ? "true" : "false")
       .Should().Be("true");
   }
+
+  [Fact]
+  public void ThrowArgumentNullExceptionWhenLeftSelectorIsNull() {
+    Action act = () => Either<int, string>.Right("42").SelectMany((Func<int, Either<int, string>>)null!);
+    act.Should().Throw<ArgumentNullException>();
+  }
 }
