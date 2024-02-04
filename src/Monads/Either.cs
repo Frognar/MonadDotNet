@@ -31,6 +31,10 @@ public readonly record struct Either<L, R> {
     return new Either<L, R>(value);
   }
 
+  public Either<L, R> SelectLeft(Func<L, L> leftSelector) {
+    return this;
+  }
+
   public TResult Match<TResult>(Func<L, TResult> left, Func<R, TResult> right) {
     ArgumentNullException.ThrowIfNull(left);
     ArgumentNullException.ThrowIfNull(right);
