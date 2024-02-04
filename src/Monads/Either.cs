@@ -28,6 +28,7 @@ public readonly record struct Either<L, R> {
   }
 
   public TResult Match<TResult>(Func<L, TResult> left, Func<R, TResult> right) {
+    ArgumentNullException.ThrowIfNull(left);
     return isRight ? right(rightValue) : left(leftValue);
   }
 }
