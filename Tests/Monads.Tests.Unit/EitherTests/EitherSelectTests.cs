@@ -14,4 +14,12 @@ public class EitherSelectTests {
       .Match(left => left, _ => "")
       .Should().Be("42");
   }
+
+  [Fact]
+  public void PropagateRightWhenRightCreated() {
+    Either<int, bool>.Right(true)
+      .SelectLeft(x => x.ToString())
+      .Match(left => left, right => right ? "true" : "false")
+      .Should().Be("true");
+  }
 }
