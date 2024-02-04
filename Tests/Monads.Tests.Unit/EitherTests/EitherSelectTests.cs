@@ -100,4 +100,13 @@ public class EitherSelectTests {
 
     act.Should().Throw<ArgumentNullException>();
   }
+
+  [Fact]
+  public void MapRightUsingQuerySyntax() {
+    Either<int, string> result =
+      from right in Either<int, int>.Right(42)
+      select right.ToString();
+
+    result.Match(left: _ => "", right: right => right).Should().Be("42");
+  }
 }
