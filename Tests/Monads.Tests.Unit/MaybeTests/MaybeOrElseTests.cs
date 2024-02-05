@@ -2,11 +2,7 @@
 
 public class MaybeOrElseTests {
   [Theory]
-  [InlineData(0)]
-  [InlineData(10)]
-  [InlineData(-15)]
-  [InlineData(int.MaxValue)]
-  [InlineData(int.MinValue)]
+  [ClassData(typeof(Helpers.TestDataGenerators.IntTestData))]
   public void ReturnsInternalValueWhenSome(int value) {
     Some(value)
       .OrElse(-1)
@@ -14,11 +10,7 @@ public class MaybeOrElseTests {
   }
 
   [Theory]
-  [InlineData(0)]
-  [InlineData(10)]
-  [InlineData(-15)]
-  [InlineData(int.MaxValue)]
-  [InlineData(int.MinValue)]
+  [ClassData(typeof(Helpers.TestDataGenerators.IntTestData))]
   public void ReturnsFallbackValueWhenNone(int fallback) {
     None<int>()
       .OrElse(fallback)

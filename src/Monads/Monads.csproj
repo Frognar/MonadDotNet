@@ -1,15 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Nullable>enable</Nullable>
         <RootNamespace>Frognar.Monads</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Version>0.0.8</Version>
-        <Authors>Frognar</Authors>
         <PackageProjectUrl>https://github.com/Frognar/MonadDotNet</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Frognar/MonadDotNet</RepositoryUrl>
-        <LangVersion>default</LangVersion>
-        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
 </Project>

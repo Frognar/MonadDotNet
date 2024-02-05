@@ -1,8 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monads", "Projects\Monads\Monads.csproj", "{7BA97FC5-CA0E-4A25-A821-A8CD8901066B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monads", "src\Monads\Monads.csproj", "{7BA97FC5-CA0E-4A25-A821-A8CD8901066B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monads.Tests.Unit", "Tests\Monads.Tests.Unit\Monads.Tests.Unit.csproj", "{8D637542-DDAA-4CD9-8D52-D0F6449268E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monads.Tests.Unit", "tests\Monads.Tests.Unit\Monads.Tests.Unit.csproj", "{8D637542-DDAA-4CD9-8D52-D0F6449268E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{87D3B686-7A00-4BA4-8418-B66C47ED3CB4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{71E02537-5EBF-4A52-8BE5-3AE2FF99E2F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +22,9 @@ Global
 		{8D637542-DDAA-4CD9-8D52-D0F6449268E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D637542-DDAA-4CD9-8D52-D0F6449268E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D637542-DDAA-4CD9-8D52-D0F6449268E1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7BA97FC5-CA0E-4A25-A821-A8CD8901066B} = {87D3B686-7A00-4BA4-8418-B66C47ED3CB4}
+		{8D637542-DDAA-4CD9-8D52-D0F6449268E1} = {71E02537-5EBF-4A52-8BE5-3AE2FF99E2F2}
 	EndGlobalSection
 EndGlobal
