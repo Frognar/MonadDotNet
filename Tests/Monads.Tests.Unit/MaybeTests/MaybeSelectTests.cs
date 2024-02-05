@@ -1,9 +1,11 @@
+using Monads.Tests.Unit.MaybeTests.Helpers.TestDataGenerators;
+
 namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeSelectTests {
 
   [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.IntToStringTestData))]
+  [ClassData(typeof(IntToStringTestData))]
   public void MapsValueWhenSome(int value, string expected) {
     Some(value)
       .Select(IntToString)
@@ -29,12 +31,12 @@ public class MaybeSelectTests {
 
   [Fact]
   public void ThrowsExceptionWhenSelectorIsNull() {
-    Action act = () => Some(10).Select<int>(null!);
+    Action act = () => Some(10).Select<int, int>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.IntPlusOneTestData))]
+  [ClassData(typeof(IntPlusOneTestData))]
   public void MapsValuesWithQuerySyntaxWhenSome(int value, int expected) {
     Maybe<int> result =
       from a in Some(value)

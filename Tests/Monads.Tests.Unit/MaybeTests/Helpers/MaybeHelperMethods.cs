@@ -3,8 +3,8 @@
 namespace Monads.Tests.Unit.MaybeTests.Helpers;
 
 public static class MaybeHelperMethods {
-  public static Maybe<T> Some<T>(T value) => Maybe<T>.Some(value);
-  public static Maybe<T> None<T>() => Maybe<T>.None();
+  public static Maybe<T> Some<T>(T value) => Maybe.Some(value);
+  public static Maybe<T> None<T>() => Maybe.None<T>();
   public static int MultiplyBy2(int x) => x * 2;
   public static int Minus1() => -1;
   public static int ThrowUnreachable() => throw new UnreachableException();

@@ -1,46 +1,41 @@
 ﻿namespace Frognar.Monads;
 
 public readonly record struct Maybe<T> {
-  readonly bool hasValue;
-  readonly T value;
+  readonly IMaybe maybe;
 
-  public Maybe(T value) {
-    ArgumentNullException.ThrowIfNull(value);
-    this.value = value;
-    hasValue = true;
+  public Maybe() {
+    maybe = new None();
   }
 
-  public Maybe<TResult> Select<TResult>(Func<T, TResult> selector) {
-    ArgumentNullException.ThrowIfNull(selector);
-    return SelectMany(x => SomeNullable(selector(x)));
-    Maybe<TResult> SomeNullable(TResult x) => x is null ? Maybe<TResult>.None() : Maybe<TResult>.Some(x);
-  }
-
-  public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector) {
-    ArgumentNullException.ThrowIfNull(selector);
-    return hasValue ? selector(value) : Maybe<TResult>.None();
-  }
-
-  public Maybe<T> Where(Func<T, bool> predicate) {
-    return hasValue && predicate(value) ? this : None();
+  Maybe(IMaybe maybe) {
+    this.maybe = maybe;
   }
 
   public TResult Match<TResult>(Func<T, TResult> some, Func<TResult> none) {
     ArgumentNullException.ThrowIfNull(some);
     ArgumentNullException.ThrowIfNull(none);
-    return hasValue ? some(value) : none();
+    return maybe.Match(onSome: some, onNone: none);
   }
 
-  public T OrElse(T defaultValue) {
-    ArgumentNullException.ThrowIfNull(defaultValue);
-    return hasValue ? value : defaultValue;
+  internal static Maybe<T> CreateNone() => new();
+  internal static Maybe<T> CreateSome(T value) => new(new Some(value));
+
+  interface IMaybe {
+    TResult Match<TResult>(Func<T, TResult> onSome, Func<TResult> onNone);
   }
 
-  public T OrElse(Func<T> defaultValueFactory) {
-    ArgumentNullException.ThrowIfNull(defaultValueFactory);
-    return hasValue ? value : defaultValueFactory();
+  readonly record struct Some : IMaybe {
+    readonly T value;
+
+    public Some(T value) {
+      ArgumentNullException.ThrowIfNull(value);
+      this.value = value;
+    }
+
+    public TResult Match<TResult>(Func<T, TResult> onSome, Func<TResult> _) => onSome(value);
   }
 
-  public static Maybe<T> None() => new();
-  public static Maybe<T> Some(T value) => new(value);
+  readonly record struct None : IMaybe {
+    public TResult Match<TResult>(Func<T, TResult> _, Func<TResult> onNone) => onNone();
+  }
 }

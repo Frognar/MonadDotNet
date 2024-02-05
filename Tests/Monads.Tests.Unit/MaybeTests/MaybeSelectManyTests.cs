@@ -1,8 +1,10 @@
-﻿namespace Monads.Tests.Unit.MaybeTests;
+﻿using Monads.Tests.Unit.MaybeTests.Helpers.TestDataGenerators;
+
+namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeSelectManyTests {
   [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.IntToStringTestData))]
+  [ClassData(typeof(IntToStringTestData))]
   public void MapsValueWhenSome(int value, string expected) {
     Some(value)
       .SelectMany(ToMaybeString)
@@ -20,12 +22,12 @@ public class MaybeSelectManyTests {
 
   [Fact]
   public void ThrowsExceptionWhenSelectorIsNull() {
-    Action act = () => Some(10).SelectMany<int>(null!);
+    Action act = () => Some(10).SelectMany<int, int>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.ThreeIntSumTestData))]
+  [ClassData(typeof(ThreeIntSumTestData))]
   public void MapsValuesWithQuerySyntaxWhenSome(int valueA, int valueB, int valueC, int expected) {
     Maybe<int> result =
       from a in Some(valueA)
