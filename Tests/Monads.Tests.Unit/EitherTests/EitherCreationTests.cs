@@ -9,27 +9,27 @@ public class EitherCreationTests {
 
   [Fact]
   public void IsNotNullWhenLeft() {
-    Either<int, string>.Left(42).Should().NotBeNull();
-    Either<bool, int>.Left(true).Should().NotBeNull();
-    Either<string, decimal>.Left("str").Should().NotBeNull();
+    Either.Left<int, string>(42).Should().NotBeNull();
+    Either.Left<bool, int>(true).Should().NotBeNull();
+    Either.Left<string, decimal>("str").Should().NotBeNull();
   }
 
   [Fact]
   public void IsNotNullWhenRight() {
-    Either<int, string>.Right("42").Should().NotBeNull();
-    Either<bool, int>.Right(42).Should().NotBeNull();
-    Either<string, decimal>.Right(1M).Should().NotBeNull();
+    Either.Right<int, string>("42").Should().NotBeNull();
+    Either.Right<bool, int>(42).Should().NotBeNull();
+    Either.Right<string, decimal>(1M).Should().NotBeNull();
   }
 
   [Fact]
   public void ThrowsArgumentNullExceptionWhenLeftCreatedWithNull() {
-    Func<Either<string, int>> act = () => Either<string, int>.Left(null!);
+    Func<Either<string, int>> act = () => Either.Left<string, int>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Fact]
   public void ThrowsArgumentNullExceptionWhenRightCreatedWithNull() {
-    Func<Either<int, string>> act = () => Either<int, string>.Right(null!);
+    Func<Either<int, string>> act = () => Either.Right<int, string>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 }

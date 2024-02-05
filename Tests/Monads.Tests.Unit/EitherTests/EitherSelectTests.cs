@@ -3,7 +3,7 @@
 public class EitherSelectTests {
   [Fact]
   public void MapLeftWhenLeftCreated() {
-    Either<int, string>.Left(42)
+    Either.Left<int, string>(42)
       .SelectLeft(x => x.ToString())
       .Match(left: left => left, right: _ => "")
       .Should().Be("42");
@@ -11,7 +11,7 @@ public class EitherSelectTests {
 
   [Fact]
   public void PropagateRightWhenRightCreated() {
-    Either<int, bool>.Right(true)
+    Either.Right<int, bool>(true)
       .SelectLeft(x => x.ToString())
       .Match(left: left => left, right: right => right ? "true" : "false")
       .Should().Be("true");
@@ -19,13 +19,13 @@ public class EitherSelectTests {
 
   [Fact]
   public void ThrowArgumentNullExceptionWhenLeftSelectorIsNull() {
-    Action act = () => Either<int, string>.Left(42).SelectLeft<int>(null!);
+    Action act = () => Either.Left<int, string>(42).SelectLeft<int, int, string>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Fact]
   public void MapRightWhenRightCreated() {
-    Either<int, string>.Right("42")
+    Either.Right<int, string>("42")
       .SelectRight(x => string.IsNullOrEmpty(x) == false)
       .Match(left: _ => false, right: right => right)
       .Should().Be(true);
@@ -33,7 +33,7 @@ public class EitherSelectTests {
 
   [Fact]
   public void PropagateLeftWhenLeftCreated() {
-    Either<int, bool>.Left(42)
+    Either.Left<int, bool>(42)
       .SelectRight(x => x ? 1 : 0)
       .Match(left: _ => -1, right: right => right)
       .Should().Be(-1);
@@ -41,13 +41,13 @@ public class EitherSelectTests {
 
   [Fact]
   public void ThrowArgumentNullExceptionWhenRightSelectorIsNull() {
-    Action act = () => Either<int, string>.Right("42").SelectRight<int>(null!);
+    Action act = () => Either.Right<int, string>("42").SelectRight<int, string, string>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Fact]
   public void MapLeftInSelectBothWhenLeftCreated() {
-    Either<int, string>.Left(42)
+    Either.Left<int, string>(42)
       .SelectBoth(leftSelector: l => l > 0, rightSelector: _ => "right")
       .Match(left: left => left, right: _ => false)
       .Should().BeTrue();
@@ -55,7 +55,7 @@ public class EitherSelectTests {
 
   [Fact]
   public void MapRightInSelectBothWhenRightCreated() {
-    Either<int, string>.Right("42")
+    Either.Right<int, string>("42")
       .SelectBoth(leftSelector: l => l > 0, rightSelector: r => r.Length)
       .Match(left: _ => false, right: right => right > 0)
       .Should().BeTrue();
@@ -64,7 +64,7 @@ public class EitherSelectTests {
   [Fact]
   public void ThrowArgumentNullExceptionWhenLeftSelectorIsNullInSelectBoth() {
     Action act = () =>
-      Either<int, string>.Left(42).SelectBoth<int, string>(leftSelector: null!, rightSelector: r => r);
+      Either.Left<int, string>(42).SelectBoth<int, int, string, string>(leftSelector: null!, rightSelector: r => r);
 
     act.Should().Throw<ArgumentNullException>();
   }
@@ -72,7 +72,7 @@ public class EitherSelectTests {
   [Fact]
   public void ThrowArgumentNullExceptionWhenRightSelectorIsNullInSelectBoth() {
     Action act = () =>
-      Either<int, string>.Right("42").SelectBoth<int, string>(leftSelector: l => l, rightSelector: null!);
+      Either.Right<int, string>("42").SelectBoth<int, int, string, string>(leftSelector: l => l, rightSelector: null!);
 
     act.Should().Throw<ArgumentNullException>();
   }
@@ -80,7 +80,7 @@ public class EitherSelectTests {
   [Fact]
   public void MapRightUsingQuerySyntax() {
     Either<int, string> result =
-      from right in Either<int, int>.Right(42)
+      from right in Either.Right<int, int>(42)
       select right.ToString();
 
     result.Match(left: _ => "", right: right => right).Should().Be("42");

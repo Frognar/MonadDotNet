@@ -5,40 +5,40 @@ public class EitherMatchTests {
   [InlineData(1)]
   [InlineData(100)]
   public void MatchIntOnLeftWhenLeftCreated(int valueOnSuccess) {
-    Either<bool, int>.Left(true)
+    Either.Left<bool, int>(true)
       .Match(
-        left => left ? valueOnSuccess : 0,
-        _ => -1
+        left: left => left ? valueOnSuccess : 0,
+        right: _ => -1
       ).Should().Be(valueOnSuccess);
   }
 
   [Fact]
   public void MatchStringOnLeftWhenLeftCreated() {
-    Either<bool, int>.Left(false)
+    Either.Left<bool, int>(false)
       .Match(
-        left => left ? "success" : "other kind of success",
-        _ => "Nothing"
+        left: left => left ? "success" : "other kind of success",
+        right: _ => "Nothing"
       ).Should().Be("other kind of success");
   }
 
   [Fact]
   public void MatchIntOnRightWhenRightCreated() {
-    Either<bool, int>.Right(1)
+    Either.Right<bool, int>(1)
       .Match(
-        _ => -1,
-        right => right + 10_000
+        left: _ => -1,
+        right: right => right + 10_000
       ).Should().Be(10_001);
   }
 
   [Fact]
   public void ThrowsNullArgumentExceptionWhenLeftMethodIsNull() {
-    Func<int> act = () => Either<bool, int>.Left(true).Match(null!, _ => 1);
+    Func<int> act = () => Either.Left<bool, int>(true).Match(left: null!, right: _ => 1);
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Fact]
   public void ThrowsNullArgumentExceptionWhenRightMethodIsNull() {
-    Func<int> act = () => Either<bool, int>.Left(true).Match(_ => 1, null!);
+    Func<int> act = () => Either.Left<bool, int>(true).Match(left: _ => 1, right: null!);
     act.Should().Throw<ArgumentNullException>();
   }
 }
