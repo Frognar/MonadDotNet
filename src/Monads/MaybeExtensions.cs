@@ -6,8 +6,7 @@ public static class Maybe {
 
   public static Maybe<TResult> Select<T, TResult>(this Maybe<T> maybe, Func<T, TResult> selector) {
     ArgumentNullException.ThrowIfNull(selector);
-    return maybe.SelectMany(x => SomeNullable(selector(x)));
-    Maybe<TResult> SomeNullable(TResult x) => x is null ? None<TResult>() : Some<TResult>(x);
+    return maybe.Match(some: x => Some(selector(x)), none: None<TResult>);
   }
 
   public static Maybe<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, Maybe<TResult>> selector) {

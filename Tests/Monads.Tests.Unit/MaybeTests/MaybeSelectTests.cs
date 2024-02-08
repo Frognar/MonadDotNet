@@ -22,11 +22,9 @@ public class MaybeSelectTests {
   }
 
   [Fact]
-  public void ReturnsNoneWhenSelectorReturnsNull() {
-    Some(10)
-      .Select(_ => (string?)null)
-      .OrElse("none")
-      .Should().Be("none");
+  public void ThrowsWhenSelectorReturnsNull() {
+    Action act = () => Some(10).Select(_ => (string)null!);
+    act.Should().Throw<ArgumentNullException>();
   }
 
   [Fact]
