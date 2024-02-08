@@ -6,8 +6,8 @@ public class MaybeMatchTests {
   public void MatchSomeWhenSome(int value, int expected) {
     Some(value)
       .Match(
-        some: MultiplyBy2,
-        none: Minus1)
+        onSome: MultiplyBy2,
+        onNone: Minus1)
       .Should().Be(expected);
   }
 
@@ -15,8 +15,8 @@ public class MaybeMatchTests {
   public void MatchNoneWhenNone() {
     None<int>()
       .Match(
-        some: MultiplyBy2,
-        none: Minus1)
+        onSome: MultiplyBy2,
+        onNone: Minus1)
       .Should().Be(-1);
   }
 
@@ -25,8 +25,8 @@ public class MaybeMatchTests {
     Func<int> act =
       () => Some(10)
         .Match(
-          some: MultiplyBy2,
-          none: ThrowUnreachable);
+          onSome: MultiplyBy2,
+          onNone: ThrowUnreachable);
 
     act.Should().NotThrow();
   }
@@ -36,8 +36,8 @@ public class MaybeMatchTests {
     Func<int> act =
       () => None<int>()
         .Match(
-          some: _ => ThrowUnreachable(),
-          none: Minus1);
+          onSome: _ => ThrowUnreachable(),
+          onNone: Minus1);
 
     act.Should().NotThrow();
   }
@@ -47,8 +47,8 @@ public class MaybeMatchTests {
     Func<int> act =
       () => None<int>()
         .Match(
-          some: null!,
-          none: Minus1);
+          onSome: null!,
+          onNone: Minus1);
 
     act.Should().Throw<ArgumentNullException>();
   }
@@ -58,8 +58,8 @@ public class MaybeMatchTests {
     Func<int> act =
       () => Some(10)
         .Match(
-          some: MultiplyBy2,
-          none: null!);
+          onSome: MultiplyBy2,
+          onNone: null!);
 
     act.Should().Throw<ArgumentNullException>();
   }
