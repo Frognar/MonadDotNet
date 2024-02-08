@@ -15,6 +15,7 @@ public static class Maybe {
   }
 
   public static Maybe<T> Where<T>(this Maybe<T> maybe, Func<T, bool> predicate) {
+    ArgumentNullException.ThrowIfNull(predicate);
     return maybe.Match(onSome: x => predicate(x) ? maybe : None<T>(), onNone: () => maybe);
   }
 
