@@ -1,23 +1,38 @@
-﻿using Monads.Tests.Unit.MaybeTests.Helpers.TestDataGenerators;
+﻿using FsCheck;
+using FsCheck.Xunit;
 
 namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeWhereTests {
-  [Theory]
-  [ClassData(typeof(IntFilteredBeLessThanOrEqualTo0TestData))]
-  public void FiltersSomeWithPredicate(int value, int expected) {
-    Some(value)
-      .Where(x => x <= 0)
-      .OrElse(Minus1)
-      .Should().Be(expected);
+  [Property]
+  public Property PropagateSomeWhenPredicateIsMeet(int value) {
+    int result = Some(value)
+      .Where(v => v > 100)
+      .OrElse(-1);
+
+    return (result == value)
+      .When(value > 100)
+      .Collect($"{value}");
   }
 
-  [Fact]
-  public void PropagateNoneRegardlessOfPredicate() {
-    None<int>()
-      .Where(x => x % 2 == 0)
-      .OrElse(Minus1)
-      .Should().Be(-1);
+  [Property]
+  public Property IsNoneWhenPredicateIsNotMeet(int value) {
+    int result = Some(value)
+      .Where(v => v > 100)
+      .OrElse(-1);
+
+    return (result == -1)
+      .When(value <= 100)
+      .Collect($"{value}");
+  }
+
+  [Property]
+  public Property PropagateNoneRegardlessOfPredicate(Func<int, bool> predicate) {
+    int result = None<int>()
+      .Where(predicate)
+      .OrElse(-1);
+
+    return (result == -1).ToProperty();
   }
 
   [Fact]
@@ -26,26 +41,18 @@ public class MaybeWhereTests {
     act.Should().Throw<ArgumentNullException>();
   }
 
-  [Theory]
-  [ClassData(typeof(IntFilteredBeLessThanOrEqualTo0TestData))]
-  public void FiltersValueWithQuerySyntax(int value, int expected) {
-    Maybe<int> result =
+  [Property]
+  public Property CanUseQuerySyntaxForWhere(int value) {
+    Maybe<int> maybe =
       from a in Some(value)
-      where a <= 0
+      where a > 100
       select a;
 
-    result.OrElse(Minus1)
-      .Should().Be(expected);
-  }
+    int result = maybe
+      .OrElse(-1);
 
-  [Fact]
-  public void PropagateNoneRegardlessOfPredicateWithQuerySyntax() {
-    Maybe<int> result =
-      from a in None<int>()
-      where a <= 0
-      select a;
-
-    result.OrElse(Minus1)
-      .Should().Be(-1);
+    return (result == value)
+      .When(value > 100)
+      .Collect($"{value}");
   }
 }
