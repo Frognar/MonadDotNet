@@ -1,9 +1,9 @@
 ﻿namespace Monads.Tests.Unit.MaybeTests;
 
-public class MaybeSelectManyTests {
+public class MaybeFlatMapTests {
   [Property]
   public void MapsValueWhenSome(int value, Func<int, Maybe<NonNull<string>>> f) {
-    Maybe.Some(value).SelectMany(f)
+    Maybe.Some(value).FlatMap(f)
       .Should().Be(
         f(value)
       );
@@ -11,7 +11,7 @@ public class MaybeSelectManyTests {
 
   [Property]
   public void PropagatesNoneWhenNone(Func<int, Maybe<NonNull<string>>> f) {
-    Maybe.None<int>().SelectMany(f)
+    Maybe.None<int>().FlatMap(f)
       .Should().Be(
         Maybe.None<NonNull<string>>()
       );
@@ -19,7 +19,7 @@ public class MaybeSelectManyTests {
 
   [Fact]
   public void ThrowsExceptionWhenSelectorIsNull() {
-    Action act = () => Maybe.Some(10).SelectMany<int, int>(null!);
+    Action act = () => Maybe.Some(10).FlatMap<int>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 

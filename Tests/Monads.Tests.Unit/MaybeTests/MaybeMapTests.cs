@@ -1,10 +1,10 @@
 namespace Monads.Tests.Unit.MaybeTests;
 
-public class MaybeSelectTests {
+public class MaybeMapTests {
 
   [Property]
   public void MapsValueWhenSome(int value, Func<int, decimal> f) {
-    Maybe.Some(value).Select(f)
+    Maybe.Some(value).Map(f)
       .Should().Be(
         Maybe.Some(f(value))
       );
@@ -12,7 +12,7 @@ public class MaybeSelectTests {
 
   [Property]
   public void PropagatesNoneWhenNone(Func<int, string> f) {
-    Maybe.None<int>().Select(f)
+    Maybe.None<int>().Map(f)
       .Should().Be(
         Maybe.None<string>()
       );
@@ -20,13 +20,13 @@ public class MaybeSelectTests {
 
   [Fact]
   public void ThrowsWhenSelectorReturnsNull() {
-    Action act = () => Maybe.Some(10).Select(_ => (string)null!);
+    Action act = () => Maybe.Some(10).Map(_ => (string)null!);
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Fact]
   public void ThrowsExceptionWhenSelectorIsNull() {
-    Action act = () => Maybe.Some(10).Select<int, int>(null!);
+    Action act = () => Maybe.Some(10).Map<int>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 

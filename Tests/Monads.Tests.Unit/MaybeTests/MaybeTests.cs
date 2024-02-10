@@ -13,7 +13,7 @@ public class MaybeTests {
   public void ObeysFirstFunctorLawWhenSome(NonNull<string> value) {
     Maybe.Some(value.Get)
       .Should().Be(
-        Maybe.Some(value.Get).Select(x => x)
+        Maybe.Some(value.Get).Map(x => x)
       );
   }
 
@@ -21,29 +21,29 @@ public class MaybeTests {
   public void ObeysFirstFunctorLawWhenNone() {
     Maybe.None<string>()
       .Should().Be(
-        Maybe.None<string>().Select(x => x)
+        Maybe.None<string>().Map(x => x)
       );
   }
 
   [Property]
   public void ObeysSecondFunctorLawWhenSome(NonNull<string> value, Func<string, int> f, Func<int, char> g) {
-    Maybe.Some(value.Get).Select(f).Select(g)
+    Maybe.Some(value.Get).Map(f).Map(g)
       .Should().Be(
-        Maybe.Some(value.Get).Select(x => g(f(x)))
+        Maybe.Some(value.Get).Map(x => g(f(x)))
       );
   }
 
   [Property]
   public void ObeysSecondFunctorLawWhenNone(Func<string, int> f, Func<int, char> g) {
-    Maybe.None<string>().Select(f).Select(g)
+    Maybe.None<string>().Map(f).Map(g)
       .Should().Be(
-        Maybe.None<string>().Select(x => g(f(x)))
+        Maybe.None<string>().Map(x => g(f(x)))
       );
   }
 
   [Property]
   public void ObeysLeftIdentityLaw(int value, Func<int, Maybe<double>> f) {
-    Maybe.Some(value).SelectMany(f)
+    Maybe.Some(value).FlatMap(f)
       .Should().Be(
         f(value)
       );
@@ -51,7 +51,7 @@ public class MaybeTests {
 
   [Property]
   public void ObeysRightIdentityLaw(NonNull<string> value) {
-    Maybe.Some(value.Get).SelectMany(Maybe.Some)
+    Maybe.Some(value.Get).FlatMap(Maybe.Some)
       .Should().Be(
         Maybe.Some(value.Get)
       );
@@ -59,9 +59,9 @@ public class MaybeTests {
 
   [Property]
   public void ObeysAssociativityLaw(NonNull<string> value, Func<string, Maybe<int>> f, Func<int, Maybe<double>> g) {
-    Maybe.Some(value.Get).SelectMany(f).SelectMany(g)
+    Maybe.Some(value.Get).FlatMap(f).FlatMap(g)
       .Should().Be(
-        Maybe.Some(value.Get).SelectMany(x => f(x).SelectMany(g))
+        Maybe.Some(value.Get).FlatMap(x => f(x).FlatMap(g))
       );
   }
 }
