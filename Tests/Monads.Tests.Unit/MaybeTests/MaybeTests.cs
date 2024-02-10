@@ -1,59 +1,67 @@
 ﻿namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeTests {
-  [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.IntTestData))]
+  [Property]
   public void FlattensNestedMaybe(int value) {
-    Some(Some(value))
-      .Flatten()
-      .OrElse(-1)
-      .Should().Be(value);
+    Maybe.Some(Maybe.Some(value)).Flatten()
+      .Should().Be(
+        Maybe.Some(value)
+      );
   }
 
-  [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.StringTestData))]
-  public void ObeysFirstFunctorLawWhenSome(string value) {
-    Some(value)
-      .Should().Be(Some(value).Select(Id));
+  [Property]
+  public void ObeysFirstFunctorLawWhenSome(NonNull<string> value) {
+    Maybe.Some(value.Get)
+      .Should().Be(
+        Maybe.Some(value.Get).Select(x => x)
+      );
   }
 
   [Fact]
   public void ObeysFirstFunctorLawWhenNone() {
-    None<string>()
-      .Should().Be(None<string>().Select(Id));
+    Maybe.None<string>()
+      .Should().Be(
+        Maybe.None<string>().Select(x => x)
+      );
   }
 
-  [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.StringTestData))]
-  public void ObeysSecondFunctorLawWhenSome(string value) {
-    Some(value).Select(GetLength).Select(IsEven)
-      .Should().Be(Some(value).Select(x => IsEven(GetLength(x))));
+  [Property]
+  public void ObeysSecondFunctorLawWhenSome(NonNull<string> value, Func<string, int> f, Func<int, char> g) {
+    Maybe.Some(value.Get).Select(f).Select(g)
+      .Should().Be(
+        Maybe.Some(value.Get).Select(x => g(f(x)))
+      );
   }
 
-  [Fact]
-  public void ObeysSecondFunctorLawWhenNone() {
-    None<string>().Select(GetLength).Select(IsEven)
-      .Should().Be(None<string>().Select(x => IsEven(GetLength(x))));
+  [Property]
+  public void ObeysSecondFunctorLawWhenNone(Func<string, int> f, Func<int, char> g) {
+    Maybe.None<string>().Select(f).Select(g)
+      .Should().Be(
+        Maybe.None<string>().Select(x => g(f(x)))
+      );
   }
 
-  [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.IntTestData))]
-  public void ObeysLeftIdentityLaw(int value) {
-    Some(value).SelectMany(SaveDiv1By)
-      .Should().Be(SaveDiv1By(value));
+  [Property]
+  public void ObeysLeftIdentityLaw(int value, Func<int, Maybe<double>> f) {
+    Maybe.Some(value).SelectMany(f)
+      .Should().Be(
+        f(value)
+      );
   }
 
-  [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.StringTestData))]
-  public void ObeysRightIdentityLaw(string value) {
-    Some(value).SelectMany(Some)
-      .Should().Be(Some(value));
+  [Property]
+  public void ObeysRightIdentityLaw(NonNull<string> value) {
+    Maybe.Some(value.Get).SelectMany(Maybe.Some)
+      .Should().Be(
+        Maybe.Some(value.Get)
+      );
   }
 
-  [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.StringTestData))]
-  public void ObeysAssociativityLaw(string value) {
-    Some(value).SelectMany(TryParseInt).SelectMany(SaveDiv1By)
-      .Should().Be(Some(value).SelectMany(x => TryParseInt(x).SelectMany(SaveDiv1By)));
+  [Property]
+  public void ObeysAssociativityLaw(NonNull<string> value, Func<string, Maybe<int>> f, Func<int, Maybe<double>> g) {
+    Maybe.Some(value.Get).SelectMany(f).SelectMany(g)
+      .Should().Be(
+        Maybe.Some(value.Get).SelectMany(x => f(x).SelectMany(g))
+      );
   }
 }

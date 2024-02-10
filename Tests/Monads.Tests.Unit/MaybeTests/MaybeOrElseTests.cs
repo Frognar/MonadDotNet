@@ -1,25 +1,25 @@
 ﻿namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeOrElseTests {
-  [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.IntTestData))]
+  [Property]
   public void ReturnsInternalValueWhenSome(int value) {
-    Some(value)
-      .OrElse(-1)
-      .Should().Be(value);
+    Maybe.Some(value).OrElse(-1)
+      .Should().Be(
+        value
+      );
   }
 
-  [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.IntTestData))]
+  [Property]
   public void ReturnsFallbackValueWhenNone(int fallback) {
-    None<int>()
-      .OrElse(fallback)
-      .Should().Be(fallback);
+    Maybe.None<int>().OrElse(fallback)
+      .Should().Be(
+        fallback
+      );
   }
 
   [Fact]
   public void ThrowsExceptionWhenOrElseIsCalledWithNull() {
-    Func<string> act = () => Some("str").OrElse((string)null!);
+    Func<string> act = () => Maybe.Some("str").OrElse((string)null!);
     act.Should().Throw<ArgumentNullException>();
   }
 }

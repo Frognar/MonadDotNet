@@ -1,53 +1,39 @@
-﻿using Monads.Tests.Unit.MaybeTests.Helpers.TestDataGenerators;
-
-namespace Monads.Tests.Unit.MaybeTests;
+﻿namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeSelectManyTests {
-  [Theory]
-  [ClassData(typeof(IntToStringTestData))]
-  public void MapsValueWhenSome(int value, string expected) {
-    Some(value)
-      .SelectMany(ToMaybeString)
-      .OrElse("none")
-      .Should().Be(expected);
+  [Property]
+  public void MapsValueWhenSome(int value, Func<int, Maybe<NonNull<string>>> f) {
+    Maybe.Some(value).SelectMany(f)
+      .Should().Be(
+        f(value)
+      );
   }
 
-  [Fact]
-  public void PropagatesNoneWhenNone() {
-    None<int>()
-      .SelectMany(ToMaybeString)
-      .OrElse("none")
-      .Should().Be("none");
+  [Property]
+  public void PropagatesNoneWhenNone(Func<int, Maybe<NonNull<string>>> f) {
+    Maybe.None<int>().SelectMany(f)
+      .Should().Be(
+        Maybe.None<NonNull<string>>()
+      );
   }
 
   [Fact]
   public void ThrowsExceptionWhenSelectorIsNull() {
-    Action act = () => Some(10).SelectMany<int, int>(null!);
+    Action act = () => Maybe.Some(10).SelectMany<int, int>(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 
-  [Theory]
-  [ClassData(typeof(ThreeIntSumTestData))]
-  public void MapsValuesWithQuerySyntaxWhenSome(int valueA, int valueB, int valueC, int expected) {
+  [Property]
+  public void CanUseQuerySyntaxForSelectMany(int valueA, int valueB, int valueC) {
     Maybe<int> result =
-      from a in Some(valueA)
-      from b in Some(valueB)
-      from c in Some(valueC)
+      from a in Maybe.Some(valueA)
+      from b in Maybe.Some(valueB)
+      from c in Maybe.Some(valueC)
       select a + b + c;
 
-    result.OrElse(-1)
-      .Should().Be(expected);
-  }
-
-  [Fact]
-  public void PropagatesNoneWithQuerySyntaxWhenNone() {
-    Maybe<int> result =
-      from a in Some(1)
-      from b in Some(2)
-      from c in None<int>()
-      select a + b + c;
-
-    result.OrElse(-1)
-      .Should().Be(-1);
+    result
+      .Should().Be(
+        Maybe.Some(valueA + valueB + valueC)
+      );
   }
 }

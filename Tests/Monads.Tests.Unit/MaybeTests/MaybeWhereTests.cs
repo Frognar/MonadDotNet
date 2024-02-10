@@ -1,58 +1,46 @@
-﻿using FsCheck;
-using FsCheck.Xunit;
-
-namespace Monads.Tests.Unit.MaybeTests;
+﻿namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeWhereTests {
   [Property]
-  public Property PropagateSomeWhenPredicateIsMeet(int value) {
-    int result = Some(value)
-      .Where(v => v > 100)
-      .OrElse(-1);
-
-    return (result == value)
-      .When(value > 100)
-      .Collect($"{value}");
+  public void PropagateSomeWhenPredicateIsMeet(NonNegativeInt value) {
+    Maybe.Some(value.Get).Where(v => v >= 0)
+      .Should().Be(
+        Maybe.Some(value.Get)
+      );
   }
 
   [Property]
-  public Property IsNoneWhenPredicateIsNotMeet(int value) {
-    int result = Some(value)
-      .Where(v => v > 100)
-      .OrElse(-1);
-
-    return (result == -1)
-      .When(value <= 100)
-      .Collect($"{value}");
+  public void IsNoneWhenPredicateIsNotMeet(NegativeInt value) {
+    Maybe.Some(value.Get).Where(v => v >= 0)
+      .Should().Be(
+        Maybe.None<int>()
+      );
   }
 
   [Property]
-  public Property PropagateNoneRegardlessOfPredicate(Func<int, bool> predicate) {
-    int result = None<int>()
-      .Where(predicate)
-      .OrElse(-1);
-
-    return (result == -1).ToProperty();
+  public void PropagateNoneRegardlessOfPredicate(Func<int, bool> predicate) {
+    Maybe.None<int>().Where(predicate)
+      .Should().Be(
+        Maybe.None<int>()
+      );
   }
 
   [Fact]
   public void ThrowsWhenPredicateIsNull() {
-    Action act = () => None<int>().Where(null!);
+    Action act = () => Maybe.None<int>().Where(null!);
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Property]
-  public Property CanUseQuerySyntaxForWhere(int value) {
+  public void CanUseQuerySyntaxForWhere(NonNegativeInt value) {
     Maybe<int> maybe =
-      from a in Some(value)
-      where a > 100
+      from a in Maybe.Some(value.Get)
+      where a >= 0
       select a;
 
-    int result = maybe
-      .OrElse(-1);
-
-    return (result == value)
-      .When(value > 100)
-      .Collect($"{value}");
+    maybe
+      .Should().Be(
+        Maybe.Some(value.Get)
+      );
   }
 }

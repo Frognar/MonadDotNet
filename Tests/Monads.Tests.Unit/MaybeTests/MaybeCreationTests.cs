@@ -1,24 +1,25 @@
-﻿using Monads.Tests.Unit.MaybeTests.Helpers.TestDataGenerators;
-
-namespace Monads.Tests.Unit.MaybeTests;
+﻿namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeCreationTests {
-  [Theory]
-  [ClassData(typeof(IntTestData))]
+  [Property]
   public void ReturnsMaybeWithSome(int value) {
-    Some(value)
-      .Should().Be(Maybe.Some(value));
+    Maybe.Some(value)
+      .Should().Be(
+        Maybe.Some(value)
+      );
   }
 
   [Fact]
   public void ReturnsMaybeWithNone() {
-    None<int>()
-      .Should().Be(new Maybe<int>());
+    Maybe.None<int>()
+      .Should().Be(
+        Maybe.None<int>()
+      );
   }
 
   [Fact]
   public void ThrowsExceptionWhenSomeNull() {
-    Action act = () => Some<string>(null!);
+    Action act = () => _ = Maybe.Some((string)null!);
     act.Should().Throw<ArgumentNullException>();
   }
 }
