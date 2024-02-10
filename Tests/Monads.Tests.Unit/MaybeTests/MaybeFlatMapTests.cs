@@ -2,16 +2,16 @@
 
 public class MaybeFlatMapTests {
   [Property]
-  public void MapsValueWhenSome(int value, Func<int, Maybe<NonNull<string>>> f) {
-    Maybe.Some(value).FlatMap(f)
+  public void MapsValueWhenSome(int value, Func<int, NonNull<string>> f) {
+    Maybe.Some(value).FlatMap(v => Maybe.Some(f(v)))
       .Should().Be(
-        f(value)
+        Maybe.Some(f(value))
       );
   }
 
   [Property]
-  public void PropagatesNoneWhenNone(Func<int, Maybe<NonNull<string>>> f) {
-    Maybe.None<int>().FlatMap(f)
+  public void PropagatesNoneWhenNone(Func<int, NonNull<string>> f) {
+    Maybe.None<int>().FlatMap(v => Maybe.Some(f(v)))
       .Should().Be(
         Maybe.None<NonNull<string>>()
       );
