@@ -1,65 +1,74 @@
-﻿namespace Monads.Tests.Unit.MaybeTests;
+﻿using System.Diagnostics;
+
+namespace Monads.Tests.Unit.MaybeTests;
 
 public class MaybeMatchTests {
-  [Theory]
-  [ClassData(typeof(Helpers.TestDataGenerators.IntTimes2TestData))]
-  public void MatchSomeWhenSome(int value, int expected) {
-    Some(value)
+  [Property]
+  public void MatchSomeWhenSome(int value, Func<int, string> f, Func<string> g) {
+    Maybe.Some(value)
       .Match(
-        some: MultiplyBy2,
-        none: Minus1)
-      .Should().Be(expected);
+        onSome: f,
+        onNone: g
+      ).Should().Be(
+        f(value)
+      );
   }
 
-  [Fact]
-  public void MatchNoneWhenNone() {
-    None<int>()
+  [Property]
+  public void MatchNoneWhenNone(Func<int, string> f, Func<string> g) {
+    Maybe.None<int>()
       .Match(
-        some: MultiplyBy2,
-        none: Minus1)
-      .Should().Be(-1);
+        onSome: f,
+        onNone: g
+      ).Should().Be(
+        g()
+      );
   }
 
-  [Fact]
-  public void NoneMatchIsNotCalledWhenSome() {
-    Func<int> act =
-      () => Some(10)
+  [Property]
+  public void NoneMatchIsNotCalledWhenSome(int value, Func<int, string> f) {
+    Func<string> act =
+      () => Maybe.Some(value)
         .Match(
-          some: MultiplyBy2,
-          none: ThrowUnreachable);
+          onSome: f,
+          onNone: () => throw new UnreachableException()
+        );
 
     act.Should().NotThrow();
   }
 
-  [Fact]
-  public void SomeMatchIsNotCalledWhenNone() {
-    Func<int> act =
-      () => None<int>()
+  [Property]
+  public void SomeMatchIsNotCalledWhenNone(Func<string> g) {
+    Func<string> act =
+      () => Maybe.None<int>()
         .Match(
-          some: _ => ThrowUnreachable(),
-          none: Minus1);
+          onSome: _ => throw new UnreachableException(),
+          onNone: g
+        );
 
     act.Should().NotThrow();
   }
 
-  [Fact]
-  public void ThrowsExceptionWhenSomeMatchIsNull() {
-    Func<int> act =
-      () => None<int>()
+  [Property]
+  public void ThrowsExceptionWhenSomeMatchIsNull(Func<string> g) {
+    Func<string> act =
+      () => Maybe.None<int>()
         .Match(
-          some: null!,
-          none: Minus1);
+          onSome: null!,
+          onNone: g
+        );
 
     act.Should().Throw<ArgumentNullException>();
   }
 
-  [Fact]
-  public void ThrowsExceptionWhenNoneMatchIsNull() {
-    Func<int> act =
-      () => Some(10)
+  [Property]
+  public void ThrowsExceptionWhenNoneMatchIsNull(int value, Func<int, string> f) {
+    Func<string> act =
+      () => Maybe.Some(value)
         .Match(
-          some: MultiplyBy2,
-          none: null!);
+          onSome: f,
+          onNone: null!
+        );
 
     act.Should().Throw<ArgumentNullException>();
   }

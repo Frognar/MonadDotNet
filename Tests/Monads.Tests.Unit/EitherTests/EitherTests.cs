@@ -17,65 +17,65 @@ public class EitherTests {
   [Theory]
   [MemberData(nameof(EitherData))]
   public void ObeysFirstFunctorLaw(Either<string, int> either) {
-    either.SelectLeft(l => l).Should().Be(either);
-    either.SelectRight(r => r).Should().Be(either);
-    either.SelectBoth(leftSelector: l => l, rightSelector: r => r).Should().Be(either);
+    either.LMap(l => l).Should().Be(either);
+    either.RMap(r => r).Should().Be(either);
+    either.BMap(lMap: l => l, rMap: r => r).Should().Be(either);
   }
 
   [Theory]
   [MemberData(nameof(EitherData))]
   public void ObeysSecondFunctorLaw(Either<string, int> either) {
-    either.SelectBoth(leftSelector: IsNullOrWhiteSpace, rightSelector: ToDateTime)
-      .Should().Be(either.SelectRight(ToDateTime).SelectLeft(IsNullOrWhiteSpace));
+    either.BMap(lMap: IsNullOrWhiteSpace, rMap: ToDateTime)
+      .Should().Be(either.RMap(ToDateTime).LMap(IsNullOrWhiteSpace));
 
-    either.SelectLeft(IsNullOrWhiteSpace).SelectRight(ToDateTime)
-      .Should().Be(either.SelectRight(ToDateTime).SelectLeft(IsNullOrWhiteSpace));
+    either.LMap(IsNullOrWhiteSpace).RMap(ToDateTime)
+      .Should().Be(either.RMap(ToDateTime).LMap(IsNullOrWhiteSpace));
   }
 
   [Theory]
   [MemberData(nameof(EitherData))]
   public void ObeysLeftIdentityLawWithSelectLeft(Either<string, int> either) {
-    either.SelectLeft(x => IsEven(GetLength(x)))
-      .Should().Be(either.SelectLeft(GetLength).SelectLeft(IsEven));
+    either.LMap(x => IsEven(GetLength(x)))
+      .Should().Be(either.LMap(GetLength).LMap(IsEven));
   }
 
   [Theory]
   [MemberData(nameof(EitherData))]
   public void ObeysLeftIdentityLawWithSelectRight(Either<string, int> either) {
-    either.SelectRight(x => ToChar(IsEven(x)))
-      .Should().Be(either.SelectRight(IsEven).SelectRight(ToChar));
+    either.RMap(x => ToChar(IsEven(x)))
+      .Should().Be(either.RMap(IsEven).RMap(ToChar));
   }
 
   [Theory]
   [MemberData(nameof(EitherData))]
   public void ObeysLeftIdentityLawWithSelectBoth(Either<string, int> either) {
-    either.SelectBoth(leftSelector: x => IsEven(GetLength(x)), rightSelector: y => ToChar(IsEven(y)))
-      .Should().Be(either.SelectBoth(leftSelector: GetLength, rightSelector: IsEven)
-        .SelectBoth(leftSelector: IsEven, rightSelector: ToChar));
+    either.BMap(lMap: x => IsEven(GetLength(x)), rMap: y => ToChar(IsEven(y)))
+      .Should().Be(either.BMap(lMap: GetLength, rMap: IsEven)
+        .BMap(lMap: IsEven, rMap: ToChar));
   }
 
   [Fact]
   public void ObeysRightIdentityLaw() {
     Either<int, string> right1 = Either.Left<int, string>(42);
-    right1.SelectMany(Either.Right<int, string>).Should().Be(right1);
+    right1.RFlatMap(Either.Right<int, string>).Should().Be(right1);
     Either<int, string> right2 = Either.Right<int, string>("42");
-    right2.SelectMany(Either.Right<int, string>).Should().Be(right2);
+    right2.RFlatMap(Either.Right<int, string>).Should().Be(right2);
     Either<int, string> left1 = Either.Left<int, string>(42);
-    left1.SelectMany(Either.Left<int, string>).Should().Be(left1);
+    left1.LFlatMap(Either.Left<int, string>).Should().Be(left1);
     Either<int, string> left2 = Either.Right<int, string>("42");
-    left2.SelectMany(Either.Left<int, string>).Should().Be(left2);
+    left2.LFlatMap(Either.Left<int, string>).Should().Be(left2);
     Either<int, string> either = Either.Left<int, string>(42);
-    either.SelectMany(
-      leftSelector: Either.Left<int, string>,
-      rightSelector: Either.Right<int, string>
+    either.BFlatMap(
+      lMap: Either.Left<int, string>,
+      rMap: Either.Right<int, string>
     ).Should().Be(either);
   }
 
   [Theory]
   [MemberData(nameof(EitherData))]
   public void ObeysAssociativityLaw(Either<string, int> either) {
-    either.SelectMany(TryDiv1By).SelectMany(Nat)
-      .Should().Be(either.SelectMany(x => TryDiv1By(x).SelectMany(Nat)));
+    either.RFlatMap(TryDiv1By).RFlatMap(Nat)
+      .Should().Be(either.RFlatMap(x => TryDiv1By(x).RFlatMap(Nat)));
   }
 
   static bool IsEven(int i) => i % 2 == 0;
