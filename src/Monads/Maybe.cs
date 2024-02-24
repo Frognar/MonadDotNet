@@ -1,12 +1,12 @@
 ﻿namespace Frognar.Monads;
 
 public readonly record struct Maybe<T> {
-  readonly IMaybe maybe;
+  readonly IMaybe<T> maybe;
 
   public Maybe() : this(new None()) {
   }
 
-  Maybe(IMaybe maybe) {
+  Maybe(IMaybe<T> maybe) {
     this.maybe = maybe;
   }
 
@@ -35,11 +35,8 @@ public readonly record struct Maybe<T> {
   internal static Maybe<T> CreateNone() => new();
   internal static Maybe<T> CreateSome(T value) => new(new Some(value));
 
-  interface IMaybe {
-    TResult Match<TResult>(Func<TResult> onNone, Func<T, TResult> onSome);
-  }
 
-  readonly record struct Some : IMaybe {
+  readonly record struct Some : IMaybe<T> {
     readonly T value;
 
     public Some(T value) {
@@ -50,7 +47,11 @@ public readonly record struct Maybe<T> {
     public TResult Match<TResult>(Func<TResult> _, Func<T, TResult> onSome) => onSome(value);
   }
 
-  readonly record struct None : IMaybe {
+  readonly record struct None : IMaybe<T> {
     public TResult Match<TResult>(Func<TResult> onNone, Func<T, TResult> _) => onNone();
   }
+}
+
+public interface IMaybe<out T> {
+  TResult Match<TResult>(Func<TResult> onNone, Func<T, TResult> onSome);
 }
