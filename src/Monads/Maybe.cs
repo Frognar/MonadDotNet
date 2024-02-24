@@ -1,41 +1,33 @@
 ﻿namespace Frognar.Monads;
 
-public readonly record struct Maybe<T> : IMaybe<T> {
-  readonly IMaybe<T> maybe;
+public interface IMaybe<out T> {
+  TResult Match<TResult>(Func<TResult> onNone, Func<T, TResult> onSome);
+}
 
-  public Maybe() : this(new None()) {
-  }
+public static class Maybe {
+  public static IMaybe<T> None<T>() => new NoneMaybe<T>();
+  public static IMaybe<T> Some<T>(T value) => new SomeMaybe<T>(value);
 
-  Maybe(IMaybe<T> maybe) {
-    this.maybe = maybe;
-  }
-
-  public TResult Match<TResult>(Func<TResult> onNone, Func<T, TResult> onSome) {
-    ArgumentNullException.ThrowIfNull(onNone);
-    ArgumentNullException.ThrowIfNull(onSome);
-    return maybe.Match(onNone: onNone, onSome: onSome);
-  }
-
-  internal static Maybe<T> CreateNone() => new();
-  internal static Maybe<T> CreateSome(T value) => new(new Some(value));
-
-
-  readonly record struct Some : IMaybe<T> {
+  readonly record struct SomeMaybe<T> : IMaybe<T> {
     readonly T value;
 
-    public Some(T value) {
+    public SomeMaybe(T value) {
       ArgumentNullException.ThrowIfNull(value);
       this.value = value;
     }
 
-    public TResult Match<TResult>(Func<TResult> _, Func<T, TResult> onSome) => onSome(value);
+    public TResult Match<TResult>(Func<TResult> _, Func<T, TResult> onSome) {
+      ArgumentNullException.ThrowIfNull(_);
+      ArgumentNullException.ThrowIfNull(onSome);
+      return onSome(value);
+    }
   }
 
-  readonly record struct None : IMaybe<T> {
-    public TResult Match<TResult>(Func<TResult> onNone, Func<T, TResult> _) => onNone();
+  readonly record struct NoneMaybe<T> : IMaybe<T> {
+    public TResult Match<TResult>(Func<TResult> onNone, Func<T, TResult> _) {
+      ArgumentNullException.ThrowIfNull(onNone);
+      ArgumentNullException.ThrowIfNull(_);
+      return onNone();
+    }
   }
-}
-
-public interface IMaybe<out T> {
-  TResult Match<TResult>(Func<TResult> onNone, Func<T, TResult> onSome);
 }

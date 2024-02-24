@@ -1,14 +1,12 @@
 ﻿namespace Frognar.Monads;
 
-public static class Maybe {
-  public static IMaybe<T> None<T>() => Maybe<T>.CreateNone();
-  public static IMaybe<T> Some<T>(T value) => Maybe<T>.CreateSome(value);
+public static class MaybeExtensions {
 
   public static IMaybe<TResult> Map<T, TResult>(this IMaybe<T> source, Func<T, TResult> map) {
     ArgumentNullException.ThrowIfNull(map);
     return source.Match(
-      onNone: None<TResult>,
-      onSome: value => Some(map(value))
+      onNone: Maybe.None<TResult>,
+      onSome: value => Maybe.Some(map(value))
     );
   }
 
@@ -17,7 +15,7 @@ public static class Maybe {
 
   public static IMaybe<T> Where<T>(this IMaybe<T> source, Func<T, bool> predicate) {
     ArgumentNullException.ThrowIfNull(predicate);
-    return source.Match(onSome: x => predicate(x) ? source : None<T>(), onNone: () => source);
+    return source.Match(onSome: x => predicate(x) ? source : Maybe.None<T>(), onNone: () => source);
   }
 
   public static T OrElse<T>(this IMaybe<T> source, T defaultValue) {
@@ -33,7 +31,7 @@ public static class Maybe {
   public static IMaybe<TResult> FlatMap<T, TResult>(this IMaybe<T> source, Func<T, IMaybe<TResult>> map) {
     ArgumentNullException.ThrowIfNull(map);
     return source.Match(
-      onNone: None<TResult>,
+      onNone: Maybe.None<TResult>,
       onSome: map
     );
   }
