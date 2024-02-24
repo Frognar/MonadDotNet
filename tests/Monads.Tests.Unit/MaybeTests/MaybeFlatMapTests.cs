@@ -3,29 +3,32 @@
 public class MaybeFlatMapTests {
   [Property]
   public void MapsValueWhenSome(int value, Func<int, NonNull<string>> f) {
-    Maybe.Some(value).FlatMap(v => Maybe.Some(f(v)))
+    IMaybe<string> F(int x) => Maybe.Some(f(x).Get);
+    Maybe.Some(value).FlatMap(F)
       .Should().Be(
-        Maybe.Some(f(value))
+        F(value)
       );
   }
 
   [Property]
   public void PropagatesNoneWhenNone(Func<int, NonNull<string>> f) {
-    Maybe.None<int>().FlatMap(v => Maybe.Some(f(v)))
+    IMaybe<string> F(int x) => Maybe.Some(f(x).Get);
+    Maybe.None<int>().FlatMap(F)
       .Should().Be(
-        Maybe.None<NonNull<string>>()
+        Maybe.None<string>()
       );
   }
 
   [Fact]
   public void ThrowsExceptionWhenSelectorIsNull() {
-    Action act = () => Maybe.Some(10).FlatMap<int>(null!);
+    Func<int, IMaybe<string>> f = null!;
+    Action act = () => Maybe.Some(10).FlatMap(f);
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Property]
   public void CanUseQuerySyntaxForSelectMany(int valueA, int valueB, int valueC) {
-    Maybe<int> result =
+    IMaybe<int> result =
       from a in Maybe.Some(valueA)
       from b in Maybe.Some(valueB)
       from c in Maybe.Some(valueC)

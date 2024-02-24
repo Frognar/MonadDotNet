@@ -26,13 +26,14 @@ public class MaybeMapTests {
 
   [Fact]
   public void ThrowsExceptionWhenSelectorIsNull() {
-    Action act = () => Maybe.Some(10).Map<int>(null!);
+    Func<int, string> f = null!;
+    Action act = () => Maybe.Some(10).Map(f);
     act.Should().Throw<ArgumentNullException>();
   }
 
   [Property]
   public void CanUseQuerySyntaxForSelect(NonNull<string> value, Func<string, int> f) {
-    Maybe<int> result =
+    IMaybe<int> result =
       from a in Maybe.Some(value.Get)
       select f(a);
 

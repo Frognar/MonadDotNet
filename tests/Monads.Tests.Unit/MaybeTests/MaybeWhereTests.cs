@@ -33,7 +33,7 @@ public class MaybeWhereTests {
 
   [Property]
   public void CanUseQuerySyntaxForWhere(NonNegativeInt value) {
-    Maybe<int> maybe =
+    IMaybe<int> maybe =
       from a in Maybe.Some(value.Get)
       where a >= 0
       select a;
