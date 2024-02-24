@@ -1,6 +1,6 @@
 ﻿namespace Frognar.Monads;
 
-public readonly record struct Maybe<T> {
+public readonly record struct Maybe<T> : IMaybe<T> {
   readonly IMaybe<T> maybe;
 
   public Maybe() : this(new None()) {
