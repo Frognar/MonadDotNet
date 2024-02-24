@@ -1,10 +1,10 @@
 ﻿namespace Frognar.Monads;
 
 public static class Maybe {
-  public static Maybe<T> None<T>() => Maybe<T>.CreateNone();
-  public static Maybe<T> Some<T>(T value) => Maybe<T>.CreateSome(value);
+  public static IMaybe<T> None<T>() => Maybe<T>.CreateNone();
+  public static IMaybe<T> Some<T>(T value) => Maybe<T>.CreateSome(value);
 
-  public static Maybe<TResult> Map<T, TResult>(this IMaybe<T> source, Func<T, TResult> map) {
+  public static IMaybe<TResult> Map<T, TResult>(this IMaybe<T> source, Func<T, TResult> map) {
     ArgumentNullException.ThrowIfNull(map);
     return source.Match(
       onNone: None<TResult>,
@@ -15,7 +15,7 @@ public static class Maybe {
   public static IMaybe<TResult> Select<T, TResult>(this IMaybe<T> source, Func<T, TResult> selector)
     => source.Map(selector);
 
-  public static Maybe<T> Where<T>(this Maybe<T> source, Func<T, bool> predicate) {
+  public static IMaybe<T> Where<T>(this IMaybe<T> source, Func<T, bool> predicate) {
     ArgumentNullException.ThrowIfNull(predicate);
     return source.Match(onSome: x => predicate(x) ? source : None<T>(), onNone: () => source);
   }
@@ -30,7 +30,7 @@ public static class Maybe {
     return source.Match(onSome: x => x, onNone: defaultValueFactory);
   }
 
-  public static Maybe<TResult> FlatMap<T, TResult>(this IMaybe<T> source, Func<T, Maybe<TResult>> map) {
+  public static IMaybe<TResult> FlatMap<T, TResult>(this IMaybe<T> source, Func<T, IMaybe<TResult>> map) {
     ArgumentNullException.ThrowIfNull(map);
     return source.Match(
       onNone: None<TResult>,
@@ -38,15 +38,6 @@ public static class Maybe {
     );
   }
 
-  public static IMaybe<TResult> FlatMap<T, TResult>(this IMaybe<T> source, Func<T, IMaybe<TResult>> map) {
-    ArgumentNullException.ThrowIfNull(map);
-    return source.Match(
-      onNone: () => None<TResult>(),
-      onSome: map
-    );
-  }
-
-  public static Maybe<T> Flatten<T>(this IMaybe<Maybe<T>> source) => source.FlatMap(x => x);
   public static IMaybe<T> Flatten<T>(this IMaybe<IMaybe<T>> source) => source.FlatMap(x => x);
 
   public static IMaybe<TResult> SelectMany<T, U, TResult>(
