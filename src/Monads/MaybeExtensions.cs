@@ -1,7 +1,6 @@
 ﻿namespace Frognar.Monads;
 
 public static class MaybeExtensions {
-
   public static IMaybe<TResult> Map<T, TResult>(this IMaybe<T> source, Func<T, TResult> map) {
     ArgumentNullException.ThrowIfNull(map);
     return source.Match(
