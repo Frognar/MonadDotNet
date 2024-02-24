@@ -47,6 +47,7 @@ public static class Maybe {
   }
 
   public static Maybe<T> Flatten<T>(this IMaybe<Maybe<T>> source) => source.FlatMap(x => x);
+  public static IMaybe<T> Flatten<T>(this IMaybe<IMaybe<T>> source) => source.FlatMap(x => x);
 
   public static IMaybe<TResult> SelectMany<T, U, TResult>(
     this IMaybe<T> source,
