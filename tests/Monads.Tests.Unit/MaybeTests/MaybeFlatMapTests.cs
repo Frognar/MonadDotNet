@@ -19,7 +19,7 @@ public class MaybeFlatMapTests {
 
   [Fact]
   public void ThrowsExceptionWhenSelectorIsNull() {
-    Func<int, Maybe<string>> f = null!;
+    Func<int, IMaybe<string>> f = null!;
     Action act = () => Maybe.Some(10).FlatMap(f);
     act.Should().Throw<ArgumentNullException>();
   }

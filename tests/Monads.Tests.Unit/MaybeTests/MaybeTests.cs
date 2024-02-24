@@ -42,26 +42,29 @@ public class MaybeTests {
   }
 
   [Property]
-  public void ObeysLeftIdentityLaw(int value, Func<int, Maybe<double>> f) {
-    Maybe.Some(value).FlatMap(f)
+  public void ObeysLeftIdentityLaw(int value, Func<int, double> f) {
+    IMaybe<double> F(int x) => Maybe.Some(f(x));
+    Maybe.Some(value).FlatMap(F)
       .Should().Be(
-        f(value)
+        F(value)
       );
   }
 
   [Property]
   public void ObeysRightIdentityLaw(NonNull<string> value) {
-    Maybe.Some(value.Get).FlatMap(Maybe.Some)
+    Maybe.Some(value.Get).FlatMap(v => (IMaybe<string>)Maybe.Some(v))
       .Should().Be(
         Maybe.Some(value.Get)
       );
   }
 
   [Property]
-  public void ObeysAssociativityLaw(NonNull<string> value, Func<string, Maybe<int>> f, Func<int, Maybe<double>> g) {
-    Maybe.Some(value.Get).FlatMap(f).FlatMap(g)
+  public void ObeysAssociativityLaw(NonNull<string> value, Func<string, int> f, Func<int, double> g) {
+    IMaybe<int> F(string x) => Maybe.Some(f(x));
+    IMaybe<double> G(int x) => Maybe.Some(g(x));
+    Maybe.Some(value.Get).FlatMap(F).FlatMap(G)
       .Should().Be(
-        Maybe.Some(value.Get).FlatMap(x => f(x).FlatMap(g))
+        Maybe.Some(value.Get).FlatMap(x => F(x).FlatMap(G))
       );
   }
 }
