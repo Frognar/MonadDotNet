@@ -26,7 +26,8 @@ public class MaybeMapTests {
 
   [Fact]
   public void ThrowsExceptionWhenSelectorIsNull() {
-    Action act = () => Maybe.Some(10).Map<int>(null!);
+    Func<int, string> f = null!;
+    Action act = () => Maybe.Some(10).Map(f);
     act.Should().Throw<ArgumentNullException>();
   }
 
