@@ -52,7 +52,7 @@ public class MaybeTests {
 
   [Property]
   public void ObeysRightIdentityLaw(NonNull<string> value) {
-    Maybe.Some(value.Get).FlatMap(v => (IMaybe<string>)Maybe.Some(v))
+    Maybe.Some(value.Get).FlatMap(Maybe.Some)
       .Should().Be(
         Maybe.Some(value.Get)
       );
