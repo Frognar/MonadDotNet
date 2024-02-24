@@ -16,22 +16,6 @@ public readonly record struct Maybe<T> {
     return maybe.Match(onNone: onNone, onSome: onSome);
   }
 
-  public Maybe<TResult> Map<TResult>(Func<T, TResult> map) {
-    ArgumentNullException.ThrowIfNull(map);
-    return maybe.Match(
-      onNone: Maybe<TResult>.CreateNone,
-      onSome: value => Maybe<TResult>.CreateSome(map(value))
-    );
-  }
-
-  public Maybe<TResult> FlatMap<TResult>(Func<T, Maybe<TResult>> map) {
-    ArgumentNullException.ThrowIfNull(map);
-    return maybe.Match(
-      onNone: Maybe<TResult>.CreateNone,
-      onSome: map
-    );
-  }
-
   internal static Maybe<T> CreateNone() => new();
   internal static Maybe<T> CreateSome(T value) => new(new Some(value));
 
