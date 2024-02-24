@@ -38,6 +38,14 @@ public static class Maybe {
     );
   }
 
+  public static IMaybe<TResult> FlatMap<T, TResult>(this IMaybe<T> source, Func<T, IMaybe<TResult>> map) {
+    ArgumentNullException.ThrowIfNull(map);
+    return source.Match(
+      onNone: () => None<TResult>(),
+      onSome: map
+    );
+  }
+
   public static Maybe<T> Flatten<T>(this IMaybe<Maybe<T>> source) => source.FlatMap(x => x);
 
   public static IMaybe<TResult> SelectMany<T, U, TResult>(
