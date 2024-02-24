@@ -26,7 +26,7 @@ public class MaybeFlatMapTests {
 
   [Property]
   public void CanUseQuerySyntaxForSelectMany(int valueA, int valueB, int valueC) {
-    Maybe<int> result =
+    IMaybe<int> result =
       from a in Maybe.Some(valueA)
       from b in Maybe.Some(valueB)
       from c in Maybe.Some(valueC)

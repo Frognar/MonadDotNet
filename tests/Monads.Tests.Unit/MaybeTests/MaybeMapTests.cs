@@ -33,7 +33,7 @@ public class MaybeMapTests {
 
   [Property]
   public void CanUseQuerySyntaxForSelect(NonNull<string> value, Func<string, int> f) {
-    Maybe<int> result =
+    IMaybe<int> result =
       from a in Maybe.Some(value.Get)
       select f(a);
 
